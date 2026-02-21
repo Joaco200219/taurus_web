@@ -26,6 +26,11 @@ const SHIPPING_ZONES = [
       class="relative w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col"
       style="background: #F5F0E8; border: 2px solid #0D0D0D; box-shadow: 6px 6px 0px #E8681A; max-height: 92dvh;"
     >
+      <!-- Burger pattern — same as body, clipped by modal's overflow:hidden -->
+      <div
+        aria-hidden="true"
+        style="position:absolute;inset:0;z-index:0;pointer-events:none;background-image:url('/img/burger-pattern.png');background-size:320px 320px;background-repeat:repeat;opacity:0.08;mix-blend-mode:multiply;"
+      ></div>
       <!-- Modal header -->
       <div class="flex items-center justify-between px-5 py-4 flex-shrink-0" style="border-bottom: 2px solid #0D0D0D;">
         <div>
