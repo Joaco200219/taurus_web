@@ -1,7 +1,7 @@
 ---
 // CartFloatingButton.astro
 // TODO: Reemplazar con el número de WhatsApp de Branco Burgers (sin + ni espacios, ej: 5491112345678)
-const WHATSAPP_NUMBER = '5953765044920';
+const WHATSAPP_NUMBER = '543765044920';
 ---
 
 <div id="cart-component-root" data-whatsapp={WHATSAPP_NUMBER}>
@@ -284,7 +284,7 @@ const WHATSAPP_NUMBER = '5953765044920';
   //   2. Archivo → Compartir → Publicar en la web → Esta hoja → CSV → Publicar
   //   3. Copiar esa URL y pegarla abajo
   // TODO: reemplazar '' con la URL CSV de la pestaña Config
-  const CONFIG_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRUjYQ79c41cWdRQw_Ihm4UGnrzuxBIq9CIOQkVCIYsKku595csG9qypXFaaSpYABlRB2lqZ2hMxWjq/pub?gid=2101373516&output=csv';
+  const CONFIG_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRUjYQ79c41cWdRQw_Ihm4UGnrzuxBIq9CIOQkVCIYsKku595csG9qypXFaaSpYABlRB2lqZ2hMxWjq/pub?gid=1210040946&output=csv';
 
   // Valores de fallback si el Sheet no está configurado o falla
   const FALLBACK_TARIFA_POR_KM = 500;  // ARS por km
@@ -382,9 +382,16 @@ const WHATSAPP_NUMBER = '5953765044920';
       let minEnvio    = FALLBACK_MIN_ENVIO;
 
       rows.forEach(row => {
-        const [clave, valor] = row.split(',').map(s => s.trim().replace(/^"|"$/g, ''));
-        if (clave === 'tarifa_por_km') tarifaPorKm = parseFloat(valor) || FALLBACK_TARIFA_POR_KM;
-        if (clave === 'min_envio')     minEnvio    = parseFloat(valor) || FALLBACK_MIN_ENVIO;
+        // Handle both comma and semicolon (depends on Google Sheet locale)
+        const delimiter = row.includes(';') ? ';' : ',';
+        const parts = row.split(delimiter).map(s => s.trim().replace(/^"|"$/g, ''));
+        
+        if (parts.length >= 2) {
+          const clave = parts[0];
+          const valor = parts[1];
+          if (clave === 'tarifa_por_km') tarifaPorKm = parseFloat(valor) || FALLBACK_TARIFA_POR_KM;
+          if (clave === 'min_envio')     minEnvio    = parseFloat(valor) || FALLBACK_MIN_ENVIO;
+        }
       });
 
       tarifaCache = { tarifaPorKm, minEnvio };
