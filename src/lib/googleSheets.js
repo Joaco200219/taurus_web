@@ -2,21 +2,17 @@ import Papa from 'papaparse';
 
 // TODO: Reemplazar con la URL del Google Sheet del nuevo cliente
 // Pasos: Sheet > Archivo > Compartir > Publicar en la web > CSV > Copiar enlace
-const GOOGLE_SHEET_URL = '';
+const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRUjYQ79c41cWdRQw_Ihm4UGnrzuxBIq9CIOQkVCIYsKku595csG9qypXFaaSpYABlRB2lqZ2hMxWjq/pub?output=csv';
 
-// TODO: Agregar/quitar categorías según el menú del nuevo cliente
-// Keys deben coincidir exactamente con la columna 'categoria' del Google Sheet
+// Keys deben coincidir EXACTAMENTE con la columna 'categoria' del Google Sheet (respeta mayúsculas)
 const CATEGORY_MAP = {
-    'Entradas': { id: 'entradas', emoji: '🍽️', label: '🍽️ Entradas' },
+    'Promos del dia': { id: 'promos', emoji: '🔥', label: '🔥 Promos del Día' },
+    'Combos': { id: 'combos', emoji: '🎁', label: '🎁 Combos' },
     'Hamburguesas': { id: 'hamburguesas', emoji: '🍔', label: '🍔 Hamburguesas' },
-    'Sandwiches': { id: 'sandwiches', emoji: '🥪', label: '🥪 Sándwiches' },
-    'Milanesas': { id: 'milanesas', emoji: '🥩', label: '🥩 Milanesas' },
-    'Lomitos': { id: 'lomitos', emoji: '🥩', label: '🥩 Lomitos' },
-    'Pizzas': { id: 'pizzas', emoji: '🍕', label: '🍕 Pizzas' },
-    'Pastas': { id: 'pastas', emoji: '🍝', label: '🍝 Pastas' },
+    'Hamburguesas mas papas': { id: 'hamburguesaspap', emoji: '🍔', label: '🍔 Hamburguesas + Papas' },
+    'Lomos': { id: 'lomos', emoji: '🥩', label: '🥩 Lomos' },
     'Guarniciones': { id: 'guarniciones', emoji: '🍟', label: '🍟 Guarniciones' },
     'Bebidas': { id: 'bebidas', emoji: '🥤', label: '🥤 Bebidas' },
-    'Postres': { id: 'postres', emoji: '🍰', label: '🍰 Postres' },
 };
 
 export async function getMenuData() {
@@ -42,14 +38,21 @@ export async function getMenuData() {
                 complete: (results) => {
                     const rows = results.data;
 
-                    // 1. Filter by disponible = "TRUE"
-                    const activeRows = rows.filter(row => row.disponible === 'TRUE' || row.disponible === 'true');
+                    // 1. Filter by disponible = "TRUE" (case-insensitive and trimmed)
+                    const activeRows = rows.filter(row => {
+                        const disp = row.disponible ? row.disponible.trim().toUpperCase() : '';
+                        return disp === 'TRUE';
+                    });
 
                     // 2. Group by Category
                     const groupedData = {};
 
                     activeRows.forEach(row => {
-                        const catKey = row.categoria ? row.categoria.trim() : 'Otros';
+                        // Clean keys and values to avoid issues with hidden spaces in CSV
+                        const cleanRow = {};
+                        Object.keys(row).forEach(k => { cleanRow[k.trim()] = row[k] ? row[k].trim() : ''; });
+
+                        const catKey = cleanRow.categoria || 'Otros';
 
                         if (!groupedData[catKey]) {
                             const mapData = CATEGORY_MAP[catKey] || {
@@ -68,12 +71,12 @@ export async function getMenuData() {
 
                         // 3. Map CSV columns to Product Object
                         groupedData[catKey].products.push({
-                            id: row.id,
-                            nombre: row.nombre,
-                            descripcion: row.descripcion,
-                            precio: parseInt(row.precio, 10) || 0,
-                            imagen: row.imagen && row.imagen.trim() !== '' ? row.imagen : '/img/placeholder.jpg',
-                            badge: row.badge && row.badge.trim() !== '' ? row.badge : null
+                            id: cleanRow.id,
+                            nombre: cleanRow.nombre,
+                            descripcion: cleanRow.descripcion,
+                            precio: parseInt(cleanRow.precio, 10) || 0,
+                            imagen: null, // Deshabilitado por pedido
+                            badge: cleanRow.badge || null
                         });
                     });
 

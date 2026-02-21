@@ -1,7 +1,7 @@
 ---
 // CartFloatingButton.astro
 // TODO: Reemplazar con el número de WhatsApp de Branco Burgers (sin + ni espacios, ej: 5491112345678)
-const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
+const WHATSAPP_NUMBER = '5953765044920';
 ---
 
 <div id="cart-component-root" data-whatsapp={WHATSAPP_NUMBER}>
@@ -67,6 +67,21 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
             <span style="font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: #0D0D0D;">TOTAL</span>
             <span id="modal-total" style="font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: #E8681A;"></span>
           </div>
+        </div>
+
+        <!-- Common fields: Name -->
+        <div class="space-y-1.5">
+          <label for="input-nombre" class="text-sm font-bold flex items-center gap-1" style="color: #0D0D0D;">
+            👤 Tu nombre <span style="color:#E8681A;">*</span>
+          </label>
+          <input
+            id="input-nombre"
+            type="text"
+            placeholder="Ej: Juan García"
+            class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
+            style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
+            required
+          />
         </div>
 
         <!-- Delivery type -->
@@ -145,19 +160,7 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
           </div>
         </div>
 
-        <!-- Pickup name -->
-        <div id="field-retiro" class="space-y-1.5 hidden">
-          <label for="input-nombre" class="text-sm font-bold" style="color: #0D0D0D;">
-            👤 Nombre de quien retira
-          </label>
-          <input
-            id="input-nombre"
-            type="text"
-            placeholder="Ej: Juan García"
-            class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
-            style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
-          />
-        </div>
+
 
         <!-- Preferences / notes -->
         <div class="space-y-1.5">
@@ -174,21 +177,39 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
         </div>
 
         <!-- Payment method -->
-        <div class="space-y-1.5">
-          <label for="select-pago" class="text-sm font-bold" style="color: #0D0D0D;">
-            💳 Método de Pago
-          </label>
-          <div class="relative">
-            <select
-              id="select-pago"
-              class="w-full px-4 py-3 rounded-xl text-sm outline-none appearance-none cursor-pointer transition-all"
+        <div class="space-y-3">
+          <div class="space-y-1.5">
+            <label for="select-pago" class="text-sm font-bold" style="color: #0D0D0D;">
+              💳 Método de Pago
+            </label>
+            <div class="relative">
+              <select
+                id="select-pago"
+                class="w-full px-4 py-3 rounded-xl text-sm outline-none appearance-none cursor-pointer transition-all"
+                style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
+              >
+                <option value="efectivo">💵 Efectivo</option>
+                <option value="mercadopago">📱 Mercado Pago (Alias/CVU)</option>
+                <option value="transferencia">🏦 Transferencia Bancaria</option>
+              </select>
+              <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" style="color: #E8681A;">▼</div>
+            </div>
+          </div>
+
+          <!-- Cash change field (hidden by default) -->
+          <div id="field-vuelto" class="space-y-1.5" style="display: none;">
+            <label for="input-pago-con" class="text-sm font-bold" style="color: #0D0D0D;">
+              💸 ¿Con cuánto pagás?
+            </label>
+            <input
+              id="input-pago-con"
+              type="number"
+              inputmode="numeric"
+              placeholder="Ej: 5000"
+              class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
               style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
-            >
-              <option value="efectivo">💵 Efectivo</option>
-              <option value="mercadopago">📱 Mercado Pago (Alias/CVU)</option>
-              <option value="transferencia">🏦 Transferencia Bancaria</option>
-            </select>
-            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" style="color: #E8681A;">▼</div>
+            />
+            <p class="text-[10px] italic" style="color: #6B6660;">Ingresá el monto para que el repartidor lleve vuelto.</p>
           </div>
         </div>
 
@@ -323,6 +344,8 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
   const toggleMapBtn    = document.getElementById('toggle-map-btn');
   const closeMapBtn     = document.getElementById('close-map-btn');
   const mapContainer    = document.getElementById('map-container');
+  const fieldVuelto     = document.getElementById('field-vuelto');
+  const inputPagoCon    = document.getElementById('input-pago-con');
 
   // ─────────────────────────────────────────────
   // HELPERS — FORMAT
@@ -628,33 +651,43 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
   function setDeliveryType(type) {
     deliveryType = type;
 
-    if (type === 'delivery') {
-      toggleDelivery.style.background = '#E8681A';
-      toggleDelivery.style.color      = '#0D0D0D';
-      toggleDelivery.style.boxShadow  = '3px 3px 0px #0D0D0D';
-      toggleRetiro.style.background   = '#F5F0E8';
-      toggleRetiro.style.color        = '#6B6660';
-      toggleRetiro.style.boxShadow    = '3px 3px 0px #0D0D0D';
-      fieldDelivery.classList.remove('hidden');
-      fieldRetiro.classList.add('hidden');
-    } else {
-      // Retiro en local
-      toggleRetiro.style.background   = '#E8681A';
-      toggleRetiro.style.color        = '#0D0D0D';
-      toggleRetiro.style.boxShadow    = '3px 3px 0px #0D0D0D';
-      toggleDelivery.style.background = '#F5F0E8';
-      toggleDelivery.style.color      = '#6B6660';
-      toggleDelivery.style.boxShadow  = '3px 3px 0px #0D0D0D';
-      fieldRetiro.classList.remove('hidden');
-      fieldDelivery.classList.add('hidden');
+    function updateDeliveryUI() {
+      if (deliveryType === 'delivery') {
+        toggleDelivery.style.background = '#E8681A';
+        toggleDelivery.style.color      = '#0D0D0D';
+        toggleDelivery.style.boxShadow  = '3px 3px 0px #0D0D0D';
 
-      // Reset shipping when switching to pickup
-      currentShipping  = 0;
-      shippingCalcDone = false;
-      calculatedKm     = null;
+        toggleRetiro.style.background   = '#F5F0E8';
+        toggleRetiro.style.color        = '#6B6660';
+        toggleRetiro.style.boxShadow    = 'none';
+
+        fieldDelivery.classList.remove('hidden');
+        fieldRetiro.classList.add('hidden'); // Ensure retiro field is hidden
+        shippingRow.style.display       = 'flex';
+      } else {
+        // Retiro en local
+        toggleRetiro.style.background   = '#E8681A';
+        toggleRetiro.style.color        = '#0D0D0D';
+        toggleRetiro.style.boxShadow    = '3px 3px 0px #0D0D0D';
+
+        toggleDelivery.style.background = '#F5F0E8';
+        toggleDelivery.style.color      = '#6B6660';
+        toggleDelivery.style.boxShadow  = 'none';
+
+        fieldRetiro.classList.remove('hidden');
+        fieldDelivery.classList.add('hidden'); // Ensure delivery field is hidden
+
+        // Reset shipping when switching to pickup
+        currentShipping  = 0;
+        shippingCalcDone = false;
+        calculatedKm     = null;
+        shippingResult.style.display = 'none'; // Hide shipping result when switching to pickup
+        shippingRow.style.display = 'none'; // Hide shipping row when switching to pickup
+      }
+      updateModalTotals();
     }
 
-    updateModalTotals();
+    updateDeliveryUI(); // Call the new UI update function
   }
 
   toggleDelivery?.addEventListener('click', () => setDeliveryType('delivery'));
@@ -801,16 +834,23 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
   });
 
   // Focus styles
-  [inputDireccion, inputNombre, inputPref].forEach(input => {
+  [inputDireccion, inputNombre, inputPref, inputPagoCon].forEach(input => {
     if (!input) return;
     input.addEventListener('focus', () => { input.style.borderColor = '#E8681A'; input.style.boxShadow = '3px 3px 0px #E8681A'; });
     input.addEventListener('blur',  () => { input.style.borderColor = '#0D0D0D'; input.style.boxShadow = 'none'; });
   });
-  [selectPago].forEach(sel => {
-    if (!sel) return;
-    sel.addEventListener('focus', () => { sel.style.borderColor = '#E8681A'; sel.style.boxShadow = '3px 3px 0px #E8681A'; });
-    sel.addEventListener('blur',  () => { sel.style.borderColor = '#0D0D0D'; sel.style.boxShadow = 'none'; });
+
+  selectPago?.addEventListener('change', () => {
+    if (selectPago.value === 'efectivo') {
+      fieldVuelto.style.display = 'block';
+    } else {
+      fieldVuelto.style.display = 'none';
+      inputPagoCon.value = '';
+    }
   });
+
+  // Initial state for cash field
+  if (selectPago.value === 'efectivo') fieldVuelto.style.display = 'block';
 
   // ─────────────────────────────────────────────
   // WHATSAPP MESSAGE BUILDER
@@ -827,16 +867,29 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
       mercadopago:   '📱 Mercado Pago (Alias/CVU)',
       transferencia: '🏦 Transferencia Bancaria',
     };
-    const pagoLabel = pagoLabels[selectPago?.value] || 'Efectivo';
+    const paymentMethod = selectPago?.value || 'efectivo';
+    const pagoLabel = pagoLabels[paymentMethod] || 'Efectivo';
 
+    // Cash details
+    let cashLine = '';
+    if (paymentMethod === 'efectivo') {
+      const pagoConVal = parseFloat(inputPagoCon?.value);
+      if (pagoConVal > total) {
+        const vuelto = pagoConVal - total;
+        cashLine = `\n💰 *Paga con:* ${formatPrice(pagoConVal)}\n🪙 *Vuelto:* ${formatPrice(vuelto)}`;
+      } else if (pagoConVal > 0) {
+        cashLine = `\n💰 *Paga con:* ${formatPrice(pagoConVal)} (Justo)`;
+      }
+    }
+
+    const userName = inputNombre?.value?.trim() || '(sin especificar)';
     let entregaLine = '';
     if (deliveryType === 'delivery') {
       const dir = inputDireccion?.value?.trim() || '(sin especificar)';
       const kmInfo = calculatedKm !== null ? ` (${calculatedKm} km)` : '';
-      entregaLine = `🛵 *Entrega:* Delivery\n📍 *Dirección:* ${dir}${kmInfo}\n💰 *Costo de envío:* ${formatPrice(shipping)}`;
+      entregaLine = `🛵 *Entrega:* Delivery\n👤 *Nombre:* ${userName}\n📍 *Dirección:* ${dir}${kmInfo}\n💰 *Costo de envío:* ${formatPrice(shipping)}`;
     } else {
-      const nombre = inputNombre?.value?.trim() || '(sin especificar)';
-      entregaLine  = `🏪 *Entrega:* Retiro en Local\n👤 *Nombre:* ${nombre}`;
+      entregaLine  = `🏪 *Entrega:* Retiro en Local\n👤 *Nombre:* ${userName}`;
     }
 
     const shippingLine = deliveryType === 'delivery'
@@ -846,7 +899,7 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
     const prefText = inputPref?.value?.trim();
     const prefLine = prefText ? `\n\n📝 *Preferencias:* ${prefText}` : '';
 
-    return `¡Hola Branco Burgers! 🍔\n\n${entregaLine}\n💳 *Pago:* ${pagoLabel}\n\n📋 *Detalle del pedido:*\n${lines}${shippingLine}${prefLine}\n\n*Total: ${formatPrice(total)}*\n\n¿Podés confirmarme disponibilidad? ¡Gracias!`;
+    return `¡Hola Branco Burgers! 🍔\n\n${entregaLine}\n💳 *Pago:* ${pagoLabel}${cashLine}\n\n📋 *Detalle del pedido:*\n${lines}${shippingLine}${prefLine}\n\n*Total: ${formatPrice(total)}*\n\n¿Podés confirmarme disponibilidad? ¡Gracias!`;
   }
 
   // ─────────────────────────────────────────────
@@ -895,11 +948,25 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
   confirmBtn?.addEventListener('click', () => {
     if (currentItems.length === 0) return;
 
-    // If delivery, require shipping calculation
-    if (deliveryType === 'delivery' && !shippingCalcDone) {
-      setShippingResultUI('error', { msg: 'Por favor, calculá el costo de envío antes de confirmar el pedido.' });
-      shippingResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    // Validation: Name is mandatory for everyone
+    if (!inputNombre?.value?.trim()) {
+      alert('Por favor, ingresá tu nombre para procesar el pedido.');
+      inputNombre.focus();
       return;
+    }
+
+    // Validation: Delivery specific
+    if (deliveryType === 'delivery') {
+      if (!inputDireccion?.value?.trim()) {
+        alert('Por favor, ingresá tu dirección para el envío.');
+        inputDireccion.focus();
+        return;
+      }
+      if (!shippingCalcDone) {
+        setShippingResultUI('error', { msg: 'Por favor, calculá el costo de envío antes de confirmar.' });
+        shippingResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return;
+      }
     }
 
     const message = buildWhatsAppMessage(currentItems);

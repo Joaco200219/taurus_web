@@ -20,16 +20,20 @@ const precioFormateado = new Intl.NumberFormat('es-AR', {
 }).format(precio);
 
 // Badge colors — estilo sticker retro
+// Se comparan automáticamente en MAYÚSCULAS
 const badgeColors: Record<string, { bg: string; text: string }> = {
-  'Nuevo':     { bg: '#E8681A', text: '#0D0D0D' },
-  'Oferta':    { bg: '#0D0D0D', text: '#E8681A' },
-  'Especial':  { bg: '#E8681A', text: '#0D0D0D' },
-  'Doble':     { bg: '#0D0D0D', text: '#F5F0E8' },
-  'Triple':    { bg: '#0D0D0D', text: '#E8681A' },
+  'NUEVO':     { bg: '#E8681A', text: '#0D0D0D' },
+  'OFERTA':    { bg: '#0D0D0D', text: '#E8681A' },
+  'ESPECIAL':  { bg: '#E8681A', text: '#0D0D0D' },
+  'DOBLE':     { bg: '#0D0D0D', text: '#F5F0E8' },
+  'TRIPLE':    { bg: '#0D0D0D', text: '#E8681A' },
   'XXL':       { bg: '#0D0D0D', text: '#E8681A' },
-  'Promo':     { bg: '#E8681A', text: '#0D0D0D' },
+  'PROMO':     { bg: '#E8681A', text: '#0D0D0D' },
+  'VEGGIE':    { bg: '#4A5D23', text: '#F5F0E8' }, // Verde musgo con texto crema
 };
-const badgeStyle = badge && badgeColors[badge] ? badgeColors[badge] : { bg: '#E8681A', text: '#0D0D0D' };
+
+const badgeUpper = badge?.toUpperCase() || '';
+const badgeStyle = badgeUpper && badgeColors[badgeUpper] ? badgeColors[badgeUpper] : { bg: '#E8681A', text: '#0D0D0D' };
 ---
 
 <!-- Sticker-style card: white bg, black border, orange shadow offset -->
