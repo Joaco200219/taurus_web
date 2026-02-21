@@ -284,7 +284,7 @@ const WHATSAPP_NUMBER = '5953765044920';
   //   2. Archivo → Compartir → Publicar en la web → Esta hoja → CSV → Publicar
   //   3. Copiar esa URL y pegarla abajo
   // TODO: reemplazar '' con la URL CSV de la pestaña Config
-  const CONFIG_SHEET_CSV_URL = '';
+  const CONFIG_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRUjYQ79c41cWdRQw_Ihm4UGnrzuxBIq9CIOQkVCIYsKku595csG9qypXFaaSpYABlRB2lqZ2hMxWjq/pub?gid=2101373516&output=csv';
 
   // Valores de fallback si el Sheet no está configurado o falla
   const FALLBACK_TARIFA_POR_KM = 500;  // ARS por km
@@ -334,7 +334,7 @@ const WHATSAPP_NUMBER = '5953765044920';
   const toggleDelivery  = document.getElementById('toggle-delivery');
   const toggleRetiro    = document.getElementById('toggle-retiro');
   const fieldDelivery   = document.getElementById('field-delivery');
-  const fieldRetiro     = document.getElementById('field-retiro');
+  // fieldRetiro removed as 'Nombre' is now common
   const inputDireccion  = document.getElementById('input-direccion');
   const inputNombre     = document.getElementById('input-nombre');
   const inputPref       = document.getElementById('input-preferencias');
@@ -662,7 +662,6 @@ const WHATSAPP_NUMBER = '5953765044920';
         toggleRetiro.style.boxShadow    = 'none';
 
         fieldDelivery.classList.remove('hidden');
-        fieldRetiro.classList.add('hidden'); // Ensure retiro field is hidden
         shippingRow.style.display       = 'flex';
       } else {
         // Retiro en local
@@ -674,15 +673,14 @@ const WHATSAPP_NUMBER = '5953765044920';
         toggleDelivery.style.color      = '#6B6660';
         toggleDelivery.style.boxShadow  = 'none';
 
-        fieldRetiro.classList.remove('hidden');
-        fieldDelivery.classList.add('hidden'); // Ensure delivery field is hidden
+        fieldDelivery.classList.add('hidden');
 
         // Reset shipping when switching to pickup
         currentShipping  = 0;
         shippingCalcDone = false;
         calculatedKm     = null;
-        shippingResult.style.display = 'none'; // Hide shipping result when switching to pickup
-        shippingRow.style.display = 'none'; // Hide shipping row when switching to pickup
+        if (shippingResult) shippingResult.style.display = 'none';
+        if (shippingRow)    shippingRow.style.display = 'none';
       }
       updateModalTotals();
     }
