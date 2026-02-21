@@ -972,6 +972,8 @@ const WHATSAPP_NUMBER = '543765044920';
         shippingResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         return;
       }
+    }
+
     // Validation: Pay amount for cash
     if (selectPago?.value === 'efectivo') {
       const subtotal = currentItems.reduce((s, i) => s + i.precio * i.qty, 0);
