@@ -107,13 +107,36 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
               style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
               autocomplete="off"
             />
-            <button
-              id="calc-envio-btn"
-              class="w-full py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-95"
-              style="background: #0D0D0D; color: #F5F0E8; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #E8681A; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.04em;"
-            >
-              📍 Calcular costo de envío
-            </button>
+            <div class="flex gap-2">
+              <button
+                id="calc-envio-btn"
+                class="flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-95"
+                style="background: #0D0D0D; color: #F5F0E8; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #E8681A; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.04em;"
+              >
+                📍 Calcular envío
+              </button>
+              <button
+                id="toggle-map-btn"
+                class="py-3 px-3 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center active:scale-95"
+                style="background: #F5F0E8; color: #0D0D0D; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #E8681A; font-size: 1.1rem;"
+                title="Elegir en el mapa"
+                aria-label="Abrir mapa"
+              >
+                🗺️
+              </button>
+            </div>
+          </div>
+
+          <!-- Map container (lazy-loaded Leaflet) -->
+          <div id="map-container" style="display:none; border: 2px solid #0D0D0D; border-radius: 12px; overflow: hidden; box-shadow: 3px 3px 0px #E8681A;">
+            <div style="background:#0D0D0D; padding: 8px 12px; display:flex; align-items:center; justify-content:between; gap:8px;">
+              <p style="font-family:'Bebas Neue',sans-serif; font-size:0.85rem; color:#F5F0E8; letter-spacing:0.04em; flex:1;">🗺️ ARRASTRÁ EL PIN AZUL A TU DIRECCIÓN</p>
+              <button id="close-map-btn" style="background:transparent; color:#E8681A; font-size:1rem; font-weight:900; border:none; cursor:pointer; padding:0 4px;">✕</button>
+            </div>
+            <div id="leaflet-map" style="height: 280px; width: 100%; z-index: 1;"></div>
+            <div style="padding:8px 12px; background:#F5F0E8; border-top:1.5px solid #0D0D0D; display:flex; align-items:center; gap:8px;">
+              <span style="font-size:0.75rem; color:#6B6660; font-weight:600; flex:1;">🔴 Branco Burgers &nbsp;·&nbsp; 📍 Tu ubicación (arrastrá)</span>
+            </div>
           </div>
 
           <!-- Shipping result panel -->
@@ -228,17 +251,26 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
   // Dirección del local (origen fijo)
   const ORIGIN_ADDRESS = 'Queirel 5623, Posadas, Misiones, Argentina';
 
-  // Google Sheet de configuración publicado como CSV.
-  // El dueño crea un Sheet con columnas: clave | valor
-  // Fila 1: tarifa_por_km | 500
-  // Fila 2: min_envio     | 1500
-  // Luego: Archivo → Compartir → Publicar en la web → CSV → copiar URL
-  // TODO: reemplazar '' con la URL real
+  // ── GOOGLE SHEET UNIFICADO ──────────────────────────────────────────────
+  // El dueño maneja UN solo Google Sheet con DOS pestañas:
+  //   Pestaña 1 → "Menu"   (ya configurada en googleSheets.js)
+  //   Pestaña 2 → "Config" (columnas: clave | valor)
+  //       Fila 1: tarifa_por_km | 500
+  //       Fila 2: min_envio     | 1500
+  //
+  // Para obtener la URL de Config:
+  //   1. Ir a la pestaña "Config" del Sheet
+  //   2. Archivo → Compartir → Publicar en la web → Esta hoja → CSV → Publicar
+  //   3. Copiar esa URL y pegarla abajo
+  // TODO: reemplazar '' con la URL CSV de la pestaña Config
   const CONFIG_SHEET_CSV_URL = '';
 
   // Valores de fallback si el Sheet no está configurado o falla
   const FALLBACK_TARIFA_POR_KM = 500;  // ARS por km
   const FALLBACK_MIN_ENVIO     = 1500; // ARS mínimo de envío
+
+  // Radio máximo de entrega (km en ruta)
+  const MAX_KM_DELIVERY = 15;
 
   // ─────────────────────────────────────────────
   // STATE
@@ -253,6 +285,11 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
 
   // Coordenadas del local (se geocodifican una vez, al cargar la página)
   let originCoords = null; // { lat, lon }
+
+  // Mapa
+  let mapInitialized  = false;  // Leaflet inicializado
+  let clientMarker    = null;   // marker arrastrable del cliente
+  let pendingDestCoords = null; // { lat, lon } desde el mapa (evita re-geocodificar)
 
   // ─────────────────────────────────────────────
   // DOM REFS
@@ -283,6 +320,9 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
   const selectPago      = document.getElementById('select-pago');
   const calcEnvioBtn    = document.getElementById('calc-envio-btn');
   const shippingResult  = document.getElementById('shipping-result');
+  const toggleMapBtn    = document.getElementById('toggle-map-btn');
+  const closeMapBtn     = document.getElementById('close-map-btn');
+  const mapContainer    = document.getElementById('map-container');
 
   // ─────────────────────────────────────────────
   // HELPERS — FORMAT
@@ -409,7 +449,7 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
 
   async function calcularEnvio() {
     const address = inputDireccion?.value?.trim();
-    if (!address) {
+    if (!address && !pendingDestCoords) {
       setShippingResultUI('error', { msg: 'Ingresá tu dirección antes de calcular.' });
       return;
     }
@@ -424,22 +464,39 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
         originCoords = await geocodeAddress(ORIGIN_ADDRESS);
       }
 
-      // 2. Geocode destination
-      // Try with "Posadas, Misiones" appended if not already mentioned
-      const fullAddress = /posadas|misiones/i.test(address) ? address : `${address}, Posadas, Misiones, Argentina`;
-      const destCoords = await geocodeAddress(fullAddress);
+      // 2. Dest coords: use pin from map if available, otherwise geocode the text
+      let destCoords;
+      if (pendingDestCoords) {
+        destCoords = pendingDestCoords;
+        pendingDestCoords = null; // consume
+      } else {
+        const fullAddress = /posadas|misiones/i.test(address) ? address : `${address}, Posadas, Misiones, Argentina`;
+        destCoords = await geocodeAddress(fullAddress);
+      }
 
       // 3. Get driving distance
       const km = await getRoutingDistanceKm(originCoords, destCoords);
 
-      // 4. Fetch tarifa
+      // 4. Check radius limit
+      if (km > MAX_KM_DELIVERY) {
+        setShippingResultUI('error', {
+          msg: `😔 Tu dirección queda a ${km} km del local. Por ahora hacemos envíos hasta ${MAX_KM_DELIVERY} km. ¡Podés pasar a retirar tu pedido!`
+        });
+        shippingCalcDone = false;
+        currentShipping  = 0;
+        calculatedKm     = null;
+        updateModalTotals();
+        return;
+      }
+
+      // 5. Fetch tarifa
       const { tarifaPorKm, minEnvio } = await fetchTarifa();
 
-      // 5. Calculate price
+      // 6. Calculate price
       const rawPrice = km * tarifaPorKm;
       const price    = Math.ceil(Math.max(rawPrice, minEnvio) / 50) * 50; // round up to nearest 50
 
-      // 6. Update state
+      // 7. Update state
       currentShipping  = price;
       shippingCalcDone = true;
       calculatedKm     = km;
@@ -452,7 +509,7 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
       shippingCalcDone = false;
       currentShipping  = 0;
       setShippingResultUI('error', {
-        msg: 'No pudimos calcular la distancia. Probá con una dirección más detallada (ej: Av. Colón 1234, Córdoba).'
+        msg: 'No pudimos calcular la distancia. Probá con una dirección más detallada (ej: Av. San Martín 1234, Posadas).'
       });
       updateModalTotals();
     } finally {
@@ -618,6 +675,127 @@ const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
       shippingResult.style.display = 'none';
       updateModalTotals();
     }
+  });
+
+  // ─────────────────────────────────────────────
+  // MAP — Leaflet (lazy-loaded from CDN)
+  // ─────────────────────────────────────────────
+
+  async function loadLeaflet() {
+    if (window.L) return; // already loaded
+    await new Promise((resolve, reject) => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      document.head.appendChild(link);
+
+      const script = document.createElement('script');
+      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      script.onload  = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+  }
+
+  async function initMap() {
+    if (mapInitialized) return;
+    mapInitialized = true;
+
+    await loadLeaflet();
+    const L = window.L;
+
+    // Make sure origin coords are ready
+    if (!originCoords) {
+      try { originCoords = await geocodeAddress(ORIGIN_ADDRESS); }
+      catch { originCoords = { lat: -27.3671, lon: -55.8975 }; } // Posadas fallback
+    }
+
+    const map = L.map('leaflet-map').setView([originCoords.lat, originCoords.lon], 14);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap',
+      maxZoom: 19
+    }).addTo(map);
+
+    // Fixed red marker for the local
+    const redIcon = L.divIcon({
+      html: '<div style="width:18px;height:18px;background:#E8681A;border:3px solid #0D0D0D;border-radius:50%;box-shadow:2px 2px 0 #0D0D0D;"></div>',
+      iconSize: [18, 18], iconAnchor: [9, 9], className: ''
+    });
+    L.marker([originCoords.lat, originCoords.lon], { icon: redIcon })
+      .addTo(map)
+      .bindPopup('<b style="font-family:sans-serif">📍 Branco Burgers</b><br><small>Queirel 5623</small>');
+
+    // Draggable blue marker for client — starts at center of visible map
+    const blueIcon = L.divIcon({
+      html: '<div style="width:22px;height:22px;background:#2563EB;border:3px solid #0D0D0D;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:2px 2px 0 #0D0D0D;"></div>',
+      iconSize: [22, 22], iconAnchor: [11, 22], className: ''
+    });
+
+    const startLat = originCoords.lat + 0.01;
+    const startLon = originCoords.lon + 0.01;
+    clientMarker = L.marker([startLat, startLon], { icon: blueIcon, draggable: true })
+      .addTo(map)
+      .bindPopup('<b style="font-family:sans-serif">📍 Tu ubicación</b><br><small>Arrastrá para ajustar</small>');
+
+    clientMarker.on('dragend', async () => {
+      const pos = clientMarker.getLatLng();
+      await onPinDrop(pos.lat, pos.lng);
+    });
+
+    // Also allow clicking the map to place the client marker
+    map.on('click', async (e) => {
+      clientMarker.setLatLng(e.latlng);
+      await onPinDrop(e.latlng.lat, e.latlng.lng);
+    });
+
+    // Fix Leaflet size issue inside hidden containers
+    setTimeout(() => map.invalidateSize(), 100);
+  }
+
+  async function onPinDrop(lat, lon) {
+    // Store coords for the calculator to use directly
+    pendingDestCoords = { lat, lon };
+
+    // Reverse-geocode to show the address in the text field
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
+      const res  = await fetch(url, { headers: { 'Accept-Language': 'es', 'User-Agent': 'BrancoDeliveryApp/1.0' } });
+      const data = await res.json();
+      if (data && data.display_name) {
+        // Show a short version: road + house_number + suburb
+        const a = data.address || {};
+        const parts = [a.road, a.house_number, a.suburb || a.neighbourhood, a.city || a.town].filter(Boolean);
+        if (inputDireccion) inputDireccion.value = parts.join(', ') || data.display_name;
+      }
+    } catch { /* if reverse geocode fails, keep existing text */ }
+
+    // Reset previous result and auto-calculate
+    shippingCalcDone = false;
+    currentShipping  = 0;
+    calculatedKm     = null;
+    await calcularEnvio();
+  }
+
+  function toggleMap() {
+    const isVisible = mapContainer.style.display !== 'none';
+    if (isVisible) {
+      mapContainer.style.display = 'none';
+      toggleMapBtn.style.background = '#F5F0E8';
+      toggleMapBtn.style.color      = '#0D0D0D';
+    } else {
+      mapContainer.style.display = 'block';
+      toggleMapBtn.style.background = '#E8681A';
+      toggleMapBtn.style.color      = '#0D0D0D';
+      initMap(); // lazy init
+    }
+  }
+
+  toggleMapBtn?.addEventListener('click', toggleMap);
+  closeMapBtn?.addEventListener('click', () => {
+    mapContainer.style.display = 'none';
+    toggleMapBtn.style.background = '#F5F0E8';
+    toggleMapBtn.style.color      = '#0D0D0D';
   });
 
   // Focus styles
