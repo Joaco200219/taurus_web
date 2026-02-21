@@ -882,7 +882,7 @@ const WHATSAPP_NUMBER = '543765044920';
       if (pagoConVal > total) {
         const vuelto = pagoConVal - total;
         cashLine = `\n💰 *Paga con:* ${formatPrice(pagoConVal)}\n🪙 *Vuelto:* ${formatPrice(vuelto)}`;
-      } else if (pagoConVal > 0) {
+      } else if (pagoConVal === total) {
         cashLine = `\n💰 *Paga con:* ${formatPrice(pagoConVal)} (Justo)`;
       }
     }
@@ -970,6 +970,17 @@ const WHATSAPP_NUMBER = '543765044920';
       if (!shippingCalcDone) {
         setShippingResultUI('error', { msg: 'Por favor, calculá el costo de envío antes de confirmar.' });
         shippingResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        return;
+      }
+    // Validation: Pay amount for cash
+    if (selectPago?.value === 'efectivo') {
+      const subtotal = currentItems.reduce((s, i) => s + i.precio * i.qty, 0);
+      const total    = subtotal + (deliveryType === 'delivery' ? currentShipping : 0);
+      const pagoConVal = parseFloat(inputPagoCon?.value);
+      
+      if (inputPagoCon?.value?.trim() !== '' && pagoConVal < total) {
+        alert(`El monto para pagar (${formatPrice(pagoConVal)}) debe ser igual o mayor al total del pedido (${formatPrice(total)}).`);
+        inputPagoCon.focus();
         return;
       }
     }
