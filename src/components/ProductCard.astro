@@ -19,43 +19,42 @@ const precioFormateado = new Intl.NumberFormat('es-AR', {
   maximumFractionDigits: 0,
 }).format(precio);
 
-// Badge colors — Branco palette
+// Badge colors — estilo sticker retro
 const badgeColors: Record<string, { bg: string; text: string }> = {
   'Nuevo':     { bg: '#E8681A', text: '#0D0D0D' },
-  'Oferta':    { bg: '#FF8C42', text: '#0D0D0D' },
-  'Especial':  { bg: '#E8681A', text: '#F5F5F0' },
-  'Doble':     { bg: '#333333', text: '#E8681A' },
-  'Triple':    { bg: '#B84E10', text: '#F5F5F0' },
-  'XXL':       { bg: '#B84E10', text: '#F5F5F0' },
-  'Promo':     { bg: '#FF8C42', text: '#0D0D0D' },
+  'Oferta':    { bg: '#0D0D0D', text: '#E8681A' },
+  'Especial':  { bg: '#E8681A', text: '#0D0D0D' },
+  'Doble':     { bg: '#0D0D0D', text: '#F5F0E8' },
+  'Triple':    { bg: '#0D0D0D', text: '#E8681A' },
+  'XXL':       { bg: '#0D0D0D', text: '#E8681A' },
+  'Promo':     { bg: '#E8681A', text: '#0D0D0D' },
 };
 const badgeStyle = badge && badgeColors[badge] ? badgeColors[badge] : { bg: '#E8681A', text: '#0D0D0D' };
 ---
 
-<!-- Compact horizontal list card -->
+<!-- Sticker-style card: white bg, black border, orange shadow offset -->
 <article
-  class="product-card theme-card group relative flex flex-row items-start gap-3 rounded-xl overflow-hidden border transition-all duration-200"
+  class="product-card group relative flex flex-row items-start gap-3 overflow-hidden transition-all duration-200"
   data-product-id={id}
   data-product-nombre={nombre}
   data-product-precio={precio}
-  style="padding: 10px; box-shadow: 0 2px 12px rgba(232,104,26,0.12);"
+  style="background: #FFFFFF; border: 2px solid #0D0D0D; box-shadow: 4px 4px 0px #E8681A; padding: 10px;"
 >
   {hasImage && (
-    <!-- LEFT: Square image (only when image exists) -->
-    <div class="relative flex-shrink-0 w-24 h-24 rounded-lg overflow-hidden">
+    <!-- LEFT: Square image with hard border -->
+    <div class="relative flex-shrink-0 w-24 h-24 overflow-hidden" style="border: 2px solid #0D0D0D;">
       <img
         src={imagen}
         alt={nombre}
-        class="w-full h-full object-cover transition-transform duration-400 group-hover:scale-105"
+        class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
         loading="lazy"
         decoding="async"
-        onerror="this.src='https://placehold.co/200x200/242424/E8681A?text=BRANCO'"
+        onerror="this.src='https://placehold.co/200x200/0D0D0D/E8681A?text=BRANCO'"
       />
-      <!-- Badge overlay on image -->
       {badge && (
         <div
-          class="absolute top-1 left-1 px-1.5 py-0.5 rounded text-xs font-black uppercase leading-none"
-          style={`background: ${badgeStyle.bg}; color: ${badgeStyle.text}; font-size: 9px; letter-spacing: 0.03em;`}
+          class="absolute top-0 left-0 px-1.5 py-0.5 font-black uppercase"
+          style={`background: ${badgeStyle.bg}; color: ${badgeStyle.text}; font-family: 'Bebas Neue', sans-serif; font-size: 0.7rem; letter-spacing: 0.05em; border-bottom: 1.5px solid #0D0D0D; border-right: 1.5px solid #0D0D0D;`}
         >
           {badge}
         </div>
@@ -65,58 +64,66 @@ const badgeStyle = badge && badgeColors[badge] ? badgeColors[badge] : { bg: '#E8
 
   <!-- RIGHT: Info -->
   <div class="flex-1 min-w-0 flex flex-col justify-between" style="min-height: 72px;">
-    <!-- Top: name + optional inline badge + description -->
     <div>
       <div class="flex items-center gap-2 flex-wrap">
-        <h3 class="theme-text font-bold text-sm leading-tight">
+        <!-- Product name in Bebas Neue -->
+        <h3
+          style="font-family: 'Bebas Neue', sans-serif; color: #0D0D0D; font-size: 1.1rem; line-height: 1.1; letter-spacing: 0.02em;"
+        >
           {nombre}
         </h3>
-        <!-- Inline badge when no image -->
         {!hasImage && badge && (
           <span
-            class="px-1.5 py-0.5 rounded text-xs font-black uppercase leading-none flex-shrink-0"
-            style={`background: ${badgeStyle.bg}; color: ${badgeStyle.text}; font-size: 9px; letter-spacing: 0.03em;`}
+            style={`background: ${badgeStyle.bg}; color: ${badgeStyle.text}; font-family: 'Bebas Neue', sans-serif; font-size: 0.7rem; padding: 0 5px; letter-spacing: 0.05em; border: 1.5px solid #0D0D0D;`}
           >
             {badge}
           </span>
         )}
       </div>
-      <p class="theme-muted text-xs leading-snug mt-0.5" style="display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;">
+      <p
+        class="text-xs leading-snug mt-0.5"
+        style="color: #6B6660; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;"
+      >
         {descripcion}
       </p>
     </div>
 
     <!-- Bottom: price + add button -->
     <div class="flex items-center justify-between mt-2">
-      <span class="font-black text-base" style="color: #E8681A;">
+      <!-- Price in Bebas Neue, orange -->
+      <span style="font-family: 'Bebas Neue', sans-serif; color: #E8681A; font-size: 1.4rem; line-height: 1;">
         {precioFormateado}
       </span>
+      <!-- ADD TO CART button — sticker brutalista -->
       <button
-        class="add-to-cart-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold text-xs transition-all duration-150 active:scale-90 select-none"
+        class="add-to-cart-btn flex items-center gap-1.5 px-3 py-1.5 font-bold text-xs transition-all duration-150 active:translate-x-[2px] active:translate-y-[2px] select-none"
         data-product-id={id}
         data-product-nombre={nombre}
         data-product-precio={precio}
-        style="background: linear-gradient(135deg, #E8681A, #B84E10); color: #F5F5F0; box-shadow: 0 2px 8px rgba(232,104,26,0.35);"
+        style="background: #E8681A; color: #0D0D0D; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #0D0D0D; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.05em;"
         aria-label={`Agregar ${nombre} al carrito`}
       >
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
           <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
         </svg>
-        Agregar
+        AGREGAR
       </button>
     </div>
   </div>
 
-  <!-- Added feedback flash -->
+  <!-- Added feedback flash — orange overlay -->
   <div
-    class="added-feedback absolute inset-0 flex items-center justify-center rounded-xl opacity-0 pointer-events-none transition-opacity duration-300"
-    style="background: rgba(232,104,26,0.10); border: 2px solid #E8681A;"
+    class="added-feedback absolute inset-0 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300"
+    style="background: rgba(232,104,26,0.12); border: 2.5px solid #E8681A;"
   >
-    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full" style="background: #E8681A;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F5F5F0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <div
+      class="flex items-center gap-1.5 px-4 py-1.5"
+      style="background: #E8681A; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #0D0D0D;"
+    >
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0D0D0D" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="20 6 9 17 4 12"/>
       </svg>
-      <span class="text-xs font-black" style="color: #F5F5F0;">¡Listo!</span>
+      <span style="font-family: 'Bebas Neue', sans-serif; color: #0D0D0D; font-size: 1rem; letter-spacing: 0.05em;">¡LISTO!</span>
     </div>
   </div>
 </article>

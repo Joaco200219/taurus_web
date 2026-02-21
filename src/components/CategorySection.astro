@@ -16,23 +16,35 @@ export interface Props {
 }
 
 const { id, category, products } = Astro.props;
+
+// Strip emoji from category for the big display title
+const categoryName = category.split(' ').slice(1).join(' ');
 ---
 
-<section id={id} class="mb-8">
-  <!-- Category header -->
-  <div class="flex items-center gap-3 mb-3 px-4">
-    <!-- Branco orange accent bar -->
-    <div class="w-1 h-6 rounded-full flex-shrink-0" style="background: linear-gradient(to bottom, #E8681A, #B84E10);"></div>
-    <h2 class="theme-text text-base font-black tracking-tight flex-1">
-      {category}
-    </h2>
-    <span class="text-xs font-bold px-2 py-0.5 rounded-full theme-close-btn theme-muted">
-      {products.length}
-    </span>
+<section id={id} class="mb-10">
+
+  <!-- Category header — brutalista retro -->
+  <div class="px-4 mb-4">
+    <div
+      class="flex items-center justify-between px-4 py-2"
+      style="background: #0D0D0D; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #E8681A;"
+    >
+      <h2
+        style="font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: #F5F0E8; line-height: 1; letter-spacing: 0.04em;"
+      >
+        {category}
+      </h2>
+      <!-- Count badge -->
+      <span
+        style="font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; background: #E8681A; color: #0D0D0D; padding: 0 8px; line-height: 1.6;"
+      >
+        {products.length}
+      </span>
+    </div>
   </div>
 
-  <!-- Single-column compact list -->
-  <div class="flex flex-col gap-2.5 px-4">
+  <!-- Product list -->
+  <div class="flex flex-col gap-3 px-4">
     {products.map((product) => (
       <ProductCard
         id={product.id}

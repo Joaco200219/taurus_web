@@ -11,16 +11,70 @@ const menuData = await getMenuData();
 <Layout>
   <Header />
 
-  <!-- Category navigation pills -->
+  <!-- ===== HERO — AMOR A PRIMERA MORDIDA ===== -->
+  <div
+    class="relative overflow-hidden"
+    style="background: #0D0D0D; border-bottom: 3px solid #E8681A;"
+  >
+    <!-- Grain texture overlay (dark version) -->
+    <div
+      class="absolute inset-0 pointer-events-none"
+      style="background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E\"); background-size:300px 300px; mix-blend-mode: overlay;"
+    ></div>
+
+    <!-- Orange decorative stripe top -->
+    <div class="w-full h-1.5" style="background: #E8681A;"></div>
+
+    <div class="relative z-10 px-5 pt-4 pb-5">
+
+      <!-- Hero: EL RITUAL DEL FINDE -->
+      <div class="leading-none tracking-tight">
+        <div
+          style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 10vw, 3.2rem); color: #FFFFFF; line-height: 0.9; display: block;"
+        >
+          EL RITUAL
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; line-height: 1; margin-top: 4px;">
+          <span
+            style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.2rem, 6vw, 2rem); color: #E8681A; background: #0D0D0D; border: 2.5px solid #E8681A; padding: 0 8px 2px; display: inline-block;"
+          >
+            DEL FINDE
+          </span>
+        </div>
+        <div
+          style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.8rem, 14vw, 4rem); color: #FFFFFF; line-height: 0.92; -webkit-text-stroke: 2px #E8681A; display: block; margin-top: 2px;"
+        >
+          🕯️
+        </div>
+      </div>
+
+      <!-- Subtext -->
+      <div class="flex items-center gap-3 mt-3">
+        <div class="h-px flex-1" style="background: rgba(232,104,26,0.4);"></div>
+        <p
+          style="font-family: 'Inter', sans-serif; color: rgba(245,240,232,0.65); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; white-space: nowrap;"
+        >
+          🍔 Menú Digital — Pedí por WhatsApp
+        </p>
+        <div class="h-px flex-1" style="background: rgba(232,104,26,0.4);"></div>
+      </div>
+    </div>
+
+    <!-- Orange bottom stripe -->
+    <div class="w-full h-1" style="background: linear-gradient(90deg, #E8681A, #B84E10, #E8681A);"></div>
+  </div>
+
+  <!-- ===== CATEGORY NAVIGATION PILLS ===== -->
   <nav
-    class="theme-nav sticky top-[72px] z-40 py-2.5 overflow-x-auto"
-    style="backdrop-filter: blur(12px);"
+    class="theme-nav sticky top-[60px] z-40 py-2.5 overflow-x-auto"
+    style="backdrop-filter: blur(8px);"
   >
     <div class="flex gap-2 px-4 w-max min-w-full">
       {menuData.map((cat) => (
         <a
           href={`#${cat.id}`}
-          class="flex-shrink-0 px-3.5 py-1.5 rounded-full text-xs font-bold transition-all duration-200 whitespace-nowrap theme-pill-inactive"
+          class="flex-shrink-0 px-3.5 py-1.5 text-xs font-bold transition-all duration-200 whitespace-nowrap theme-pill-inactive"
+          style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.05em;"
           data-nav-pill={cat.id}
         >
           {cat.emoji} {cat.category.split(' ').slice(1).join(' ')}
@@ -29,31 +83,8 @@ const menuData = await getMenuData();
     </div>
   </nav>
 
-  <!-- Hero banner -->
-  <div
-    class="relative overflow-hidden mx-4 mt-4 mb-5 rounded-2xl p-5"
-    style="background: linear-gradient(135deg, #1A1A1A 0%, #111111 50%, #0D0D0D 100%); border: 1px solid rgba(232,104,26,0.35);"
-  >
-    <div class="relative z-10">
-      <div class="flex items-center gap-2 mb-1">
-        <div class="w-3 h-0.5 rounded-full" style="background: #E8681A;"></div>
-        <p class="text-xs font-black uppercase tracking-widest" style="color: #E8681A;">🍔 Menú Digital</p>
-      </div>
-      <h1 class="text-2xl font-black leading-tight mb-1.5" style="color: #F5F5F0;">
-        ¡Bienvenido a<br/>
-        <span style="color: #E8681A;">Branco Burgers!</span>
-      </h1>
-      <p class="text-xs" style="color: rgba(245,245,240,0.60);">
-        Elegí, armá tu pedido y enviálo por WhatsApp 🚀
-      </p>
-    </div>
-    <!-- Decorative circles — orange glow -->
-    <div class="absolute -right-6 -top-6 w-28 h-28 rounded-full opacity-15" style="background: #E8681A;"></div>
-    <div class="absolute right-8 -bottom-8 w-20 h-20 rounded-full opacity-8" style="background: #FF8C42;"></div>
-  </div>
-
-  <!-- Menu categories -->
-  <main class="pb-32 max-w-4xl mx-auto">
+  <!-- ===== MENU ===== -->
+  <main class="pb-32 max-w-4xl mx-auto pt-3">
     {menuData.map((category) => (
       <CategorySection
         id={category.id}
@@ -71,28 +102,27 @@ const menuData = await getMenuData();
   const sections = document.querySelectorAll('section[id]');
   const pills = document.querySelectorAll('[data-nav-pill]');
 
-  // Branco active pill: electric orange bg, dark text
-  const activeStyle = { bg: '#E8681A', color: '#0D0D0D' };
-  const inactiveStyle = { bg: '#242424', color: '#888880' };
+  // Active pill: orange bg, black text, black border
+  const activeStyle   = { bg: '#E8681A', color: '#0D0D0D', border: '2px solid #0D0D0D', shadow: '2px 2px 0px #0D0D0D' };
+  const inactiveStyle = { bg: '#F5F0E8', color: '#6B6660', border: '2px solid #0D0D0D', shadow: 'none' };
 
   function setActivePill(id: string) {
     pills.forEach((pill) => {
       const el = pill as HTMLElement;
-      if (el.dataset.navPill === id) {
-        el.style.background = activeStyle.bg;
-        el.style.color = activeStyle.color;
-      } else {
-        el.style.background = inactiveStyle.bg;
-        el.style.color = inactiveStyle.color;
-      }
+      const s = el.dataset.navPill === id ? activeStyle : inactiveStyle;
+      el.style.background  = s.bg;
+      el.style.color       = s.color;
+      el.style.border      = s.border;
+      el.style.boxShadow   = s.shadow;
     });
   }
 
-  // Set first pill active by default
   if (pills.length > 0) {
-    const firstPill = pills[0] as HTMLElement;
-    firstPill.style.background = '#E8681A';
-    firstPill.style.color = '#0D0D0D';
+    const first = pills[0] as HTMLElement;
+    first.style.background = '#E8681A';
+    first.style.color      = '#0D0D0D';
+    first.style.border     = '2px solid #0D0D0D';
+    first.style.boxShadow  = '2px 2px 0px #0D0D0D';
   }
 
   const observer = new IntersectionObserver(

@@ -8,7 +8,7 @@ export interface Props {
 
 const {
   title = 'Branco Burgers — Menú Digital',
-  description = 'El menú digital de Branco Burgers. Las mejores hamburguesas. Pedí por WhatsApp.',
+  description = 'El menú digital de Branco Burgers. Las mejores smash burgers. Pedí por WhatsApp.',
 } = Astro.props;
 ---
 
@@ -35,17 +35,25 @@ const {
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Google Fonts: Inter -->
+    <!-- Google Fonts: Bebas Neue (display) + Inter (body) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
 
     <title>{title}</title>
   </head>
-  <body class="bg-brand-dark text-brand-text font-sans antialiased">
-    <slot />
+  <body>
+    <!-- Burger pattern background — orange lines at ~10% opacity, multiply blend makes white vanish -->
+    <div
+      aria-hidden="true"
+      style="position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url('/img/burger-pattern.png');background-size:420px 420px;background-repeat:repeat;opacity:0.10;mix-blend-mode:multiply;"
+    ></div>
+    <!-- All content sits above the pattern -->
+    <div style="position:relative;z-index:1;">
+      <slot />
+    </div>
   </body>
 </html>
