@@ -2,13 +2,6 @@
 // CartFloatingButton.astro
 // TODO: Reemplazar con el número de WhatsApp de Branco Burgers (sin + ni espacios, ej: 5491112345678)
 const WHATSAPP_NUMBER = '[NUMERO_WHATSAPP]';
-
-// TODO: Reemplazar con las zonas de envío reales de Branco Burgers
-const SHIPPING_ZONES = [
-  { label: 'Zona Centro', price: 0 },
-  { label: 'Zona Norte', price: 0 },
-  { label: 'Zona Sur', price: 0 },
-];
 ---
 
 <div id="cart-component-root" data-whatsapp={WHATSAPP_NUMBER}>
@@ -101,28 +94,7 @@ const SHIPPING_ZONES = [
 
         <!-- Delivery fields -->
         <div id="field-delivery" class="space-y-3">
-          <!-- Zone selector -->
-          <div class="space-y-1.5">
-            <label for="select-zona" class="text-sm font-bold" style="color: #0D0D0D;">
-              📍 ¿Dónde te lo llevamos?
-            </label>
-            <div class="relative">
-              <select
-                id="select-zona"
-                class="w-full px-4 py-3 rounded-xl text-sm outline-none appearance-none cursor-pointer transition-all"
-                style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
-              >
-                {SHIPPING_ZONES.map((zone) => (
-                  <option value={zone.price} data-label={zone.label}>
-                    {zone.label} — ${zone.price.toLocaleString('es-AR')}
-                  </option>
-                ))}
-              </select>
-              <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" style="color: #E8681A; font-weight: 900;">▼</div>
-            </div>
-          </div>
-
-          <!-- Address field -->
+          <!-- Address field with calculate button -->
           <div class="space-y-1.5">
             <label for="input-direccion" class="text-sm font-bold" style="color: #0D0D0D;">
               🏠 Dirección completa
@@ -130,10 +102,23 @@ const SHIPPING_ZONES = [
             <input
               id="input-direccion"
               type="text"
-              placeholder="Ej: Av. San Martín 1234, piso 2"
+              placeholder="Ej: Av. Colón 1234, Córdoba"
               class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
               style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
+              autocomplete="off"
             />
+            <button
+              id="calc-envio-btn"
+              class="w-full py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-95"
+              style="background: #0D0D0D; color: #F5F0E8; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #E8681A; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.04em;"
+            >
+              📍 Calcular costo de envío
+            </button>
+          </div>
+
+          <!-- Shipping result panel -->
+          <div id="shipping-result" style="display: none;">
+            <!-- Populated by JS: states = loading | success | error -->
           </div>
         </div>
 
@@ -236,43 +221,73 @@ const SHIPPING_ZONES = [
   const rootElement = document.getElementById('cart-component-root');
   const WHATSAPP_NUMBER = rootElement.dataset.whatsapp;
 
-  // ---- Shipping zones (must match the Astro frontmatter data) ----
-  const SHIPPING_ZONES = [
-    { label: 'Zona Centro', price: 0 },
-    { label: 'Zona Norte', price: 0 },
-    { label: 'Zona Sur', price: 0 },
-  ];
+  // ─────────────────────────────────────────────
+  // SHIPPING CONFIGURATION
+  // ─────────────────────────────────────────────
 
-  // ---- DOM refs ----
+  // Dirección del local (origen fijo)
+  const ORIGIN_ADDRESS = 'Queirel 5623, Posadas, Misiones, Argentina';
+
+  // Google Sheet de configuración publicado como CSV.
+  // El dueño crea un Sheet con columnas: clave | valor
+  // Fila 1: tarifa_por_km | 500
+  // Fila 2: min_envio     | 1500
+  // Luego: Archivo → Compartir → Publicar en la web → CSV → copiar URL
+  // TODO: reemplazar '' con la URL real
+  const CONFIG_SHEET_CSV_URL = '';
+
+  // Valores de fallback si el Sheet no está configurado o falla
+  const FALLBACK_TARIFA_POR_KM = 500;  // ARS por km
+  const FALLBACK_MIN_ENVIO     = 1500; // ARS mínimo de envío
+
+  // ─────────────────────────────────────────────
+  // STATE
+  // ─────────────────────────────────────────────
+
+  let currentItems      = [];
+  let deliveryType      = 'delivery';
+  let currentShipping   = 0;      // ARS — calculado dinámicamente
+  let shippingCalcDone  = false;  // true cuando el usuario calculó el envío
+  let calculatedKm      = null;   // km resultante del último cálculo
+  let tarifaCache       = null;   // { tarifaPorKm, minEnvio } — cacheado en memoria
+
+  // Coordenadas del local (se geocodifican una vez, al cargar la página)
+  let originCoords = null; // { lat, lon }
+
+  // ─────────────────────────────────────────────
+  // DOM REFS
+  // ─────────────────────────────────────────────
+
   const cartFloat        = document.getElementById('cart-float');
   const cartBtn          = document.getElementById('cart-btn');
   const cartCountBadge   = document.getElementById('cart-count-badge');
   const cartTotalDisplay = document.getElementById('cart-total-display');
 
-  const modalOverlay   = document.getElementById('checkout-modal-overlay');
-  const modalCloseBtn  = document.getElementById('modal-close-btn');
-  const modalItemsList = document.getElementById('modal-items-list');
-  const modalSubtotal  = document.getElementById('modal-subtotal');
-  const modalShipCost  = document.getElementById('modal-shipping-cost');
-  const shippingRow    = document.getElementById('shipping-cost-row');
-  const modalTotal     = document.getElementById('modal-total');
-  const confirmBtn     = document.getElementById('confirm-whatsapp-btn');
-  const clearCartBtn   = document.getElementById('clear-cart-btn');
+  const modalOverlay    = document.getElementById('checkout-modal-overlay');
+  const modalCloseBtn   = document.getElementById('modal-close-btn');
+  const modalItemsList  = document.getElementById('modal-items-list');
+  const modalSubtotal   = document.getElementById('modal-subtotal');
+  const modalShipCost   = document.getElementById('modal-shipping-cost');
+  const shippingRow     = document.getElementById('shipping-cost-row');
+  const modalTotal      = document.getElementById('modal-total');
+  const confirmBtn      = document.getElementById('confirm-whatsapp-btn');
+  const clearCartBtn    = document.getElementById('clear-cart-btn');
 
-  const toggleDelivery = document.getElementById('toggle-delivery');
-  const toggleRetiro   = document.getElementById('toggle-retiro');
-  const fieldDelivery  = document.getElementById('field-delivery');
-  const fieldRetiro    = document.getElementById('field-retiro');
-  const selectZona     = document.getElementById('select-zona');
-  const inputDireccion = document.getElementById('input-direccion');
-  const inputNombre    = document.getElementById('input-nombre');
-  const inputPref      = document.getElementById('input-preferencias');
-  const selectPago     = document.getElementById('select-pago');
+  const toggleDelivery  = document.getElementById('toggle-delivery');
+  const toggleRetiro    = document.getElementById('toggle-retiro');
+  const fieldDelivery   = document.getElementById('field-delivery');
+  const fieldRetiro     = document.getElementById('field-retiro');
+  const inputDireccion  = document.getElementById('input-direccion');
+  const inputNombre     = document.getElementById('input-nombre');
+  const inputPref       = document.getElementById('input-preferencias');
+  const selectPago      = document.getElementById('select-pago');
+  const calcEnvioBtn    = document.getElementById('calc-envio-btn');
+  const shippingResult  = document.getElementById('shipping-result');
 
-  let currentItems = [];
-  let deliveryType = 'delivery';
+  // ─────────────────────────────────────────────
+  // HELPERS — FORMAT
+  // ─────────────────────────────────────────────
 
-  // ---- Helpers ----
   function formatPrice(amount) {
     return new Intl.NumberFormat('es-AR', {
       style: 'currency',
@@ -282,14 +297,177 @@ const SHIPPING_ZONES = [
     }).format(amount);
   }
 
-  function getShippingCost() {
-    if (deliveryType !== 'delivery') return 0;
-    return parseInt(selectZona?.value || '0', 10);
+  // ─────────────────────────────────────────────
+  // SHIPPING — CONFIG FETCH (Google Sheets CSV)
+  // ─────────────────────────────────────────────
+
+  async function fetchTarifa() {
+    if (tarifaCache) return tarifaCache;
+
+    if (!CONFIG_SHEET_CSV_URL || CONFIG_SHEET_CSV_URL.trim() === '') {
+      console.warn('[shipping] CONFIG_SHEET_CSV_URL no configurada. Usando valores de fallback.');
+      tarifaCache = { tarifaPorKm: FALLBACK_TARIFA_POR_KM, minEnvio: FALLBACK_MIN_ENVIO };
+      return tarifaCache;
+    }
+
+    try {
+      const res  = await fetch(CONFIG_SHEET_CSV_URL);
+      const text = await res.text();
+      const rows = text.trim().split('\n').slice(1); // skip header
+
+      let tarifaPorKm = FALLBACK_TARIFA_POR_KM;
+      let minEnvio    = FALLBACK_MIN_ENVIO;
+
+      rows.forEach(row => {
+        const [clave, valor] = row.split(',').map(s => s.trim().replace(/^"|"$/g, ''));
+        if (clave === 'tarifa_por_km') tarifaPorKm = parseFloat(valor) || FALLBACK_TARIFA_POR_KM;
+        if (clave === 'min_envio')     minEnvio    = parseFloat(valor) || FALLBACK_MIN_ENVIO;
+      });
+
+      tarifaCache = { tarifaPorKm, minEnvio };
+      return tarifaCache;
+    } catch (err) {
+      console.warn('[shipping] Error al leer config del Sheet:', err);
+      tarifaCache = { tarifaPorKm: FALLBACK_TARIFA_POR_KM, minEnvio: FALLBACK_MIN_ENVIO };
+      return tarifaCache;
+    }
   }
 
-  function getShippingLabel() {
-    const selectedOption = selectZona?.options[selectZona.selectedIndex];
-    return selectedOption?.dataset?.label || selectZona?.options[selectZona.selectedIndex]?.text || '';
+  // ─────────────────────────────────────────────
+  // SHIPPING — GEOCODING (Nominatim / OpenStreetMap)
+  // ─────────────────────────────────────────────
+
+  async function geocodeAddress(address) {
+    const encoded = encodeURIComponent(address);
+    const url = `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=1&countrycodes=ar`;
+    const res = await fetch(url, {
+      headers: { 'Accept-Language': 'es', 'User-Agent': 'BrancoDeliveryApp/1.0' }
+    });
+    const data = await res.json();
+    if (!data || data.length === 0) throw new Error('Dirección no encontrada');
+    return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+  }
+
+  // ─────────────────────────────────────────────
+  // SHIPPING — ROUTING (OSRM public instance)
+  // ─────────────────────────────────────────────
+
+  async function getRoutingDistanceKm(origin, dest) {
+    // OSRM expects lon,lat order
+    const url = `https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${dest.lon},${dest.lat}?overview=false`;
+    const res  = await fetch(url);
+    const data = await res.json();
+    if (data.code !== 'Ok' || !data.routes || data.routes.length === 0) {
+      throw new Error('No se pudo calcular la ruta');
+    }
+    const meters = data.routes[0].distance;
+    return Math.round((meters / 1000) * 10) / 10; // km con 1 decimal
+  }
+
+  // ─────────────────────────────────────────────
+  // SHIPPING — UI STATE HELPERS
+  // ─────────────────────────────────────────────
+
+  function setShippingResultUI(state, payload = {}) {
+    shippingResult.style.display = 'block';
+
+    if (state === 'loading') {
+      shippingResult.innerHTML = `
+        <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:#FFFFFF;border:2px solid #0D0D0D;border-radius:12px;">
+          <span style="display:inline-block;width:18px;height:18px;border:3px solid #E8681A;border-top-color:transparent;border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;"></span>
+          <span style="font-size:0.85rem;font-weight:600;color:#6B6660;">Calculando distancia...</span>
+        </div>
+        <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+      `;
+    } else if (state === 'success') {
+      const { km, price } = payload;
+      shippingResult.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:#FFFFFF;border:2px solid #0D0D0D;border-radius:12px;box-shadow:3px 3px 0px #E8681A;">
+          <span style="font-size:1.3rem;flex-shrink:0;">✅</span>
+          <div style="flex:1;">
+            <p style="font-size:0.8rem;color:#6B6660;font-weight:600;margin:0 0 2px;">Distancia estimada</p>
+            <p style="font-family:'Bebas Neue',sans-serif;font-size:1rem;color:#0D0D0D;letter-spacing:0.04em;margin:0;">
+              ${km} km → <span style="color:#E8681A;">${formatPrice(price)}</span>
+            </p>
+          </div>
+        </div>
+      `;
+    } else if (state === 'error') {
+      const { msg } = payload;
+      shippingResult.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:#FFF0EE;border:2px solid #E8681A;border-radius:12px;">
+          <span style="font-size:1.3rem;flex-shrink:0;">⚠️</span>
+          <p style="font-size:0.82rem;font-weight:600;color:#0D0D0D;margin:0;">${msg}</p>
+        </div>
+      `;
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // SHIPPING — MAIN CALCULATE FUNCTION
+  // ─────────────────────────────────────────────
+
+  async function calcularEnvio() {
+    const address = inputDireccion?.value?.trim();
+    if (!address) {
+      setShippingResultUI('error', { msg: 'Ingresá tu dirección antes de calcular.' });
+      return;
+    }
+
+    setShippingResultUI('loading');
+    calcEnvioBtn.disabled = true;
+    calcEnvioBtn.style.opacity = '0.6';
+
+    try {
+      // 1. Geocode origin once (cached)
+      if (!originCoords) {
+        originCoords = await geocodeAddress(ORIGIN_ADDRESS);
+      }
+
+      // 2. Geocode destination
+      // Try with "Posadas, Misiones" appended if not already mentioned
+      const fullAddress = /posadas|misiones/i.test(address) ? address : `${address}, Posadas, Misiones, Argentina`;
+      const destCoords = await geocodeAddress(fullAddress);
+
+      // 3. Get driving distance
+      const km = await getRoutingDistanceKm(originCoords, destCoords);
+
+      // 4. Fetch tarifa
+      const { tarifaPorKm, minEnvio } = await fetchTarifa();
+
+      // 5. Calculate price
+      const rawPrice = km * tarifaPorKm;
+      const price    = Math.ceil(Math.max(rawPrice, minEnvio) / 50) * 50; // round up to nearest 50
+
+      // 6. Update state
+      currentShipping  = price;
+      shippingCalcDone = true;
+      calculatedKm     = km;
+
+      setShippingResultUI('success', { km, price });
+      updateModalTotals();
+
+    } catch (err) {
+      console.warn('[shipping] Error:', err);
+      shippingCalcDone = false;
+      currentShipping  = 0;
+      setShippingResultUI('error', {
+        msg: 'No pudimos calcular la distancia. Probá con una dirección más detallada (ej: Av. Colón 1234, Córdoba).'
+      });
+      updateModalTotals();
+    } finally {
+      calcEnvioBtn.disabled = false;
+      calcEnvioBtn.style.opacity = '1';
+    }
+  }
+
+  // ─────────────────────────────────────────────
+  // MODAL TOTALS
+  // ─────────────────────────────────────────────
+
+  function getShippingCost() {
+    if (deliveryType !== 'delivery') return 0;
+    return currentShipping;
   }
 
   function updateModalTotals() {
@@ -301,12 +479,16 @@ const SHIPPING_ZONES = [
     if (modalTotal)    modalTotal.textContent    = formatPrice(total);
 
     if (deliveryType === 'delivery') {
-      if (shippingRow)  { shippingRow.style.removeProperty('display'); shippingRow.style.display = 'flex'; }
-      if (modalShipCost) modalShipCost.textContent = formatPrice(shipping);
+      if (shippingRow)   { shippingRow.style.removeProperty('display'); shippingRow.style.display = 'flex'; }
+      if (modalShipCost) modalShipCost.textContent = shippingCalcDone ? formatPrice(shipping) : 'Por calcular';
     } else {
-      if (shippingRow)  shippingRow.style.display = 'none';
+      if (shippingRow) shippingRow.style.display = 'none';
     }
   }
+
+  // ─────────────────────────────────────────────
+  // RENDER ITEMS
+  // ─────────────────────────────────────────────
 
   function renderItems() {
     modalItemsList.innerHTML = currentItems.map(item => `
@@ -346,13 +528,17 @@ const SHIPPING_ZONES = [
     // Remove-all buttons
     modalItemsList.querySelectorAll('.cart-remove-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        const id = btn.dataset.id;
+        const id   = btn.dataset.id;
         const item = currentItems.find(i => i.id === id);
         if (!item) return;
         for (let i = 0; i < item.qty; i++) removeFromCart(id);
       });
     });
   }
+
+  // ─────────────────────────────────────────────
+  // MODAL OPEN / CLOSE
+  // ─────────────────────────────────────────────
 
   function openModal() {
     const count = currentItems.reduce((s, i) => s + i.qty, 0);
@@ -364,6 +550,11 @@ const SHIPPING_ZONES = [
     modalOverlay.style.removeProperty('display');
     modalOverlay.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+
+    // Pre-geocode the origin address in the background so the first calculation is faster
+    if (!originCoords) {
+      geocodeAddress(ORIGIN_ADDRESS).then(c => { originCoords = c; }).catch(() => {});
+    }
   }
 
   function closeModal() {
@@ -371,9 +562,13 @@ const SHIPPING_ZONES = [
     document.body.style.overflow = '';
   }
 
-  // ---- Delivery toggle ----
+  // ─────────────────────────────────────────────
+  // DELIVERY TYPE TOGGLE
+  // ─────────────────────────────────────────────
+
   function setDeliveryType(type) {
     deliveryType = type;
+
     if (type === 'delivery') {
       toggleDelivery.style.background = '#E8681A';
       toggleDelivery.style.color      = '#0D0D0D';
@@ -384,6 +579,7 @@ const SHIPPING_ZONES = [
       fieldDelivery.classList.remove('hidden');
       fieldRetiro.classList.add('hidden');
     } else {
+      // Retiro en local
       toggleRetiro.style.background   = '#E8681A';
       toggleRetiro.style.color        = '#0D0D0D';
       toggleRetiro.style.boxShadow    = '3px 3px 0px #0D0D0D';
@@ -392,29 +588,54 @@ const SHIPPING_ZONES = [
       toggleDelivery.style.boxShadow  = '3px 3px 0px #0D0D0D';
       fieldRetiro.classList.remove('hidden');
       fieldDelivery.classList.add('hidden');
+
+      // Reset shipping when switching to pickup
+      currentShipping  = 0;
+      shippingCalcDone = false;
+      calculatedKm     = null;
     }
+
     updateModalTotals();
   }
 
   toggleDelivery?.addEventListener('click', () => setDeliveryType('delivery'));
   toggleRetiro?.addEventListener('click',   () => setDeliveryType('retiro'));
 
-  // Recalculate when zone changes
-  selectZona?.addEventListener('change', updateModalTotals);
+  // Calculate button
+  calcEnvioBtn?.addEventListener('click', calcularEnvio);
 
-  // Focus styles for inputs — orange border on focus
+  // Allow pressing Enter in the address field to trigger calculation
+  inputDireccion?.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); calcularEnvio(); }
+  });
+
+  // If address changes after a calculation, reset the result
+  inputDireccion?.addEventListener('input', () => {
+    if (shippingCalcDone) {
+      shippingCalcDone = false;
+      currentShipping  = 0;
+      calculatedKm     = null;
+      shippingResult.style.display = 'none';
+      updateModalTotals();
+    }
+  });
+
+  // Focus styles
   [inputDireccion, inputNombre, inputPref].forEach(input => {
     if (!input) return;
     input.addEventListener('focus', () => { input.style.borderColor = '#E8681A'; input.style.boxShadow = '3px 3px 0px #E8681A'; });
     input.addEventListener('blur',  () => { input.style.borderColor = '#0D0D0D'; input.style.boxShadow = 'none'; });
   });
-  [selectPago, selectZona].forEach(sel => {
+  [selectPago].forEach(sel => {
     if (!sel) return;
     sel.addEventListener('focus', () => { sel.style.borderColor = '#E8681A'; sel.style.boxShadow = '3px 3px 0px #E8681A'; });
     sel.addEventListener('blur',  () => { sel.style.borderColor = '#0D0D0D'; sel.style.boxShadow = 'none'; });
   });
 
-  // ---- WhatsApp message builder ----
+  // ─────────────────────────────────────────────
+  // WHATSAPP MESSAGE BUILDER
+  // ─────────────────────────────────────────────
+
   function buildWhatsAppMessage(items) {
     const subtotal = items.reduce((s, i) => s + i.precio * i.qty, 0);
     const shipping = getShippingCost();
@@ -422,17 +643,17 @@ const SHIPPING_ZONES = [
     const lines    = items.map(i => `  • ${i.qty}x ${i.nombre} (${formatPrice(i.precio * i.qty)})`).join('\n');
 
     const pagoLabels = {
-      efectivo:       '💵 Efectivo',
-      mercadopago:    '📱 Mercado Pago (Alias/CVU)',
-      transferencia:  '🏦 Transferencia Bancaria',
+      efectivo:      '💵 Efectivo',
+      mercadopago:   '📱 Mercado Pago (Alias/CVU)',
+      transferencia: '🏦 Transferencia Bancaria',
     };
     const pagoLabel = pagoLabels[selectPago?.value] || 'Efectivo';
 
     let entregaLine = '';
     if (deliveryType === 'delivery') {
-      const zona  = getShippingLabel();
-      const dir   = inputDireccion?.value?.trim() || '(sin especificar)';
-      entregaLine = `🛵 *Entrega:* Delivery\n📍 *Dirección:* ${dir}\n🗺️ *Zona:* ${zona} (${formatPrice(shipping)})`;
+      const dir = inputDireccion?.value?.trim() || '(sin especificar)';
+      const kmInfo = calculatedKm !== null ? ` (${calculatedKm} km)` : '';
+      entregaLine = `🛵 *Entrega:* Delivery\n📍 *Dirección:* ${dir}${kmInfo}\n💰 *Costo de envío:* ${formatPrice(shipping)}`;
     } else {
       const nombre = inputNombre?.value?.trim() || '(sin especificar)';
       entregaLine  = `🏪 *Entrega:* Retiro en Local\n👤 *Nombre:* ${nombre}`;
@@ -448,7 +669,10 @@ const SHIPPING_ZONES = [
     return `¡Hola Branco Burgers! 🍔\n\n${entregaLine}\n💳 *Pago:* ${pagoLabel}\n\n📋 *Detalle del pedido:*\n${lines}${shippingLine}${prefLine}\n\n*Total: ${formatPrice(total)}*\n\n¿Podés confirmarme disponibilidad? ¡Gracias!`;
   }
 
-  // ---- Cart store subscription ----
+  // ─────────────────────────────────────────────
+  // CART STORE SUBSCRIPTION
+  // ─────────────────────────────────────────────
+
   cartItems.subscribe((items) => {
     currentItems = items;
     const count = items.reduce((s, i) => s + i.qty, 0);
@@ -473,7 +697,10 @@ const SHIPPING_ZONES = [
     }
   });
 
-  // ---- Events ----
+  // ─────────────────────────────────────────────
+  // EVENTS
+  // ─────────────────────────────────────────────
+
   cartBtn?.addEventListener('click', openModal);
   modalCloseBtn?.addEventListener('click', closeModal);
 
@@ -487,8 +714,16 @@ const SHIPPING_ZONES = [
 
   confirmBtn?.addEventListener('click', () => {
     if (currentItems.length === 0) return;
+
+    // If delivery, require shipping calculation
+    if (deliveryType === 'delivery' && !shippingCalcDone) {
+      setShippingResultUI('error', { msg: 'Por favor, calculá el costo de envío antes de confirmar el pedido.' });
+      shippingResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      return;
+    }
+
     const message = buildWhatsAppMessage(currentItems);
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+    const url     = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
     closeModal();
   });
@@ -498,4 +733,7 @@ const SHIPPING_ZONES = [
       clearCart();
     }
   });
+
+  // Pre-fetch tarifa en background al cargar la página
+  fetchTarifa();
 </script>
