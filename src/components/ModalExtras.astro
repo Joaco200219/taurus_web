@@ -72,6 +72,12 @@
                     style="font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: #0D0D0D; letter-spacing: 0.03em; line-height: 1.1;"
                 >
                 </h2>
+                <p
+                    id="extras-modal-description"
+                    class="text-xs leading-snug mt-1.5"
+                    style="color: #6B6660;"
+                >
+                </p>
                 <div class="flex items-center justify-between mt-1">
                     <span
                         class="text-xs font-semibold uppercase tracking-wide"
@@ -85,6 +91,9 @@
             </div>
 
             <!-- Extras checkboxes -->
+            <div id="extras-header" class="mb-2 mt-4" style="display: none;">
+                <span class="text-sm font-bold" style="color: #0D0D0D;">Extras:</span>
+            </div>
             <div id="extras-checkbox-list" class="space-y-2 relative z-10">
             </div>
 
@@ -206,6 +215,12 @@
     const imageLoader = document.getElementById(
         "extras-image-loader"
     ) as HTMLDivElement;
+    const descriptionEl = document.getElementById(
+        "extras-modal-description"
+    ) as HTMLElement;
+    const extrasHeader = document.getElementById(
+        "extras-header"
+    ) as HTMLDivElement;
 
     // ─── State ────────────────────────────────────────────────────
     let currentProduct: {
@@ -214,6 +229,7 @@
         precio: number;
         categoria: string;
         imagen?: string;
+        descripcion?: string;
     } | null = null;
 
     let availableExtras: Array<{
@@ -275,9 +291,11 @@
         if (availableExtras.length === 0) {
             checkboxList.innerHTML = "";
             emptyMsg.style.display = "none";
+            extrasHeader.style.display = "none";
             return;
         }
         emptyMsg.style.display = "none";
+        extrasHeader.style.display = "block";
         checkboxList.innerHTML = availableExtras
             .map(
                 (extra) => `
@@ -327,6 +345,7 @@
 
         // Populate text
         titleEl.textContent = product!.nombre;
+        descriptionEl.textContent = product!.descripcion || "";
         basePriceEl.textContent = formatPrice(product!.precio);
         aclaracionInput.value = "";
 

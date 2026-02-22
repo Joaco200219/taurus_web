@@ -109,6 +109,7 @@ const badgeStyle = badgeUpper && badgeColors[badgeUpper] ? badgeColors[badgeUppe
         data-product-precio={precio}
         data-product-categoria={categoria || ''}
         data-product-imagen={imagen || ''}
+        data-product-descripcion={descripcion || ''}
         style="background: #E8681A; color: #0D0D0D; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #0D0D0D; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.05em;"
         aria-label={`Agregar ${nombre} al carrito`}
       >
@@ -162,9 +163,10 @@ const badgeStyle = badgeUpper && badgeColors[badgeUpper] ? badgeColors[badgeUppe
       const nombre   = btn.dataset.productNombre!;
       const precio   = Number(btn.dataset.productPrecio!);
       const categoria = btn.dataset.productCategoria || '';
+      const descripcion = btn.dataset.productDescripcion || '';
 
       document.dispatchEvent(new CustomEvent('open-extras-modal', {
-        detail: { id, nombre, precio, categoria, imagen },
+        detail: { id, nombre, precio, categoria, imagen, descripcion },
         bubbles: true
       }));
     });
