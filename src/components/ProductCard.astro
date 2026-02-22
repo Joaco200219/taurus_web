@@ -6,11 +6,13 @@ export interface Props {
   precio: number;
   imagen: string | null;
   badge?: string | null;
+  categoria?: string;
 }
 
-const { id, nombre, descripcion, precio, imagen, badge } = Astro.props;
+const { id, nombre, descripcion, precio, imagen, badge, categoria } = Astro.props;
 
-const hasImage = imagen && imagen !== 'null';
+// La imagen se muestra SOLO en el modal de extras, no en la tarjeta del menú
+const hasImage = false;
 
 const precioFormateado = new Intl.NumberFormat('es-AR', {
   style: 'currency',
@@ -42,6 +44,7 @@ const badgeStyle = badgeUpper && badgeColors[badgeUpper] ? badgeColors[badgeUppe
   data-product-id={id}
   data-product-nombre={nombre}
   data-product-precio={precio}
+  data-product-categoria={categoria || ''}
   style="background: #FFFFFF; border: 2px solid #0D0D0D; box-shadow: 4px 4px 0px #E8681A; padding: 10px;"
 >
   {hasImage && (
@@ -104,6 +107,8 @@ const badgeStyle = badgeUpper && badgeColors[badgeUpper] ? badgeColors[badgeUppe
         data-product-id={id}
         data-product-nombre={nombre}
         data-product-precio={precio}
+        data-product-categoria={categoria || ''}
+        data-product-imagen={imagen || ''}
         style="background: #E8681A; color: #0D0D0D; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #0D0D0D; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.05em;"
         aria-label={`Agregar ${nombre} al carrito`}
       >
@@ -133,22 +138,35 @@ const badgeStyle = badgeUpper && badgeColors[badgeUpper] ? badgeColors[badgeUppe
 </article>
 
 <script>
+  import { prefetchDriveImage } from '../lib/imageUtils.js';
+
   document.querySelectorAll<HTMLButtonElement>('.add-to-cart-btn').forEach((btn) => {
+    const imagen = btn.dataset.productImagen || '';
+
+    // ── Prefetch image on first interaction (hover / touch) ──────────
+    // This starts downloading the Drive thumbnail BEFORE the modal opens,
+    // hiding most of the network latency. Browser cache ensures the image
+    // is instant on subsequent opens of the same product.
+    let prefetched = false;
+    const maybePrefetch = () => {
+      if (prefetched || !imagen) return;
+      prefetched = true;
+      prefetchDriveImage(imagen);
+    };
+    btn.addEventListener('mouseenter', maybePrefetch, { passive: true });
+    btn.addEventListener('touchstart', maybePrefetch, { passive: true });
+
+    // ── Open modal on click ────────────────────────────────────────
     btn.addEventListener('click', () => {
-      const id = btn.dataset.productId!;
-      const nombre = btn.dataset.productNombre!;
-      const precio = Number(btn.dataset.productPrecio!);
+      const id       = btn.dataset.productId!;
+      const nombre   = btn.dataset.productNombre!;
+      const precio   = Number(btn.dataset.productPrecio!);
+      const categoria = btn.dataset.productCategoria || '';
 
-      import('../stores/cartStore.js').then(({ addToCart }) => {
-        addToCart({ id, nombre, precio });
-      });
-
-      const card = btn.closest('.product-card') as HTMLElement;
-      const feedback = card?.querySelector('.added-feedback') as HTMLElement;
-      if (feedback) {
-        feedback.style.opacity = '1';
-        setTimeout(() => { feedback.style.opacity = '0'; }, 600);
-      }
+      document.dispatchEvent(new CustomEvent('open-extras-modal', {
+        detail: { id, nombre, precio, categoria, imagen },
+        bubbles: true
+      }));
     });
   });
 </script>

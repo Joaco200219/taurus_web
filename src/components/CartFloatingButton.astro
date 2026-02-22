@@ -1,11 +1,10 @@
 ---
 // CartFloatingButton.astro
 // TODO: Reemplazar con el número de WhatsApp de Branco Burgers (sin + ni espacios, ej: 5491112345678)
-const WHATSAPP_NUMBER = '543765044920';
+const WHATSAPP_NUMBER = "543765044920";
 ---
 
 <div id="cart-component-root" data-whatsapp={WHATSAPP_NUMBER}>
-
   <div
     id="checkout-modal-overlay"
     class="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4"
@@ -23,27 +22,44 @@ const WHATSAPP_NUMBER = '543765044920';
       <div
         aria-hidden="true"
         style="position:absolute;inset:0;z-index:0;pointer-events:none;background-image:url('/img/burger-pattern.png');background-size:320px 320px;background-repeat:repeat;opacity:0.08;mix-blend-mode:multiply;"
-      ></div>
+      >
+      </div>
       <!-- Modal header -->
-      <div class="flex items-center justify-between px-5 py-4 flex-shrink-0" style="border-bottom: 2px solid #0D0D0D;">
+      <div
+        class="flex items-center justify-between px-5 py-4 flex-shrink-0"
+        style="border-bottom: 2px solid #0D0D0D;"
+      >
         <div>
-          <h2 id="modal-title" style="font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: #E8681A; letter-spacing: 0.03em;">FINALIZAR PEDIDO 🛒</h2>
-          <p class="text-xs mt-0.5" style="color: #6B6660; font-weight: 600;">Completá los datos para tu pedido</p>
+          <h2
+            id="modal-title"
+            style="font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: #E8681A; letter-spacing: 0.03em;"
+          >
+            FINALIZAR PEDIDO 🛒
+          </h2>
+          <p class="text-xs mt-0.5" style="color: #6B6660; font-weight: 600;">
+            Completá los datos para tu pedido
+          </p>
         </div>
         <button
           id="modal-close-btn"
           class="w-9 h-9 rounded-full flex items-center justify-center text-lg transition-all active:scale-90"
           style="background: #0D0D0D; color: #F5F0E8; border: 1.5px solid #0D0D0D;"
-          aria-label="Cerrar modal"
-        >✕</button>
+          aria-label="Cerrar modal">✕</button
+        >
       </div>
 
       <div class="overflow-y-auto flex-1 px-5 py-4 space-y-5">
-
         <!-- Order summary -->
-        <div class="p-4" style="background: #FFFFFF; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #E8681A;">
+        <div
+          class="p-4"
+          style="background: #FFFFFF; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #E8681A;"
+        >
           <div class="flex items-center justify-between mb-3">
-            <p style="font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; color: #0D0D0D; letter-spacing: 0.06em;">TU PEDIDO</p>
+            <p
+              style="font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; color: #0D0D0D; letter-spacing: 0.06em;"
+            >
+              TU PEDIDO
+            </p>
             <button
               id="clear-cart-btn"
               class="text-xs font-bold px-2 py-1 rounded-lg transition-all active:scale-90"
@@ -53,25 +69,56 @@ const WHATSAPP_NUMBER = '543765044920';
             </button>
           </div>
           <ul id="modal-items-list" class="space-y-2 mb-3"></ul>
-          <div class="flex items-center justify-between pt-3" style="border-top: 1.5px solid #0D0D0D;">
-            <span class="text-sm font-bold" style="color: #6B6660;">Subtotal</span>
-            <span id="modal-subtotal" class="text-base font-bold" style="color: #0D0D0D;"></span>
+          <div
+            class="flex items-center justify-between pt-3"
+            style="border-top: 1.5px solid #0D0D0D;"
+          >
+            <span class="text-sm font-bold" style="color: #6B6660;"
+              >Subtotal</span
+            >
+            <span
+              id="modal-subtotal"
+              class="text-base font-bold"
+              style="color: #0D0D0D;"></span>
           </div>
           <!-- Shipping cost row (only visible on delivery) -->
-          <div id="shipping-cost-row" class="flex items-center justify-between pt-2" style="display: none !important;">
-            <span class="text-sm font-bold" style="color: #E8681A; font-weight: 800;">🛵 Envío</span>
-            <span id="modal-shipping-cost" class="text-base font-bold" style="color: #E8681A;"></span>
+          <div
+            id="shipping-cost-row"
+            class="flex items-center justify-between pt-2"
+            style="display: none !important;"
+          >
+            <span
+              class="text-sm font-bold"
+              style="color: #E8681A; font-weight: 800;">🛵 Envío</span
+            >
+            <span
+              id="modal-shipping-cost"
+              class="text-base font-bold"
+              style="color: #E8681A;"></span>
           </div>
           <!-- Grand total -->
-          <div class="flex items-center justify-between pt-2 mt-1" style="border-top: 2px solid #0D0D0D;">
-            <span style="font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: #0D0D0D;">TOTAL</span>
-            <span id="modal-total" style="font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: #E8681A;"></span>
+          <div
+            class="flex items-center justify-between pt-2 mt-1"
+            style="border-top: 2px solid #0D0D0D;"
+          >
+            <span
+              style="font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: #0D0D0D;"
+              >TOTAL</span
+            >
+            <span
+              id="modal-total"
+              style="font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: #E8681A;"
+            ></span>
           </div>
         </div>
 
         <!-- Common fields: Name -->
         <div class="space-y-1.5">
-          <label for="input-nombre" class="text-sm font-bold flex items-center gap-1" style="color: #0D0D0D;">
+          <label
+            for="input-nombre"
+            class="text-sm font-bold flex items-center gap-1"
+            style="color: #0D0D0D;"
+          >
             👤 Tu nombre <span style="color:#E8681A;">*</span>
           </label>
           <input
@@ -86,7 +133,11 @@ const WHATSAPP_NUMBER = '543765044920';
 
         <!-- Delivery type -->
         <div>
-          <p style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: #0D0D0D; letter-spacing: 0.05em; margin-bottom: 10px;">TIPO DE ENTREGA</p>
+          <p
+            style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: #0D0D0D; letter-spacing: 0.05em; margin-bottom: 10px;"
+          >
+            TIPO DE ENTREGA
+          </p>
           <div class="grid grid-cols-2 gap-2">
             <button
               id="toggle-delivery"
@@ -111,7 +162,11 @@ const WHATSAPP_NUMBER = '543765044920';
         <div id="field-delivery" class="space-y-3">
           <!-- Address field with calculate button -->
           <div class="space-y-1.5">
-            <label for="input-direccion" class="text-sm font-bold" style="color: #0D0D0D;">
+            <label
+              for="input-direccion"
+              class="text-sm font-bold"
+              style="color: #0D0D0D;"
+            >
               🏠 Dirección completa
             </label>
             <input
@@ -143,14 +198,36 @@ const WHATSAPP_NUMBER = '543765044920';
           </div>
 
           <!-- Map container (lazy-loaded Leaflet) -->
-          <div id="map-container" style="display:none; border: 2px solid #0D0D0D; border-radius: 12px; overflow: hidden; box-shadow: 3px 3px 0px #E8681A;">
-            <div style="background:#0D0D0D; padding: 8px 12px; display:flex; align-items:center; justify-content:between; gap:8px;">
-              <p style="font-family:'Bebas Neue',sans-serif; font-size:0.85rem; color:#F5F0E8; letter-spacing:0.04em; flex:1;">🗺️ ARRASTRÁ EL PIN AZUL A TU DIRECCIÓN</p>
-              <button id="close-map-btn" style="background:transparent; color:#E8681A; font-size:1rem; font-weight:900; border:none; cursor:pointer; padding:0 4px;">✕</button>
+          <div
+            id="map-container"
+            style="display:none; border: 2px solid #0D0D0D; border-radius: 12px; overflow: hidden; box-shadow: 3px 3px 0px #E8681A;"
+          >
+            <div
+              style="background:#0D0D0D; padding: 8px 12px; display:flex; align-items:center; justify-content:between; gap:8px;"
+            >
+              <p
+                style="font-family:'Bebas Neue',sans-serif; font-size:0.85rem; color:#F5F0E8; letter-spacing:0.04em; flex:1;"
+              >
+                🗺️ ARRASTRÁ EL PIN AZUL A TU DIRECCIÓN
+              </p>
+              <button
+                id="close-map-btn"
+                style="background:transparent; color:#E8681A; font-size:1rem; font-weight:900; border:none; cursor:pointer; padding:0 4px;"
+                >✕</button
+              >
             </div>
-            <div id="leaflet-map" style="height: 280px; width: 100%; z-index: 1;"></div>
-            <div style="padding:8px 12px; background:#F5F0E8; border-top:1.5px solid #0D0D0D; display:flex; align-items:center; gap:8px;">
-              <span style="font-size:0.75rem; color:#6B6660; font-weight:600; flex:1;">🔴 Branco Burgers &nbsp;·&nbsp; 📍 Tu ubicación (arrastrá)</span>
+            <div
+              id="leaflet-map"
+              style="height: 280px; width: 100%; z-index: 1;"
+            >
+            </div>
+            <div
+              style="padding:8px 12px; background:#F5F0E8; border-top:1.5px solid #0D0D0D; display:flex; align-items:center; gap:8px;"
+            >
+              <span
+                style="font-size:0.75rem; color:#6B6660; font-weight:600; flex:1;"
+                >🔴 Branco Burgers &nbsp;·&nbsp; 📍 Tu ubicación (arrastrá)</span
+              >
             </div>
           </div>
 
@@ -160,26 +237,14 @@ const WHATSAPP_NUMBER = '543765044920';
           </div>
         </div>
 
-
-
-        <!-- Preferences / notes -->
-        <div class="space-y-1.5">
-          <label for="input-preferencias" class="text-sm font-bold" style="color: #0D0D0D;">
-            📝 Preferencias o aclaraciones
-          </label>
-          <textarea
-            id="input-preferencias"
-            placeholder="Ej: Sin cebolla, sin pepino, extra salsa..."
-            rows="2"
-            class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all resize-none"
-            style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
-          ></textarea>
-        </div>
-
         <!-- Payment method -->
         <div class="space-y-3">
           <div class="space-y-1.5">
-            <label for="select-pago" class="text-sm font-bold" style="color: #0D0D0D;">
+            <label
+              for="select-pago"
+              class="text-sm font-bold"
+              style="color: #0D0D0D;"
+            >
               💳 Método de Pago
             </label>
             <div class="relative">
@@ -192,13 +257,22 @@ const WHATSAPP_NUMBER = '543765044920';
                 <option value="mercadopago">📱 Mercado Pago (Alias/CVU)</option>
                 <option value="transferencia">🏦 Transferencia Bancaria</option>
               </select>
-              <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" style="color: #E8681A;">▼</div>
+              <div
+                class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
+                style="color: #E8681A;"
+              >
+                ▼
+              </div>
             </div>
           </div>
 
           <!-- Cash change field (hidden by default) -->
           <div id="field-vuelto" class="space-y-1.5" style="display: none;">
-            <label for="input-pago-con" class="text-sm font-bold" style="color: #0D0D0D;">
+            <label
+              for="input-pago-con"
+              class="text-sm font-bold"
+              style="color: #0D0D0D;"
+            >
               💸 ¿Con cuánto pagás?
             </label>
             <input
@@ -209,21 +283,27 @@ const WHATSAPP_NUMBER = '543765044920';
               class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
               style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
             />
-            <p class="text-[10px] italic" style="color: #6B6660;">Ingresá el monto para que el repartidor lleve vuelto.</p>
+            <p class="text-[10px] italic" style="color: #6B6660;">
+              Ingresá el monto para que el repartidor lleve vuelto.
+            </p>
           </div>
         </div>
-
       </div>
 
       <!-- Footer: confirm button -->
-      <div class="px-5 py-4 flex-shrink-0" style="border-top: 2px solid #0D0D0D; background: #F5F0E8;">
+      <div
+        class="px-5 py-4 flex-shrink-0"
+        style="border-top: 2px solid #0D0D0D; background: #F5F0E8;"
+      >
         <button
           id="confirm-whatsapp-btn"
           class="w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-3 transition-all duration-200 active:scale-95"
           style="background: #25D366; color: #0D0D0D; border: 2.5px solid #0D0D0D; box-shadow: 4px 4px 0px #0D0D0D; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.04em;"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            <path
+              d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"
+            ></path>
           </svg>
           Confirmar y Enviar a WhatsApp
         </button>
@@ -232,7 +312,11 @@ const WHATSAPP_NUMBER = '543765044920';
   </div>
 
   <!-- Floating cart button -->
-  <div id="cart-float" class="fixed bottom-6 right-4 z-50" style="display: none !important;">
+  <div
+    id="cart-float"
+    class="fixed bottom-6 right-4 z-50"
+    style="display: none !important;"
+  >
     <button
       id="cart-btn"
       class="flex items-center gap-3 px-5 py-3.5 rounded-2xl font-black text-sm shadow-2xl transition-all duration-300 active:scale-95 select-none"
@@ -240,15 +324,28 @@ const WHATSAPP_NUMBER = '543765044920';
       aria-label="Ver carrito y finalizar pedido"
     >
       <div class="relative">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+        <svg
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"
+          ></circle>
+          <path
+            d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
+          ></path>
         </svg>
         <span
           id="cart-count-badge"
           class="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center text-xs font-black"
           style="background: #0D0D0D; color: #E8681A; border: 1.5px solid #0D0D0D;"
-        >0</span>
+          >0</span
+        >
       </div>
       <div class="flex flex-col items-start leading-none">
         <span class="text-xs font-semibold opacity-80">Tu pedido</span>
@@ -256,13 +353,12 @@ const WHATSAPP_NUMBER = '543765044920';
       </div>
     </button>
   </div>
-
 </div>
 
 <script>
-  import { cartItems, removeFromCart, clearCart } from '../stores/cartStore.js';
+  import { cartItems, removeFromCart, clearCart } from "../stores/cartStore.js";
 
-  const rootElement = document.getElementById('cart-component-root');
+  const rootElement = document.getElementById("cart-component-root");
   const WHATSAPP_NUMBER = rootElement.dataset.whatsapp;
 
   // ─────────────────────────────────────────────
@@ -270,7 +366,7 @@ const WHATSAPP_NUMBER = '543765044920';
   // ─────────────────────────────────────────────
 
   // Dirección del local (origen fijo)
-  const ORIGIN_ADDRESS = 'Queirel 5623, Posadas, Misiones, Argentina';
+  const ORIGIN_ADDRESS = "Queirel 5623, Posadas, Misiones, Argentina";
 
   // ── GOOGLE SHEET UNIFICADO ──────────────────────────────────────────────
   // El dueño maneja UN solo Google Sheet con DOS pestañas:
@@ -284,11 +380,12 @@ const WHATSAPP_NUMBER = '543765044920';
   //   2. Archivo → Compartir → Publicar en la web → Esta hoja → CSV → Publicar
   //   3. Copiar esa URL y pegarla abajo
   // TODO: reemplazar '' con la URL CSV de la pestaña Config
-  const CONFIG_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRUjYQ79c41cWdRQw_Ihm4UGnrzuxBIq9CIOQkVCIYsKku595csG9qypXFaaSpYABlRB2lqZ2hMxWjq/pub?gid=1210040946&output=csv';
+  const CONFIG_SHEET_CSV_URL =
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vRUjYQ79c41cWdRQw_Ihm4UGnrzuxBIq9CIOQkVCIYsKku595csG9qypXFaaSpYABlRB2lqZ2hMxWjq/pub?gid=1210040946&output=csv";
 
   // Valores de fallback si el Sheet no está configurado o falla
-  const FALLBACK_TARIFA_POR_KM = 500;  // ARS por km
-  const FALLBACK_MIN_ENVIO     = 1500; // ARS mínimo de envío
+  const FALLBACK_TARIFA_POR_KM = 500; // ARS por km
+  const FALLBACK_MIN_ENVIO = 1500; // ARS mínimo de envío
 
   // Radio máximo de entrega (km en ruta)
   const MAX_KM_DELIVERY = 15;
@@ -297,64 +394,64 @@ const WHATSAPP_NUMBER = '543765044920';
   // STATE
   // ─────────────────────────────────────────────
 
-  let currentItems      = [];
-  let deliveryType      = 'delivery';
-  let currentShipping   = 0;      // ARS — calculado dinámicamente
-  let shippingCalcDone  = false;  // true cuando el usuario calculó el envío
-  let calculatedKm      = null;   // km resultante del último cálculo
-  let tarifaCache       = null;   // { tarifaPorKm, minEnvio } — cacheado en memoria
+  let currentItems = [];
+  let deliveryType = "delivery";
+  let currentShipping = 0; // ARS — calculado dinámicamente
+  let shippingCalcDone = false; // true cuando el usuario calculó el envío
+  let calculatedKm = null; // km resultante del último cálculo
+  let tarifaCache = null; // { tarifaPorKm, minEnvio } — cacheado en memoria
 
   // Coordenadas del local (se geocodifican una vez, al cargar la página)
   let originCoords = null; // { lat, lon }
 
   // Mapa
-  let mapInitialized  = false;  // Leaflet inicializado
-  let clientMarker    = null;   // marker arrastrable del cliente
+  let mapInitialized = false; // Leaflet inicializado
+  let clientMarker = null; // marker arrastrable del cliente
   let pendingDestCoords = null; // { lat, lon } desde el mapa (evita re-geocodificar)
 
   // ─────────────────────────────────────────────
   // DOM REFS
   // ─────────────────────────────────────────────
 
-  const cartFloat        = document.getElementById('cart-float');
-  const cartBtn          = document.getElementById('cart-btn');
-  const cartCountBadge   = document.getElementById('cart-count-badge');
-  const cartTotalDisplay = document.getElementById('cart-total-display');
+  const cartFloat = document.getElementById("cart-float");
+  const cartBtn = document.getElementById("cart-btn");
+  const cartCountBadge = document.getElementById("cart-count-badge");
+  const cartTotalDisplay = document.getElementById("cart-total-display");
 
-  const modalOverlay    = document.getElementById('checkout-modal-overlay');
-  const modalCloseBtn   = document.getElementById('modal-close-btn');
-  const modalItemsList  = document.getElementById('modal-items-list');
-  const modalSubtotal   = document.getElementById('modal-subtotal');
-  const modalShipCost   = document.getElementById('modal-shipping-cost');
-  const shippingRow     = document.getElementById('shipping-cost-row');
-  const modalTotal      = document.getElementById('modal-total');
-  const confirmBtn      = document.getElementById('confirm-whatsapp-btn');
-  const clearCartBtn    = document.getElementById('clear-cart-btn');
+  const modalOverlay = document.getElementById("checkout-modal-overlay");
+  const modalCloseBtn = document.getElementById("modal-close-btn");
+  const modalItemsList = document.getElementById("modal-items-list");
+  const modalSubtotal = document.getElementById("modal-subtotal");
+  const modalShipCost = document.getElementById("modal-shipping-cost");
+  const shippingRow = document.getElementById("shipping-cost-row");
+  const modalTotal = document.getElementById("modal-total");
+  const confirmBtn = document.getElementById("confirm-whatsapp-btn");
+  const clearCartBtn = document.getElementById("clear-cart-btn");
 
-  const toggleDelivery  = document.getElementById('toggle-delivery');
-  const toggleRetiro    = document.getElementById('toggle-retiro');
-  const fieldDelivery   = document.getElementById('field-delivery');
+  const toggleDelivery = document.getElementById("toggle-delivery");
+  const toggleRetiro = document.getElementById("toggle-retiro");
+  const fieldDelivery = document.getElementById("field-delivery");
   // fieldRetiro removed as 'Nombre' is now common
-  const inputDireccion  = document.getElementById('input-direccion');
-  const inputNombre     = document.getElementById('input-nombre');
-  const inputPref       = document.getElementById('input-preferencias');
-  const selectPago      = document.getElementById('select-pago');
-  const calcEnvioBtn    = document.getElementById('calc-envio-btn');
-  const shippingResult  = document.getElementById('shipping-result');
-  const toggleMapBtn    = document.getElementById('toggle-map-btn');
-  const closeMapBtn     = document.getElementById('close-map-btn');
-  const mapContainer    = document.getElementById('map-container');
-  const fieldVuelto     = document.getElementById('field-vuelto');
-  const inputPagoCon    = document.getElementById('input-pago-con');
+  const inputDireccion = document.getElementById("input-direccion");
+  const inputNombre = document.getElementById("input-nombre");
+
+  const selectPago = document.getElementById("select-pago");
+  const calcEnvioBtn = document.getElementById("calc-envio-btn");
+  const shippingResult = document.getElementById("shipping-result");
+  const toggleMapBtn = document.getElementById("toggle-map-btn");
+  const closeMapBtn = document.getElementById("close-map-btn");
+  const mapContainer = document.getElementById("map-container");
+  const fieldVuelto = document.getElementById("field-vuelto");
+  const inputPagoCon = document.getElementById("input-pago-con");
 
   // ─────────────────────────────────────────────
   // HELPERS — FORMAT
   // ─────────────────────────────────────────────
 
   function formatPrice(amount) {
-    return new Intl.NumberFormat('es-AR', {
-      style: 'currency',
-      currency: 'ARS',
+    return new Intl.NumberFormat("es-AR", {
+      style: "currency",
+      currency: "ARS",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -367,38 +464,50 @@ const WHATSAPP_NUMBER = '543765044920';
   async function fetchTarifa() {
     if (tarifaCache) return tarifaCache;
 
-    if (!CONFIG_SHEET_CSV_URL || CONFIG_SHEET_CSV_URL.trim() === '') {
-      console.warn('[shipping] CONFIG_SHEET_CSV_URL no configurada. Usando valores de fallback.');
-      tarifaCache = { tarifaPorKm: FALLBACK_TARIFA_POR_KM, minEnvio: FALLBACK_MIN_ENVIO };
+    if (!CONFIG_SHEET_CSV_URL || CONFIG_SHEET_CSV_URL.trim() === "") {
+      console.warn(
+        "[shipping] CONFIG_SHEET_CSV_URL no configurada. Usando valores de fallback."
+      );
+      tarifaCache = {
+        tarifaPorKm: FALLBACK_TARIFA_POR_KM,
+        minEnvio: FALLBACK_MIN_ENVIO,
+      };
       return tarifaCache;
     }
 
     try {
-      const res  = await fetch(CONFIG_SHEET_CSV_URL);
+      const res = await fetch(CONFIG_SHEET_CSV_URL);
       const text = await res.text();
-      const rows = text.trim().split('\n').slice(1); // skip header
+      const rows = text.trim().split("\n").slice(1); // skip header
 
       let tarifaPorKm = FALLBACK_TARIFA_POR_KM;
-      let minEnvio    = FALLBACK_MIN_ENVIO;
+      let minEnvio = FALLBACK_MIN_ENVIO;
 
-      rows.forEach(row => {
+      rows.forEach((row) => {
         // Handle both comma and semicolon (depends on Google Sheet locale)
-        const delimiter = row.includes(';') ? ';' : ',';
-        const parts = row.split(delimiter).map(s => s.trim().replace(/^"|"$/g, ''));
-        
+        const delimiter = row.includes(";") ? ";" : ",";
+        const parts = row
+          .split(delimiter)
+          .map((s) => s.trim().replace(/^"|"$/g, ""));
+
         if (parts.length >= 2) {
           const clave = parts[0];
           const valor = parts[1];
-          if (clave === 'tarifa_por_km') tarifaPorKm = parseFloat(valor) || FALLBACK_TARIFA_POR_KM;
-          if (clave === 'min_envio')     minEnvio    = parseFloat(valor) || FALLBACK_MIN_ENVIO;
+          if (clave === "tarifa_por_km")
+            tarifaPorKm = parseFloat(valor) || FALLBACK_TARIFA_POR_KM;
+          if (clave === "min_envio")
+            minEnvio = parseFloat(valor) || FALLBACK_MIN_ENVIO;
         }
       });
 
       tarifaCache = { tarifaPorKm, minEnvio };
       return tarifaCache;
     } catch (err) {
-      console.warn('[shipping] Error al leer config del Sheet:', err);
-      tarifaCache = { tarifaPorKm: FALLBACK_TARIFA_POR_KM, minEnvio: FALLBACK_MIN_ENVIO };
+      console.warn("[shipping] Error al leer config del Sheet:", err);
+      tarifaCache = {
+        tarifaPorKm: FALLBACK_TARIFA_POR_KM,
+        minEnvio: FALLBACK_MIN_ENVIO,
+      };
       return tarifaCache;
     }
   }
@@ -411,10 +520,13 @@ const WHATSAPP_NUMBER = '543765044920';
     const encoded = encodeURIComponent(address);
     const url = `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=1&countrycodes=ar`;
     const res = await fetch(url, {
-      headers: { 'Accept-Language': 'es', 'User-Agent': 'BrancoDeliveryApp/1.0' }
+      headers: {
+        "Accept-Language": "es",
+        "User-Agent": "BrancoDeliveryApp/1.0",
+      },
     });
     const data = await res.json();
-    if (!data || data.length === 0) throw new Error('Dirección no encontrada');
+    if (!data || data.length === 0) throw new Error("Dirección no encontrada");
     return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
   }
 
@@ -425,10 +537,10 @@ const WHATSAPP_NUMBER = '543765044920';
   async function getRoutingDistanceKm(origin, dest) {
     // OSRM expects lon,lat order
     const url = `https://router.project-osrm.org/route/v1/driving/${origin.lon},${origin.lat};${dest.lon},${dest.lat}?overview=false`;
-    const res  = await fetch(url);
+    const res = await fetch(url);
     const data = await res.json();
-    if (data.code !== 'Ok' || !data.routes || data.routes.length === 0) {
-      throw new Error('No se pudo calcular la ruta');
+    if (data.code !== "Ok" || !data.routes || data.routes.length === 0) {
+      throw new Error("No se pudo calcular la ruta");
     }
     const meters = data.routes[0].distance;
     return Math.round((meters / 1000) * 10) / 10; // km con 1 decimal
@@ -439,9 +551,9 @@ const WHATSAPP_NUMBER = '543765044920';
   // ─────────────────────────────────────────────
 
   function setShippingResultUI(state, payload = {}) {
-    shippingResult.style.display = 'block';
+    shippingResult.style.display = "block";
 
-    if (state === 'loading') {
+    if (state === "loading") {
       shippingResult.innerHTML = `
         <div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:#FFFFFF;border:2px solid #0D0D0D;border-radius:12px;">
           <span style="display:inline-block;width:18px;height:18px;border:3px solid #E8681A;border-top-color:transparent;border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;"></span>
@@ -449,7 +561,7 @@ const WHATSAPP_NUMBER = '543765044920';
         </div>
         <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
       `;
-    } else if (state === 'success') {
+    } else if (state === "success") {
       const { km, price } = payload;
       shippingResult.innerHTML = `
         <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:#FFFFFF;border:2px solid #0D0D0D;border-radius:12px;box-shadow:3px 3px 0px #E8681A;">
@@ -459,12 +571,14 @@ const WHATSAPP_NUMBER = '543765044920';
           <div style="flex:1;">
             <p style="font-size:0.8rem;color:#6B6660;font-weight:600;margin:0 0 2px;">Distancia estimada</p>
             <p style="font-family:'Bebas Neue',sans-serif;font-size:1rem;color:#0D0D0D;letter-spacing:0.04em;margin:0;">
-              ${km} km → <span style="color:#E8681A;">${formatPrice(price)}</span>
+              ${km} km → <span style="color:#E8681A;">${formatPrice(
+        price
+      )}</span>
             </p>
           </div>
         </div>
       `;
-    } else if (state === 'error') {
+    } else if (state === "error") {
       const { msg } = payload;
       shippingResult.innerHTML = `
         <div style="display:flex;align-items:center;gap:12px;padding:12px 16px;background:#FFF0EE;border:2px solid #E8681A;border-radius:12px;">
@@ -482,13 +596,15 @@ const WHATSAPP_NUMBER = '543765044920';
   async function calcularEnvio() {
     const address = inputDireccion?.value?.trim();
     if (!address && !pendingDestCoords) {
-      setShippingResultUI('error', { msg: 'Ingresá tu dirección antes de calcular.' });
+      setShippingResultUI("error", {
+        msg: "Ingresá tu dirección antes de calcular.",
+      });
       return;
     }
 
-    setShippingResultUI('loading');
+    setShippingResultUI("loading");
     calcEnvioBtn.disabled = true;
-    calcEnvioBtn.style.opacity = '0.6';
+    calcEnvioBtn.style.opacity = "0.6";
 
     try {
       // 1. Geocode origin once (cached)
@@ -502,7 +618,9 @@ const WHATSAPP_NUMBER = '543765044920';
         destCoords = pendingDestCoords;
         pendingDestCoords = null; // consume
       } else {
-        const fullAddress = /posadas|misiones/i.test(address) ? address : `${address}, Posadas, Misiones, Argentina`;
+        const fullAddress = /posadas|misiones/i.test(address)
+          ? address
+          : `${address}, Posadas, Misiones, Argentina`;
         destCoords = await geocodeAddress(fullAddress);
       }
 
@@ -511,12 +629,12 @@ const WHATSAPP_NUMBER = '543765044920';
 
       // 4. Check radius limit
       if (km > MAX_KM_DELIVERY) {
-        setShippingResultUI('error', {
-          msg: `😔 Tu dirección queda a ${km} km del local. Por ahora hacemos envíos hasta ${MAX_KM_DELIVERY} km. ¡Podés pasar a retirar tu pedido!`
+        setShippingResultUI("error", {
+          msg: `😔 Tu dirección queda a ${km} km del local. Por ahora hacemos envíos hasta ${MAX_KM_DELIVERY} km. ¡Podés pasar a retirar tu pedido!`,
         });
         shippingCalcDone = false;
-        currentShipping  = 0;
-        calculatedKm     = null;
+        currentShipping = 0;
+        calculatedKm = null;
         updateModalTotals();
         return;
       }
@@ -526,27 +644,26 @@ const WHATSAPP_NUMBER = '543765044920';
 
       // 6. Calculate price
       const rawPrice = km * tarifaPorKm;
-      const price    = Math.ceil(Math.max(rawPrice, minEnvio) / 50) * 50; // round up to nearest 50
+      const price = Math.ceil(Math.max(rawPrice, minEnvio) / 50) * 50; // round up to nearest 50
 
       // 7. Update state
-      currentShipping  = price;
+      currentShipping = price;
       shippingCalcDone = true;
-      calculatedKm     = km;
+      calculatedKm = km;
 
-      setShippingResultUI('success', { km, price });
+      setShippingResultUI("success", { km, price });
       updateModalTotals();
-
     } catch (err) {
-      console.warn('[shipping] Error:', err);
+      console.warn("[shipping] Error:", err);
       shippingCalcDone = false;
-      currentShipping  = 0;
-      setShippingResultUI('error', {
-        msg: 'No pudimos calcular la distancia. Probá con una dirección más detallada (ej: Av. San Martín 1234, Posadas).'
+      currentShipping = 0;
+      setShippingResultUI("error", {
+        msg: "No pudimos calcular la distancia. Probá con una dirección más detallada (ej: Av. San Martín 1234, Posadas).",
       });
       updateModalTotals();
     } finally {
       calcEnvioBtn.disabled = false;
-      calcEnvioBtn.style.opacity = '1';
+      calcEnvioBtn.style.opacity = "1";
     }
   }
 
@@ -555,23 +672,29 @@ const WHATSAPP_NUMBER = '543765044920';
   // ─────────────────────────────────────────────
 
   function getShippingCost() {
-    if (deliveryType !== 'delivery') return 0;
+    if (deliveryType !== "delivery") return 0;
     return currentShipping;
   }
 
   function updateModalTotals() {
-    const subtotal = currentItems.reduce((s, i) => s + i.precio * i.qty, 0);
+    const subtotal = currentItems.reduce((s, i) => s + i.subtotalItem, 0);
     const shipping = getShippingCost();
-    const total    = subtotal + shipping;
+    const total = subtotal + shipping;
 
     if (modalSubtotal) modalSubtotal.textContent = formatPrice(subtotal);
-    if (modalTotal)    modalTotal.textContent    = formatPrice(total);
+    if (modalTotal) modalTotal.textContent = formatPrice(total);
 
-    if (deliveryType === 'delivery') {
-      if (shippingRow)   { shippingRow.style.removeProperty('display'); shippingRow.style.display = 'flex'; }
-      if (modalShipCost) modalShipCost.textContent = shippingCalcDone ? formatPrice(shipping) : 'Por calcular';
+    if (deliveryType === "delivery") {
+      if (shippingRow) {
+        shippingRow.style.removeProperty("display");
+        shippingRow.style.display = "flex";
+      }
+      if (modalShipCost)
+        modalShipCost.textContent = shippingCalcDone
+          ? formatPrice(shipping)
+          : "Por calcular";
     } else {
-      if (shippingRow) shippingRow.style.display = 'none';
+      if (shippingRow) shippingRow.style.display = "none";
     }
   }
 
@@ -580,47 +703,98 @@ const WHATSAPP_NUMBER = '543765044920';
   // ─────────────────────────────────────────────
 
   function renderItems() {
-    modalItemsList.innerHTML = currentItems.map(item => `
-      <li class="flex items-center gap-2" data-item-id="${item.id}">
-        <div class="flex items-center gap-1 flex-shrink-0">
-          <button class="cart-qty-btn w-6 h-6 flex items-center justify-center font-black text-sm leading-none transition-all active:scale-90"
-            data-action="dec" data-id="${item.id}"
-            style="background:#F5F0E8;color:#0D0D0D;border:1.5px solid #0D0D0D;box-shadow:2px 2px 0px #E8681A;">−</button>
-          <span class="text-xs font-black w-5 text-center" style="color:#0D0D0D;">${item.qty}</span>
-          <button class="cart-qty-btn w-6 h-6 flex items-center justify-center font-black text-sm leading-none transition-all active:scale-90"
-            data-action="inc" data-id="${item.id}"
-            style="background:#E8681A;color:#0D0D0D;border:1.5px solid #0D0D0D;box-shadow:2px 2px 0px #0D0D0D;">+</button>
+    modalItemsList.innerHTML = currentItems
+      .map((item) => {
+        // Build extras sub-lines if any
+        const extrasHtml =
+          item.extras && item.extras.length > 0
+            ? item.extras
+                .map(
+                  (e) => `
+          <div class="flex items-center gap-1 ml-8 mt-0.5">
+            <span class="text-[10px]" style="color:#E8681A;font-weight:700;">➕</span>
+            <span class="text-[11px]" style="color:#6B6660;font-weight:500;">${
+              e.nombre
+            }</span>
+            <span class="text-[10px]" style="color:#E8681A;font-weight:600;">(${formatPrice(
+              e.precio
+            )})</span>
+          </div>
+        `
+                )
+                .join("")
+            : "";
+
+        // Build aclaracion sub-line if present
+        const aclaracionHtml = item.aclaracion
+          ? `
+          <div class="flex items-center gap-1 ml-8 mt-0.5">
+            <span class="text-[10px]" style="color:#6B6660;font-weight:700;">📝</span>
+            <span class="text-[11px] italic" style="color:#6B6660;font-weight:500;">${item.aclaracion}</span>
+          </div>
+        `
+          : "";
+
+        return `
+      <li class="flex flex-col gap-0" data-item-key="${item.cartKey}">
+        <div class="flex items-center gap-2">
+          <div class="flex items-center gap-1 flex-shrink-0">
+            <button class="cart-qty-btn w-6 h-6 flex items-center justify-center font-black text-sm leading-none transition-all active:scale-90"
+              data-action="dec" data-key="${item.cartKey}"
+              style="background:#F5F0E8;color:#0D0D0D;border:1.5px solid #0D0D0D;box-shadow:2px 2px 0px #E8681A;">−</button>
+            <span class="text-xs font-black w-5 text-center" style="color:#0D0D0D;">${
+              item.cantidad
+            }</span>
+            <button class="cart-qty-btn w-6 h-6 flex items-center justify-center font-black text-sm leading-none transition-all active:scale-90"
+              data-action="inc" data-key="${item.cartKey}"
+              style="background:#E8681A;color:#0D0D0D;border:1.5px solid #0D0D0D;box-shadow:2px 2px 0px #0D0D0D;">+</button>
+          </div>
+          <span class="text-sm flex-1 truncate" style="color:#0D0D0D;font-weight:600;">${
+            item.nombre
+          }</span>
+          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:#E8681A;flex-shrink:0;">${formatPrice(
+            item.subtotalItem
+          )}</span>
+          <button class="cart-remove-btn w-6 h-6 flex items-center justify-center flex-shrink-0 transition-all active:scale-90"
+            data-key="${item.cartKey}"
+            style="background:#F5F0E8;color:#0D0D0D;border:1.5px solid #0D0D0D;font-size:11px;">✕</button>
         </div>
-        <span class="text-sm flex-1 truncate" style="color:#0D0D0D;font-weight:600;">${item.nombre}</span>
-        <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:#E8681A;flex-shrink:0;">${formatPrice(item.precio * item.qty)}</span>
-        <button class="cart-remove-btn w-6 h-6 flex items-center justify-center flex-shrink-0 transition-all active:scale-90"
-          data-id="${item.id}"
-          style="background:#F5F0E8;color:#0D0D0D;border:1.5px solid #0D0D0D;font-size:11px;">✕</button>
+        ${extrasHtml}
+        ${aclaracionHtml}
       </li>
-    `).join('');
+    `;
+      })
+      .join("");
 
     // Qty buttons
-    modalItemsList.querySelectorAll('.cart-qty-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.id;
-        if (btn.dataset.action === 'dec') {
-          removeFromCart(id);
+    modalItemsList.querySelectorAll(".cart-qty-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.key;
+        if (btn.dataset.action === "dec") {
+          removeFromCart(key);
         } else {
-          import('../stores/cartStore.js').then(({ addToCart }) => {
-            const item = currentItems.find(i => i.id === id);
-            if (item) addToCart({ id: item.id, nombre: item.nombre, precio: item.precio });
+          import("../stores/cartStore.js").then(({ addToCart }) => {
+            const item = currentItems.find((i) => i.cartKey === key);
+            if (item)
+              addToCart({
+                id: item.id_producto,
+                nombre: item.nombre,
+                precio: item.precioBase,
+                extras: item.extras,
+                aclaracion: item.aclaracion || "",
+              });
           });
         }
       });
     });
 
     // Remove-all buttons
-    modalItemsList.querySelectorAll('.cart-remove-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id   = btn.dataset.id;
-        const item = currentItems.find(i => i.id === id);
+    modalItemsList.querySelectorAll(".cart-remove-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const key = btn.dataset.key;
+        const item = currentItems.find((i) => i.cartKey === key);
         if (!item) return;
-        for (let i = 0; i < item.qty; i++) removeFromCart(id);
+        for (let i = 0; i < item.cantidad; i++) removeFromCart(key);
       });
     });
   }
@@ -630,25 +804,29 @@ const WHATSAPP_NUMBER = '543765044920';
   // ─────────────────────────────────────────────
 
   function openModal() {
-    const count = currentItems.reduce((s, i) => s + i.qty, 0);
+    const count = currentItems.reduce((s, i) => s + i.cantidad, 0);
     if (count === 0) return;
 
     renderItems();
     updateModalTotals();
 
-    modalOverlay.style.removeProperty('display');
-    modalOverlay.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
+    modalOverlay.style.removeProperty("display");
+    modalOverlay.style.display = "flex";
+    document.body.style.overflow = "hidden";
 
     // Pre-geocode the origin address in the background so the first calculation is faster
     if (!originCoords) {
-      geocodeAddress(ORIGIN_ADDRESS).then(c => { originCoords = c; }).catch(() => {});
+      geocodeAddress(ORIGIN_ADDRESS)
+        .then((c) => {
+          originCoords = c;
+        })
+        .catch(() => {});
     }
   }
 
   function closeModal() {
-    modalOverlay.style.display = 'none';
-    document.body.style.overflow = '';
+    modalOverlay.style.display = "none";
+    document.body.style.overflow = "";
   }
 
   // ─────────────────────────────────────────────
@@ -659,35 +837,35 @@ const WHATSAPP_NUMBER = '543765044920';
     deliveryType = type;
 
     function updateDeliveryUI() {
-      if (deliveryType === 'delivery') {
-        toggleDelivery.style.background = '#E8681A';
-        toggleDelivery.style.color      = '#0D0D0D';
-        toggleDelivery.style.boxShadow  = '3px 3px 0px #0D0D0D';
+      if (deliveryType === "delivery") {
+        toggleDelivery.style.background = "#E8681A";
+        toggleDelivery.style.color = "#0D0D0D";
+        toggleDelivery.style.boxShadow = "3px 3px 0px #0D0D0D";
 
-        toggleRetiro.style.background   = '#F5F0E8';
-        toggleRetiro.style.color        = '#6B6660';
-        toggleRetiro.style.boxShadow    = 'none';
+        toggleRetiro.style.background = "#F5F0E8";
+        toggleRetiro.style.color = "#6B6660";
+        toggleRetiro.style.boxShadow = "none";
 
-        fieldDelivery.classList.remove('hidden');
-        shippingRow.style.display       = 'flex';
+        fieldDelivery.classList.remove("hidden");
+        shippingRow.style.display = "flex";
       } else {
         // Retiro en local
-        toggleRetiro.style.background   = '#E8681A';
-        toggleRetiro.style.color        = '#0D0D0D';
-        toggleRetiro.style.boxShadow    = '3px 3px 0px #0D0D0D';
+        toggleRetiro.style.background = "#E8681A";
+        toggleRetiro.style.color = "#0D0D0D";
+        toggleRetiro.style.boxShadow = "3px 3px 0px #0D0D0D";
 
-        toggleDelivery.style.background = '#F5F0E8';
-        toggleDelivery.style.color      = '#6B6660';
-        toggleDelivery.style.boxShadow  = 'none';
+        toggleDelivery.style.background = "#F5F0E8";
+        toggleDelivery.style.color = "#6B6660";
+        toggleDelivery.style.boxShadow = "none";
 
-        fieldDelivery.classList.add('hidden');
+        fieldDelivery.classList.add("hidden");
 
         // Reset shipping when switching to pickup
-        currentShipping  = 0;
+        currentShipping = 0;
         shippingCalcDone = false;
-        calculatedKm     = null;
-        if (shippingResult) shippingResult.style.display = 'none';
-        if (shippingRow)    shippingRow.style.display = 'none';
+        calculatedKm = null;
+        if (shippingResult) shippingResult.style.display = "none";
+        if (shippingRow) shippingRow.style.display = "none";
       }
       updateModalTotals();
     }
@@ -695,24 +873,27 @@ const WHATSAPP_NUMBER = '543765044920';
     updateDeliveryUI(); // Call the new UI update function
   }
 
-  toggleDelivery?.addEventListener('click', () => setDeliveryType('delivery'));
-  toggleRetiro?.addEventListener('click',   () => setDeliveryType('retiro'));
+  toggleDelivery?.addEventListener("click", () => setDeliveryType("delivery"));
+  toggleRetiro?.addEventListener("click", () => setDeliveryType("retiro"));
 
   // Calculate button
-  calcEnvioBtn?.addEventListener('click', calcularEnvio);
+  calcEnvioBtn?.addEventListener("click", calcularEnvio);
 
   // Allow pressing Enter in the address field to trigger calculation
-  inputDireccion?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); calcularEnvio(); }
+  inputDireccion?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      calcularEnvio();
+    }
   });
 
   // If address changes after a calculation, reset the result
-  inputDireccion?.addEventListener('input', () => {
+  inputDireccion?.addEventListener("input", () => {
     if (shippingCalcDone) {
       shippingCalcDone = false;
-      currentShipping  = 0;
-      calculatedKm     = null;
-      shippingResult.style.display = 'none';
+      currentShipping = 0;
+      calculatedKm = null;
+      shippingResult.style.display = "none";
       updateModalTotals();
     }
   });
@@ -724,14 +905,14 @@ const WHATSAPP_NUMBER = '543765044920';
   async function loadLeaflet() {
     if (window.L) return; // already loaded
     await new Promise((resolve, reject) => {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
       document.head.appendChild(link);
 
-      const script = document.createElement('script');
-      script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-      script.onload  = resolve;
+      const script = document.createElement("script");
+      script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+      script.onload = resolve;
       script.onerror = reject;
       document.head.appendChild(script);
     });
@@ -746,45 +927,62 @@ const WHATSAPP_NUMBER = '543765044920';
 
     // Make sure origin coords are ready
     if (!originCoords) {
-      try { originCoords = await geocodeAddress(ORIGIN_ADDRESS); }
-      catch { originCoords = { lat: -27.3671, lon: -55.8975 }; } // Posadas fallback
+      try {
+        originCoords = await geocodeAddress(ORIGIN_ADDRESS);
+      } catch {
+        originCoords = { lat: -27.3671, lon: -55.8975 };
+      } // Posadas fallback
     }
 
-    const map = L.map('leaflet-map').setView([originCoords.lat, originCoords.lon], 14);
+    const map = L.map("leaflet-map").setView(
+      [originCoords.lat, originCoords.lon],
+      14
+    );
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap',
-      maxZoom: 19
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap",
+      maxZoom: 19,
     }).addTo(map);
 
     // Fixed red marker for the local
     const redIcon = L.divIcon({
       html: '<div style="width:18px;height:18px;background:#E8681A;border:3px solid #0D0D0D;border-radius:50%;box-shadow:2px 2px 0 #0D0D0D;"></div>',
-      iconSize: [18, 18], iconAnchor: [9, 9], className: ''
+      iconSize: [18, 18],
+      iconAnchor: [9, 9],
+      className: "",
     });
     L.marker([originCoords.lat, originCoords.lon], { icon: redIcon })
       .addTo(map)
-      .bindPopup('<b style="font-family:sans-serif">📍 Branco Burgers</b><br><small>Queirel 5623</small>');
+      .bindPopup(
+        '<b style="font-family:sans-serif">📍 Branco Burgers</b><br><small>Queirel 5623</small>'
+      );
 
     // Draggable blue marker for client — starts at center of visible map
     const blueIcon = L.divIcon({
       html: '<div style="width:22px;height:22px;background:#2563EB;border:3px solid #0D0D0D;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:2px 2px 0 #0D0D0D;"></div>',
-      iconSize: [22, 22], iconAnchor: [11, 22], className: ''
+      iconSize: [22, 22],
+      iconAnchor: [11, 22],
+      className: "",
     });
 
     const startLat = originCoords.lat + 0.01;
     const startLon = originCoords.lon + 0.01;
-    clientMarker = L.marker([startLat, startLon], { icon: blueIcon, draggable: true })
+    clientMarker = L.marker([startLat, startLon], {
+      icon: blueIcon,
+      draggable: true,
+    })
       .addTo(map)
-      .bindPopup('<b style="font-family:sans-serif">📍 Tu ubicación</b><br><small>Arrastrá para ajustar</small>');
+      .bindPopup(
+        '<b style="font-family:sans-serif">📍 Tu ubicación</b><br><small>Arrastrá para ajustar</small>'
+      );
 
-    clientMarker.on('dragend', async () => {
+    clientMarker.on("dragend", async () => {
       const pos = clientMarker.getLatLng();
       await onPinDrop(pos.lat, pos.lng);
     });
 
     // Also allow clicking the map to place the client marker
-    map.on('click', async (e) => {
+    map.on("click", async (e) => {
       clientMarker.setLatLng(e.latlng);
       await onPinDrop(e.latlng.lat, e.latlng.lng);
     });
@@ -800,111 +998,154 @@ const WHATSAPP_NUMBER = '543765044920';
     // Reverse-geocode to show the address in the text field
     try {
       const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
-      const res  = await fetch(url, { headers: { 'Accept-Language': 'es', 'User-Agent': 'BrancoDeliveryApp/1.0' } });
+      const res = await fetch(url, {
+        headers: {
+          "Accept-Language": "es",
+          "User-Agent": "BrancoDeliveryApp/1.0",
+        },
+      });
       const data = await res.json();
       if (data && data.display_name) {
         // Show a short version: road + house_number + suburb
         const a = data.address || {};
-        const parts = [a.road, a.house_number, a.suburb || a.neighbourhood, a.city || a.town].filter(Boolean);
-        if (inputDireccion) inputDireccion.value = parts.join(', ') || data.display_name;
+        const parts = [
+          a.road,
+          a.house_number,
+          a.suburb || a.neighbourhood,
+          a.city || a.town,
+        ].filter(Boolean);
+        if (inputDireccion)
+          inputDireccion.value = parts.join(", ") || data.display_name;
       }
-    } catch { /* if reverse geocode fails, keep existing text */ }
+    } catch {
+      /* if reverse geocode fails, keep existing text */
+    }
 
     // Reset previous result and auto-calculate
     shippingCalcDone = false;
-    currentShipping  = 0;
-    calculatedKm     = null;
+    currentShipping = 0;
+    calculatedKm = null;
     await calcularEnvio();
   }
 
   function toggleMap() {
-    const isVisible = mapContainer.style.display !== 'none';
+    const isVisible = mapContainer.style.display !== "none";
     if (isVisible) {
-      mapContainer.style.display = 'none';
-      toggleMapBtn.style.background = '#F5F0E8';
-      toggleMapBtn.style.color      = '#0D0D0D';
+      mapContainer.style.display = "none";
+      toggleMapBtn.style.background = "#F5F0E8";
+      toggleMapBtn.style.color = "#0D0D0D";
     } else {
-      mapContainer.style.display = 'block';
-      toggleMapBtn.style.background = '#E8681A';
-      toggleMapBtn.style.color      = '#0D0D0D';
+      mapContainer.style.display = "block";
+      toggleMapBtn.style.background = "#E8681A";
+      toggleMapBtn.style.color = "#0D0D0D";
       initMap(); // lazy init
     }
   }
 
-  toggleMapBtn?.addEventListener('click', toggleMap);
-  closeMapBtn?.addEventListener('click', () => {
-    mapContainer.style.display = 'none';
-    toggleMapBtn.style.background = '#F5F0E8';
-    toggleMapBtn.style.color      = '#0D0D0D';
+  toggleMapBtn?.addEventListener("click", toggleMap);
+  closeMapBtn?.addEventListener("click", () => {
+    mapContainer.style.display = "none";
+    toggleMapBtn.style.background = "#F5F0E8";
+    toggleMapBtn.style.color = "#0D0D0D";
   });
 
   // Focus styles
-  [inputDireccion, inputNombre, inputPref, inputPagoCon].forEach(input => {
+  [inputDireccion, inputNombre, inputPagoCon].forEach((input) => {
     if (!input) return;
-    input.addEventListener('focus', () => { input.style.borderColor = '#E8681A'; input.style.boxShadow = '3px 3px 0px #E8681A'; });
-    input.addEventListener('blur',  () => { input.style.borderColor = '#0D0D0D'; input.style.boxShadow = 'none'; });
+    input.addEventListener("focus", () => {
+      input.style.borderColor = "#E8681A";
+      input.style.boxShadow = "3px 3px 0px #E8681A";
+    });
+    input.addEventListener("blur", () => {
+      input.style.borderColor = "#0D0D0D";
+      input.style.boxShadow = "none";
+    });
   });
 
-  selectPago?.addEventListener('change', () => {
-    if (selectPago.value === 'efectivo') {
-      fieldVuelto.style.display = 'block';
+  selectPago?.addEventListener("change", () => {
+    if (selectPago.value === "efectivo") {
+      fieldVuelto.style.display = "block";
     } else {
-      fieldVuelto.style.display = 'none';
-      inputPagoCon.value = '';
+      fieldVuelto.style.display = "none";
+      inputPagoCon.value = "";
     }
   });
 
   // Initial state for cash field
-  if (selectPago.value === 'efectivo') fieldVuelto.style.display = 'block';
+  if (selectPago.value === "efectivo") fieldVuelto.style.display = "block";
 
   // ─────────────────────────────────────────────
   // WHATSAPP MESSAGE BUILDER
   // ─────────────────────────────────────────────
 
   function buildWhatsAppMessage(items) {
-    const subtotal = items.reduce((s, i) => s + i.precio * i.qty, 0);
+    const subtotal = items.reduce((s, i) => s + i.subtotalItem, 0);
     const shipping = getShippingCost();
-    const total    = subtotal + shipping;
-    const lines    = items.map(i => `  • ${i.qty}x ${i.nombre} (${formatPrice(i.precio * i.qty)})`).join('\n');
+    const total = subtotal + shipping;
+
+    // Build detail lines — with extras and aclaraciones per product
+    const lines = items
+      .map((i) => {
+        let line = `  • ${i.cantidad}x ${i.nombre} (${formatPrice(
+          i.precioBase
+        )})`;
+        if (i.extras && i.extras.length > 0) {
+          const extrasLines = i.extras
+            .map((e) => `    ➕ Extra: ${e.nombre} (${formatPrice(e.precio)})`)
+            .join("\n");
+          line += "\n" + extrasLines;
+        }
+        if (i.aclaracion && i.aclaracion.trim()) {
+          line += `\n    📝 Aclaración: ${i.aclaracion.trim()}`;
+        }
+        return line;
+      })
+      .join("\n");
 
     const pagoLabels = {
-      efectivo:      '💵 Efectivo',
-      mercadopago:   '📱 Mercado Pago (Alias/CVU)',
-      transferencia: '🏦 Transferencia Bancaria',
+      efectivo: "💵 Efectivo",
+      mercadopago: "📱 Mercado Pago (Alias/CVU)",
+      transferencia: "🏦 Transferencia Bancaria",
     };
-    const paymentMethod = selectPago?.value || 'efectivo';
-    const pagoLabel = pagoLabels[paymentMethod] || 'Efectivo';
+    const paymentMethod = selectPago?.value || "efectivo";
+    const pagoLabel = pagoLabels[paymentMethod] || "Efectivo";
 
     // Cash details
-    let cashLine = '';
-    if (paymentMethod === 'efectivo') {
+    let cashLine = "";
+    if (paymentMethod === "efectivo") {
       const pagoConVal = parseFloat(inputPagoCon?.value);
       if (pagoConVal > total) {
         const vuelto = pagoConVal - total;
-        cashLine = `\n💰 *Paga con:* ${formatPrice(pagoConVal)}\n🪙 *Vuelto:* ${formatPrice(vuelto)}`;
+        cashLine = `\n💰 *Paga con:* ${formatPrice(
+          pagoConVal
+        )}\n🪙 *Vuelto:* ${formatPrice(vuelto)}`;
       } else if (pagoConVal === total) {
         cashLine = `\n💰 *Paga con:* ${formatPrice(pagoConVal)} (Justo)`;
       }
     }
 
-    const userName = inputNombre?.value?.trim() || '(sin especificar)';
-    let entregaLine = '';
-    if (deliveryType === 'delivery') {
-      const dir = inputDireccion?.value?.trim() || '(sin especificar)';
-      const kmInfo = calculatedKm !== null ? ` (${calculatedKm} km)` : '';
-      entregaLine = `🛵 *Entrega:* Delivery\n👤 *Nombre:* ${userName}\n📍 *Dirección:* ${dir}${kmInfo}\n💰 *Costo de envío:* ${formatPrice(shipping)}`;
+    const userName = inputNombre?.value?.trim() || "(sin especificar)";
+    let entregaLine = "";
+    if (deliveryType === "delivery") {
+      const dir = inputDireccion?.value?.trim() || "(sin especificar)";
+      const kmInfo = calculatedKm !== null ? ` (${calculatedKm} km)` : "";
+      entregaLine = `🛵 *Entrega:* Delivery\n👤 *Nombre:* ${userName}\n📍 *Dirección:* ${dir}${kmInfo}\n💰 *Costo de envío:* ${formatPrice(
+        shipping
+      )}`;
     } else {
-      entregaLine  = `🏪 *Entrega:* Retiro en Local\n👤 *Nombre:* ${userName}`;
+      entregaLine = `🏪 *Entrega:* Retiro en Local\n👤 *Nombre:* ${userName}`;
     }
 
-    const shippingLine = deliveryType === 'delivery'
-      ? `\n💰 *Subtotal productos:* ${formatPrice(subtotal)}\n🛵 *Envío:* ${formatPrice(shipping)}`
-      : '';
+    const shippingLine =
+      deliveryType === "delivery"
+        ? `\n💰 *Subtotal productos:* ${formatPrice(
+            subtotal
+          )}\n🛵 *Envío:* ${formatPrice(shipping)}`
+        : "";
 
-    const prefText = inputPref?.value?.trim();
-    const prefLine = prefText ? `\n\n📝 *Preferencias:* ${prefText}` : '';
-
-    return `¡Hola Branco Burgers! 🍔\n\n${entregaLine}\n💳 *Pago:* ${pagoLabel}${cashLine}\n\n📋 *Detalle del pedido:*\n${lines}${shippingLine}${prefLine}\n\n*Total: ${formatPrice(total)}*\n\n¿Podés confirmarme disponibilidad? ¡Gracias!`;
+    return `¡Hola Branco Burgers! 🍔\n\n${entregaLine}\n💳 *Pago:* ${pagoLabel}${cashLine}\n\n📋 *Detalle del pedido:*\n${lines}${shippingLine}\n\n*Total: ${formatPrice(
+      total
+    )}*\n\n¿Podés confirmarme disponibilidad? ¡Gracias!`;
   }
 
   // ─────────────────────────────────────────────
@@ -913,22 +1154,22 @@ const WHATSAPP_NUMBER = '543765044920';
 
   cartItems.subscribe((items) => {
     currentItems = items;
-    const count = items.reduce((s, i) => s + i.qty, 0);
-    const total = items.reduce((s, i) => s + i.precio * i.qty, 0);
+    const count = items.reduce((s, i) => s + i.cantidad, 0);
+    const total = items.reduce((s, i) => s + i.subtotalItem, 0);
 
     if (count > 0) {
-      cartFloat.style.removeProperty('display');
-      cartFloat.style.display = 'block';
+      cartFloat.style.removeProperty("display");
+      cartFloat.style.display = "block";
     } else {
-      cartFloat.style.display = 'none';
+      cartFloat.style.display = "none";
       closeModal();
     }
 
-    cartCountBadge.textContent   = count;
+    cartCountBadge.textContent = count;
     cartTotalDisplay.textContent = formatPrice(total);
 
     // If modal is open, re-render items live
-    const isOpen = modalOverlay.style.display === 'flex';
+    const isOpen = modalOverlay.style.display === "flex";
     if (isOpen) {
       renderItems();
       updateModalTotals();
@@ -939,62 +1180,73 @@ const WHATSAPP_NUMBER = '543765044920';
   // EVENTS
   // ─────────────────────────────────────────────
 
-  cartBtn?.addEventListener('click', openModal);
-  modalCloseBtn?.addEventListener('click', closeModal);
+  cartBtn?.addEventListener("click", openModal);
+  modalCloseBtn?.addEventListener("click", closeModal);
 
-  modalOverlay?.addEventListener('click', (e) => {
+  modalOverlay?.addEventListener("click", (e) => {
     if (e.target === modalOverlay) closeModal();
   });
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
   });
 
-  confirmBtn?.addEventListener('click', () => {
+  confirmBtn?.addEventListener("click", () => {
     if (currentItems.length === 0) return;
 
     // Validation: Name is mandatory for everyone
     if (!inputNombre?.value?.trim()) {
-      alert('Por favor, ingresá tu nombre para procesar el pedido.');
+      alert("Por favor, ingresá tu nombre para procesar el pedido.");
       inputNombre.focus();
       return;
     }
 
     // Validation: Delivery specific
-    if (deliveryType === 'delivery') {
+    if (deliveryType === "delivery") {
       if (!inputDireccion?.value?.trim()) {
-        alert('Por favor, ingresá tu dirección para el envío.');
+        alert("Por favor, ingresá tu dirección para el envío.");
         inputDireccion.focus();
         return;
       }
       if (!shippingCalcDone) {
-        setShippingResultUI('error', { msg: 'Por favor, calculá el costo de envío antes de confirmar.' });
-        shippingResult.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setShippingResultUI("error", {
+          msg: "Por favor, calculá el costo de envío antes de confirmar.",
+        });
+        shippingResult.scrollIntoView({ behavior: "smooth", block: "nearest" });
         return;
       }
     }
 
     // Validation: Pay amount for cash
-    if (selectPago?.value === 'efectivo') {
-      const subtotal = currentItems.reduce((s, i) => s + i.precio * i.qty, 0);
-      const total    = subtotal + (deliveryType === 'delivery' ? currentShipping : 0);
+    if (selectPago?.value === "efectivo") {
+      const subtotal = currentItems.reduce((s, i) => s + i.subtotalItem, 0);
+      const total =
+        subtotal + (deliveryType === "delivery" ? currentShipping : 0);
       const pagoConVal = parseFloat(inputPagoCon?.value);
-      
-      if (inputPagoCon?.value?.trim() !== '' && pagoConVal < total) {
-        alert(`El monto para pagar (${formatPrice(pagoConVal)}) debe ser igual o mayor al total del pedido (${formatPrice(total)}).`);
+
+      if (inputPagoCon?.value?.trim() !== "" && pagoConVal < total) {
+        alert(
+          `El monto para pagar (${formatPrice(
+            pagoConVal
+          )}) debe ser igual o mayor al total del pedido (${formatPrice(
+            total
+          )}).`
+        );
         inputPagoCon.focus();
         return;
       }
     }
 
     const message = buildWhatsAppMessage(currentItems);
-    const url     = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-    window.open(url, '_blank');
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+      message
+    )}`;
+    window.open(url, "_blank");
     closeModal();
   });
 
-  clearCartBtn?.addEventListener('click', () => {
-    if (confirm('¿Vaciar el pedido actual?')) {
+  clearCartBtn?.addEventListener("click", () => {
+    if (confirm("¿Vaciar el pedido actual?")) {
       clearCart();
     }
   });

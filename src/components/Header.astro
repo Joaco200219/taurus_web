@@ -1,19 +1,14 @@
 ---
 // Header — Retro Disruptivo | Branco Burgers
-// TODO: Confirmar horarios reales con el cliente
-const SHIFT_1_START = { h: 11, m: 0  };
-const SHIFT_1_END   = { h: 15, m: 0  };
-const SHIFT_2_START = { h: 19, m: 0  };
-const SHIFT_2_END   = { h: 25, m: 0  };
+// Horario real del local (zona horaria Argentina):
+//   Lunes y Martes: CERRADO
+//   Miércoles y Jueves: 20:00 a 23:30
+//   Viernes, Sábados y Domingos: 20:00 a 00:30
 ---
 
-<header
-  class="theme-header sticky top-0 z-50 w-full"
->
+<header class="theme-header sticky top-0 z-50 w-full">
   <div class="max-w-4xl mx-auto px-3 py-2">
-
     <div class="flex items-center gap-3">
-
       <!-- Logo con borde negro duro estilo sticker -->
       <div class="relative flex-shrink-0">
         <div
@@ -43,7 +38,9 @@ const SHIFT_2_END   = { h: 25, m: 0  };
         >
           <span style="color: #E8681A;">BRANCO</span> BURGERS
         </span>
-        <span style="font-family: 'Inter', sans-serif; color: #6B6660; font-size: clamp(0.5rem, 2vw, 0.65rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 2px;">
+        <span
+          style="font-family: 'Inter', sans-serif; color: #6B6660; font-size: clamp(0.5rem, 2vw, 0.65rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 2px;"
+        >
           HAMBURGUESAS ARTESANALES
         </span>
       </div>
@@ -54,51 +51,128 @@ const SHIFT_2_END   = { h: 25, m: 0  };
         class="flex-shrink-0 flex items-center gap-1 px-2 py-1 font-bold"
         style="background: #0D0D0D; color: #4CAF50; border: 2px solid #0D0D0D; font-size: 0.65rem; font-family: 'Inter', sans-serif; font-weight: 800; box-shadow: 2px 2px 0px #E8681A; letter-spacing: 0.05em;"
       >
-        <span id="hours-dot" class="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0" style="background: #4CAF50;"></span>
+        <span
+          id="hours-dot"
+          class="w-1.5 h-1.5 rounded-full animate-pulse flex-shrink-0"
+          style="background: #4CAF50;"></span>
         <span id="hours-label">ABIERTO</span>
       </div>
     </div>
-
   </div>
 </header>
 
 <script>
-  const SHIFT_1_START = { h: 11, m: 0  };
-  const SHIFT_1_END   = { h: 15, m: 0  };
-  const SHIFT_2_START = { h: 19, m: 0  };
-  const SHIFT_2_END   = { h: 25, m: 0  };
+  // ── Horario de Branco Burgers (zona horaria Argentina) ──
+  // Lunes (1) y Martes (2): CERRADO
+  // Miércoles (3) y Jueves (4): 20:00 a 23:30
+  // Viernes (5), Sábados (6) y Domingos (0): 20:00 a 00:30
+  //
+  // 00:30 del sábado pertenece al turno del viernes a la noche.
+  // Usamos Intl para obtener la hora actual en Argentina.
+
+  const TIMEZONE = "America/Argentina/Buenos_Aires";
+
+  /**
+   * Obtiene la fecha/hora actual en la zona de Argentina
+   * como un objeto con day (0=dom..6=sáb), hour, minute.
+   */
+  function getArgentinaTime() {
+    const now = new Date();
+    // Usar Intl.DateTimeFormat para extraer las partes en la zona correcta
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: TIMEZONE,
+      hour12: false,
+      weekday: "short",
+      hour: "numeric",
+      minute: "numeric",
+    });
+
+    const parts = formatter.formatToParts(now);
+    const weekdayStr = parts.find((p) => p.type === "weekday")?.value || "";
+    const hour = parseInt(
+      parts.find((p) => p.type === "hour")?.value || "0",
+      10
+    );
+    const minute = parseInt(
+      parts.find((p) => p.type === "minute")?.value || "0",
+      10
+    );
+
+    // Mapear weekday string a número (0=dom, 1=lun, ..., 6=sáb)
+    const dayMap: Record<string, number> = {
+      Sun: 0,
+      Mon: 1,
+      Tue: 2,
+      Wed: 3,
+      Thu: 4,
+      Fri: 5,
+      Sat: 6,
+    };
+    const day = dayMap[weekdayStr] ?? new Date().getDay();
+
+    return { day, hour, minute };
+  }
 
   function isOpen(): boolean {
-    const now = new Date();
-    const totalMins = now.getHours() * 60 + now.getMinutes();
-    const s1Start = SHIFT_1_START.h * 60 + SHIFT_1_START.m;
-    const s1End   = SHIFT_1_END.h   * 60 + SHIFT_1_END.m;
-    const s2Start = SHIFT_2_START.h * 60 + SHIFT_2_START.m;
-    const s2End   = SHIFT_2_END.h   * 60 + SHIFT_2_END.m;
-    const extendedMins = totalMins < 2 * 60 ? totalMins + 24 * 60 : totalMins;
-    return (totalMins >= s1Start && totalMins <= s1End) ||
-           (extendedMins >= s2Start && extendedMins <= s2End);
+    const { day, hour, minute } = getArgentinaTime();
+    const totalMins = hour * 60 + minute;
+
+    // Lunes (1) y Martes (2) → siempre cerrado
+    if (day === 1 || day === 2) return false;
+
+    // Miércoles (3) y Jueves (4) → 20:00 a 23:30
+    if (day === 3 || day === 4) {
+      const openMins = 20 * 60; // 1200
+      const closeMins = 23 * 60 + 30; // 1410
+      return totalMins >= openMins && totalMins <= closeMins;
+    }
+
+    // Viernes (5), Sábado (6) y Domingo (0)
+    // Turno: 20:00 a 00:30 (siguiente día)
+    // Pero a las 00:00-00:30 del sábado es parte del turno del viernes.
+    // A las 00:00-00:30 del domingo es parte del turno del sábado.
+    // A las 00:00-00:30 del lunes es parte del turno del domingo.
+
+    // Primero: chequeo si estamos entre 00:00-00:30 del día SIGUIENTE
+    // (es decir, la extensión de la noche anterior cruzando medianoche)
+    if (totalMins <= 30) {
+      // Estamos entre 00:00 y 00:30 del día actual.
+      // Pertenece al turno de la noche anterior.
+      // Sábado 00:00-00:30 → turno del viernes ✓
+      // Domingo 00:00-00:30 → turno del sábado ✓
+      // Lunes 00:00-00:30 → turno del domingo ✓
+      if (day === 6 || day === 0 || day === 1) return true;
+    }
+
+    // Luego: chequeo las 20:00+
+    if (day === 5 || day === 6 || day === 0) {
+      const openMins = 20 * 60; // 1200
+      return totalMins >= openMins;
+    }
+
+    return false;
   }
 
   function updateBadge() {
-    const badge = document.getElementById('hours-badge');
-    const dot   = document.getElementById('hours-dot');
-    const label = document.getElementById('hours-label');
+    const badge = document.getElementById("hours-badge");
+    const dot = document.getElementById("hours-dot");
+    const label = document.getElementById("hours-label");
     if (!badge || !dot || !label) return;
 
     if (isOpen()) {
-      badge.style.background = '#0D0D0D';
-      badge.style.color = '#4CAF50';
-      badge.style.boxShadow = '2px 2px 0px #E8681A';
-      dot.style.background = '#4CAF50';
-      label.textContent = 'ABIERTO';
+      badge.style.background = "#0D0D0D";
+      badge.style.color = "#4CAF50";
+      badge.style.boxShadow = "2px 2px 0px #E8681A";
+      dot.style.background = "#4CAF50";
+      dot.classList.add("animate-pulse");
+      label.textContent = "ABIERTO";
     } else {
-      badge.style.background = '#E8681A';
-      badge.style.color = '#0D0D0D';
-      badge.style.boxShadow = '2px 2px 0px #0D0D0D';
-      dot.style.background = '#0D0D0D';
-      dot.classList.remove('animate-pulse');
-      label.textContent = 'CERRADO';
+      badge.style.background = "#E8681A";
+      badge.style.color = "#0D0D0D";
+      badge.style.boxShadow = "2px 2px 0px #0D0D0D";
+      dot.style.background = "#0D0D0D";
+      dot.classList.remove("animate-pulse");
+      label.textContent = "CERRADO";
     }
   }
 

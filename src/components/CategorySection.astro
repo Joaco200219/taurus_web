@@ -5,6 +5,7 @@ export interface Props {
   id: string;
   category: string;
   emoji: string;
+  categoryKey: string;
   products: Array<{
     id: string;
     nombre: string;
@@ -12,10 +13,11 @@ export interface Props {
     precio: number;
     imagen: string;
     badge?: string | null;
+    categoria?: string;
   }>;
 }
 
-const { id, category, products } = Astro.props;
+const { id, category, categoryKey, products } = Astro.props;
 
 // Strip emoji from category for the big display title
 const categoryName = category.split(' ').slice(1).join(' ');
@@ -53,6 +55,7 @@ const categoryName = category.split(' ').slice(1).join(' ');
         precio={product.precio}
         imagen={product.imagen}
         badge={product.badge}
+        categoria={product.categoria || categoryKey}
       />
     ))}
   </div>

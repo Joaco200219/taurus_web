@@ -1,0 +1,429 @@
+---
+// ModalExtras.astro
+// Se activa a través del evento custom 'open-extras-modal' disparado por ProductCard.
+---
+
+<!-- Modal overlay -->
+<div
+    id="extras-modal-overlay"
+    class="fixed inset-0 z-[110] flex items-end sm:items-center justify-center p-0 sm:p-4"
+    style="background: rgba(0,0,0,0.82); backdrop-filter: blur(4px); display: none;"
+    aria-modal="true"
+    role="dialog"
+    aria-labelledby="extras-modal-title"
+>
+    <div
+        id="extras-modal"
+        class="relative w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col"
+        style="background: #F5F0E8; border: 2px solid #0D0D0D; box-shadow: 6px 6px 0px #E8681A; max-height: 90dvh;"
+    >
+        <!-- ① HERO IMAGE — full width, shown only when product has an image -->
+        <div
+            id="extras-product-image-container"
+            class="relative flex-shrink-0"
+            style="display: none; width: 100%; height: 240px; background: #1a1a1a;"
+        >
+            <!-- Spinner -->
+            <div
+                id="extras-image-loader"
+                class="absolute inset-0 flex items-center justify-center"
+                style="z-index: 3;"
+            >
+                <span class="extras-spinner"></span>
+            </div>
+            <!-- Photo: object-cover keeps aspect-ratio at fixed 240px height -->
+            <img
+                id="extras-product-image"
+                src=""
+                alt=""
+                decoding="async"
+                class="w-full object-cover"
+                style="height: 240px; display: block; opacity: 0; transition: opacity 0.3s ease;"
+            />
+            <!-- Gradient: blends photo into modal body (retro cream color) -->
+            <div
+                aria-hidden="true"
+                style="position:absolute;bottom:0;left:0;right:0;height:64px;background:linear-gradient(to bottom,transparent,#F5F0E8);z-index:2;pointer-events:none;"
+            >
+            </div>
+        </div>
+
+        <!-- ② CLOSE BUTTON — floats top-right over image (or header when no image) -->
+        <button
+            id="extras-modal-close-btn"
+            class="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all active:scale-90"
+            style="background: rgba(13,13,13,0.88); color: #F5F0E8; border: 1.5px solid rgba(245,240,232,0.35); backdrop-filter: blur(6px); z-index: 30;"
+            aria-label="Cerrar modal">✕</button
+        >
+
+        <!-- ③ SCROLLABLE BODY -->
+        <div class="overflow-y-auto flex-1 px-5 pt-4 pb-2 relative z-10">
+            <!-- Burger pattern background (mantiene estética retro) -->
+            <div
+                aria-hidden="true"
+                style="position:absolute;inset:0;z-index:0;pointer-events:none;background-image:url('/img/burger-pattern.png');background-size:280px 280px;background-repeat:repeat;opacity:0.06;mix-blend-mode:multiply;"
+            >
+            </div>
+
+            <!-- Product name + base price -->
+            <div class="mb-4 relative z-10">
+                <h2
+                    id="extras-modal-title"
+                    style="font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: #0D0D0D; letter-spacing: 0.03em; line-height: 1.1;"
+                >
+                </h2>
+                <div class="flex items-center justify-between mt-1">
+                    <span
+                        class="text-xs font-semibold uppercase tracking-wide"
+                        style="color: #6B6660;">Precio base</span
+                    >
+                    <span
+                        id="extras-base-price"
+                        style="font-family: 'Bebas Neue', sans-serif; font-size: 1.25rem; color: #E8681A;"
+                    ></span>
+                </div>
+            </div>
+
+            <!-- Extras checkboxes -->
+            <div id="extras-checkbox-list" class="space-y-2 relative z-10">
+            </div>
+
+            <!-- Hidden (never shown) empty placeholder — kept for JS compat -->
+            <div id="extras-empty-msg" style="display: none;"></div>
+
+            <!-- Aclaración del producto -->
+            <div class="mt-4 space-y-1.5 relative z-10 pb-2">
+                <label
+                    for="extras-aclaracion"
+                    class="text-sm font-bold flex items-center gap-1"
+                    style="color: #0D0D0D;"
+                >
+                    📝 Aclaración del producto
+                </label>
+                <input
+                    id="extras-aclaracion"
+                    type="text"
+                    placeholder="Ej: Sin cebolla, extra salsa..."
+                    class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
+                    style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
+                />
+            </div>
+        </div>
+
+        <!-- ④ FOOTER: subtotal + confirm -->
+        <div
+            class="px-5 py-4 flex-shrink-0 relative z-10"
+            style="border-top: 2px solid #0D0D0D; background: #F5F0E8;"
+        >
+            <div class="flex items-center justify-between mb-3">
+                <span
+                    style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: #0D0D0D;"
+                    >SUBTOTAL</span
+                >
+                <span
+                    id="extras-subtotal"
+                    style="font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: #E8681A;"
+                ></span>
+            </div>
+            <button
+                id="extras-confirm-btn"
+                class="w-full py-4 rounded-2xl flex items-center justify-center gap-3 transition-all duration-200 active:scale-95"
+                style="background: #E8681A; color: #0D0D0D; border: 2.5px solid #0D0D0D; box-shadow: 4px 4px 0px #0D0D0D; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.04em;"
+            >
+                <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                CONFIRMAR Y AGREGAR
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .extras-spinner {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        border: 3px solid #e8681a;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: extras-spin 0.7s linear infinite;
+    }
+    @keyframes extras-spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<script>
+    import { addToCart } from "../stores/cartStore.js";
+    import { getDriveDirectLink } from "../lib/imageUtils.js";
+
+    // ─── DOM refs ─────────────────────────────────────────────────
+    const overlay = document.getElementById(
+        "extras-modal-overlay"
+    ) as HTMLDivElement;
+    const closeBtn = document.getElementById(
+        "extras-modal-close-btn"
+    ) as HTMLButtonElement;
+    const titleEl = document.getElementById(
+        "extras-modal-title"
+    ) as HTMLElement;
+    const basePriceEl = document.getElementById(
+        "extras-base-price"
+    ) as HTMLSpanElement;
+    const checkboxList = document.getElementById(
+        "extras-checkbox-list"
+    ) as HTMLDivElement;
+    const emptyMsg = document.getElementById(
+        "extras-empty-msg"
+    ) as HTMLDivElement;
+    const subtotalEl = document.getElementById(
+        "extras-subtotal"
+    ) as HTMLSpanElement;
+    const confirmBtn = document.getElementById(
+        "extras-confirm-btn"
+    ) as HTMLButtonElement;
+    const aclaracionInput = document.getElementById(
+        "extras-aclaracion"
+    ) as HTMLInputElement;
+    const imageContainer = document.getElementById(
+        "extras-product-image-container"
+    ) as HTMLDivElement;
+    const productImage = document.getElementById(
+        "extras-product-image"
+    ) as HTMLImageElement;
+    const imageLoader = document.getElementById(
+        "extras-image-loader"
+    ) as HTMLDivElement;
+
+    // ─── State ────────────────────────────────────────────────────
+    let currentProduct: {
+        id: string;
+        nombre: string;
+        precio: number;
+        categoria: string;
+        imagen?: string;
+    } | null = null;
+
+    let availableExtras: Array<{
+        id: string;
+        nombre: string;
+        precio: number;
+        categorias: string[];
+    }> = [];
+    let allExtras: Array<{
+        id: string;
+        nombre: string;
+        precio: number;
+        categorias: string[];
+    }> = [];
+
+    // ─── Helpers ──────────────────────────────────────────────────
+    function formatPrice(amount: number) {
+        return new Intl.NumberFormat("es-AR", {
+            style: "currency",
+            currency: "ARS",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0,
+        }).format(amount);
+    }
+
+    function getExtrasForCategory(extras: typeof allExtras, categoria: string) {
+        if (!categoria || !extras?.length) return [];
+        const catLower = categoria.toLowerCase();
+        return extras.filter((e) =>
+            e.categorias.some(
+                (ec) =>
+                    catLower.includes(ec) ||
+                    ec.includes(catLower.replace(/\s+/g, ""))
+            )
+        );
+    }
+
+    function getSelectedExtras(): Array<{ nombre: string; precio: number }> {
+        return Array.from(
+            checkboxList.querySelectorAll<HTMLInputElement>(
+                'input[type="checkbox"]:checked'
+            )
+        ).map((cb) => ({
+            nombre: cb.dataset.extraNombre || "",
+            precio: Number(cb.dataset.extraPrecio || 0),
+        }));
+    }
+
+    function updateSubtotal() {
+        if (!currentProduct) return;
+        const extras = getSelectedExtras();
+        const total =
+            currentProduct.precio + extras.reduce((s, e) => s + e.precio, 0);
+        subtotalEl.textContent = formatPrice(total);
+    }
+
+    // ─── Render extras checkboxes ─────────────────────────────────
+    function renderExtras() {
+        if (availableExtras.length === 0) {
+            checkboxList.innerHTML = "";
+            emptyMsg.style.display = "none";
+            return;
+        }
+        emptyMsg.style.display = "none";
+        checkboxList.innerHTML = availableExtras
+            .map(
+                (extra) => `
+        <label class="flex items-center gap-3 cursor-pointer p-3 transition-all duration-150"
+               style="background:#FFFFFF;border:2px solid #0D0D0D;box-shadow:2px 2px 0px #E8681A;">
+            <input type="checkbox" class="extras-checkbox w-5 h-5 cursor-pointer flex-shrink-0"
+                   data-extra-nombre="${extra.nombre}" data-extra-precio="${
+                    extra.precio
+                }"
+                   style="accent-color:#E8681A;" />
+            <span class="flex-1 text-sm font-semibold" style="color:#0D0D0D;">${
+                extra.nombre
+            }</span>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:1rem;color:#E8681A;">+${formatPrice(
+                extra.precio
+            )}</span>
+        </label>`
+            )
+            .join("");
+
+        checkboxList
+            .querySelectorAll<HTMLInputElement>(".extras-checkbox")
+            .forEach((cb) => {
+                cb.addEventListener("change", () => {
+                    updateSubtotal();
+                    const label = cb.closest("label") as HTMLElement;
+                    if (label) {
+                        if (cb.checked) {
+                            label.style.background = "#FFF3E8";
+                            label.style.borderColor = "#E8681A";
+                            label.style.boxShadow = "3px 3px 0px #0D0D0D";
+                        } else {
+                            label.style.background = "#FFFFFF";
+                            label.style.borderColor = "#0D0D0D";
+                            label.style.boxShadow = "2px 2px 0px #E8681A";
+                        }
+                    }
+                });
+            });
+    }
+
+    // ─── Open ─────────────────────────────────────────────────────
+    function openExtrasModal(product: typeof currentProduct & {}) {
+        currentProduct = product;
+        allExtras = (window as any).__BRANCO_EXTRAS__ || [];
+        availableExtras = getExtrasForCategory(allExtras, product!.categoria);
+
+        // Populate text
+        titleEl.textContent = product!.nombre;
+        basePriceEl.textContent = formatPrice(product!.precio);
+        aclaracionInput.value = "";
+
+        // Image
+        const directUrl = getDriveDirectLink(product!.imagen || "");
+        if (directUrl) {
+            imageContainer.style.display = "block";
+            imageLoader.style.display = "flex";
+            productImage.style.opacity = "0";
+            productImage.alt = product!.nombre;
+            // Reset src to force reload for new product
+            productImage.src = "";
+            requestAnimationFrame(() => {
+                productImage.src = directUrl;
+            });
+            productImage.onload = () => {
+                imageLoader.style.display = "none";
+                productImage.style.opacity = "1";
+            };
+            productImage.onerror = () => {
+                imageContainer.style.display = "none";
+            };
+        } else {
+            imageContainer.style.display = "none";
+        }
+
+        renderExtras();
+        updateSubtotal();
+
+        overlay.style.display = "flex";
+        document.body.style.overflow = "hidden";
+    }
+
+    // ─── Close ────────────────────────────────────────────────────
+    function closeExtrasModal() {
+        overlay.style.display = "none";
+        const checkoutOverlay = document.getElementById(
+            "checkout-modal-overlay"
+        );
+        if (!checkoutOverlay || checkoutOverlay.style.display !== "flex") {
+            document.body.style.overflow = "";
+        }
+        currentProduct = null;
+        // Clear image to free memory
+        productImage.src = "";
+    }
+
+    // ─── Events ───────────────────────────────────────────────────
+    document.addEventListener("open-extras-modal", ((e: CustomEvent) => {
+        openExtrasModal(e.detail);
+    }) as EventListener);
+
+    closeBtn?.addEventListener("click", closeExtrasModal);
+    overlay?.addEventListener("click", (e) => {
+        if (e.target === overlay) closeExtrasModal();
+    });
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && overlay.style.display === "flex")
+            closeExtrasModal();
+    });
+
+    // Aclaracion focus styles
+    aclaracionInput?.addEventListener("focus", () => {
+        aclaracionInput.style.borderColor = "#E8681A";
+        aclaracionInput.style.boxShadow = "3px 3px 0px #E8681A";
+    });
+    aclaracionInput?.addEventListener("blur", () => {
+        aclaracionInput.style.borderColor = "#0D0D0D";
+        aclaracionInput.style.boxShadow = "none";
+    });
+
+    // Confirm → add to cart
+    confirmBtn?.addEventListener("click", () => {
+        if (!currentProduct) return;
+        const selectedExtras = getSelectedExtras();
+        const aclaracion = aclaracionInput?.value?.trim() || "";
+
+        addToCart({
+            id: currentProduct.id,
+            nombre: currentProduct.nombre,
+            precio: currentProduct.precio,
+            extras: selectedExtras,
+            aclaracion,
+        });
+
+        // Flash feedback on card
+        const card = document.querySelector(
+            `[data-product-id="${currentProduct.id}"].product-card`
+        ) as HTMLElement;
+        const feedback = card?.querySelector(".added-feedback") as HTMLElement;
+        if (feedback) {
+            feedback.style.opacity = "1";
+            setTimeout(() => {
+                feedback.style.opacity = "0";
+            }, 600);
+        }
+
+        closeExtrasModal();
+    });
+</script>

@@ -1,11 +1,13 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import CategorySection from '../components/CategorySection.astro';
-import CartFloatingButton from '../components/CartFloatingButton.astro';
-import { getMenuData } from '../lib/googleSheets';
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import CategorySection from "../components/CategorySection.astro";
+import CartFloatingButton from "../components/CartFloatingButton.astro";
+import ModalExtras from "../components/ModalExtras.astro";
+import { getMenuData, getExtras } from "../lib/googleSheets";
 
 const menuData = await getMenuData();
+const extrasData = await getExtras();
 ---
 
 <Layout>
@@ -19,14 +21,14 @@ const menuData = await getMenuData();
     <!-- Grain texture overlay (dark version) -->
     <div
       class="absolute inset-0 pointer-events-none"
-      style="background-image: url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E\"); background-size:300px 300px; mix-blend-mode: overlay;"
-    ></div>
+      style={`background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E"); background-size:300px 300px; mix-blend-mode: overlay;`}
+    >
+    </div>
 
     <!-- Orange decorative stripe top -->
     <div class="w-full h-1.5" style="background: #E8681A;"></div>
 
     <div class="relative z-10 px-5 pt-4 pb-5">
-
       <!-- Hero: EL RITUAL DEL FINDE -->
       <div class="leading-none tracking-tight">
         <div
@@ -34,7 +36,9 @@ const menuData = await getMenuData();
         >
           EL RITUAL
         </div>
-        <div style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; line-height: 1; margin-top: 4px;">
+        <div
+          style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; line-height: 1; margin-top: 4px;"
+        >
           <span
             style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.2rem, 6vw, 2rem); color: #E8681A; background: #0D0D0D; border: 2.5px solid #E8681A; padding: 0 8px 2px; display: inline-block;"
           >
@@ -50,18 +54,24 @@ const menuData = await getMenuData();
 
       <!-- Subtext -->
       <div class="flex items-center gap-3 mt-3">
-        <div class="h-px flex-1" style="background: rgba(232,104,26,0.4);"></div>
+        <div class="h-px flex-1" style="background: rgba(232,104,26,0.4);">
+        </div>
         <p
           style="font-family: 'Bebas Neue', sans-serif; color: #F5F0E8; font-size: 0.85rem; letter-spacing: 0.2em; white-space: nowrap;"
         >
           ELEGÍ • PEDÍ • DISFRUTÁ
         </p>
-        <div class="h-px flex-1" style="background: rgba(232,104,26,0.4);"></div>
+        <div class="h-px flex-1" style="background: rgba(232,104,26,0.4);">
+        </div>
       </div>
     </div>
 
     <!-- Orange bottom stripe -->
-    <div class="w-full h-1" style="background: linear-gradient(90deg, #E8681A, #B84E10, #E8681A);"></div>
+    <div
+      class="w-full h-1"
+      style="background: linear-gradient(90deg, #E8681A, #B84E10, #E8681A);"
+    >
+    </div>
   </div>
 
   <!-- ===== CATEGORY NAVIGATION PILLS ===== -->
@@ -70,59 +80,80 @@ const menuData = await getMenuData();
     style="backdrop-filter: blur(8px);"
   >
     <div class="flex gap-2 px-4 w-max min-w-full">
-      {menuData.map((cat) => (
-        <a
-          href={`#${cat.id}`}
-          class="flex-shrink-0 px-3.5 py-1.5 text-xs font-bold transition-all duration-200 whitespace-nowrap theme-pill-inactive"
-          style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.05em;"
-          data-nav-pill={cat.id}
-        >
-          {cat.emoji} {cat.category.split(' ').slice(1).join(' ')}
-        </a>
-      ))}
+      {
+        menuData.map((cat) => (
+          <a
+            href={`#${cat.id}`}
+            class="flex-shrink-0 px-3.5 py-1.5 text-xs font-bold transition-all duration-200 whitespace-nowrap theme-pill-inactive"
+            style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.05em;"
+            data-nav-pill={cat.id}
+          >
+            {cat.emoji} {cat.category.split(" ").slice(1).join(" ")}
+          </a>
+        ))
+      }
     </div>
   </nav>
 
   <!-- ===== MENU ===== -->
   <main class="pb-32 max-w-4xl mx-auto pt-3">
-    {menuData.map((category) => (
-      <CategorySection
-        id={category.id}
-        category={category.category}
-        emoji={category.emoji}
-        products={category.products}
-      />
-    ))}
+    {
+      menuData.map((category) => (
+        <CategorySection
+          id={category.id}
+          category={category.category}
+          emoji={category.emoji}
+          categoryKey={category.category.split(" ").slice(1).join(" ")}
+          products={category.products}
+        />
+      ))
+    }
   </main>
 
+  <ModalExtras />
   <CartFloatingButton />
 </Layout>
 
+<!-- Inject extras data into the global scope for the ModalExtras component -->
+<script define:vars={{ extrasData }}>
+  window.__BRANCO_EXTRAS__ = extrasData;
+</script>
+
 <script>
-  const sections = document.querySelectorAll('section[id]');
-  const pills = document.querySelectorAll('[data-nav-pill]');
+  const sections = document.querySelectorAll("section[id]");
+  const pills = document.querySelectorAll("[data-nav-pill]");
 
   // Active pill: orange bg, black text, black border
-  const activeStyle   = { bg: '#E8681A', color: '#0D0D0D', border: '2px solid #0D0D0D', shadow: '2px 2px 0px #0D0D0D' };
-  const inactiveStyle = { bg: '#F5F0E8', color: '#6B6660', border: '2px solid #0D0D0D', shadow: 'none' };
+  const activeStyle = {
+    bg: "#E8681A",
+    color: "#0D0D0D",
+    border: "2px solid #0D0D0D",
+    shadow: "2px 2px 0px #0D0D0D",
+  };
+  const inactiveStyle = {
+    bg: "#F5F0E8",
+    color: "#6B6660",
+    border: "2px solid #0D0D0D",
+    shadow: "none",
+  };
 
   function setActivePill(id: string) {
     pills.forEach((pill) => {
       const el = pill as HTMLElement;
       const s = el.dataset.navPill === id ? activeStyle : inactiveStyle;
-      el.style.background  = s.bg;
-      el.style.color       = s.color;
-      el.style.border      = s.border;
-      el.style.boxShadow   = s.shadow;
+      el.style.background = s.bg;
+      el.style.color = s.color;
+      el.style.border = s.border;
+      el.style.boxShadow = s.shadow;
     });
   }
 
   if (pills.length > 0) {
     const first = pills[0] as HTMLElement;
-    first.style.background = '#E8681A';
-    first.style.color      = '#0D0D0D';
-    first.style.border     = '2px solid #0D0D0D';
-    first.style.boxShadow  = '2px 2px 0px #0D0D0D';
+    first.style.background = "#E8681A";
+    first.style.color = "#0D0D0D";
+    first.style.border = "2px solid #0D0D0D";
+    first.style.boxShadow = "2px 2px 0px #0D0D0D";
   }
 
   const observer = new IntersectionObserver(
@@ -131,7 +162,7 @@ const menuData = await getMenuData();
         if (entry.isIntersecting) setActivePill(entry.target.id);
       });
     },
-    { rootMargin: '-20% 0px -60% 0px' }
+    { rootMargin: "-20% 0px -60% 0px" }
   );
 
   sections.forEach((section) => observer.observe(section));
