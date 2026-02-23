@@ -21,12 +21,13 @@
         <div
             id="extras-product-image-container"
             class="relative flex-shrink-0"
-            style="display: none; width: 100%; height: 240px; background: #F5F0E8;"
+            style="display: none; width: 100%; height: 240px; background: #1a1a1a;"
         >
-            <!-- Burger pattern background overlay -->
+            <!-- Burger pattern background overlay (shown only for Guarniciones) -->
             <div
+                id="extras-image-pattern"
                 aria-hidden="true"
-                style="position:absolute;inset:0;z-index:1;pointer-events:none;background-image:url('/img/burger-pattern.png');background-size:200px 200px;background-repeat:repeat;opacity:0.08;mix-blend-mode:multiply;"
+                style="display: none; position:absolute;inset:0;z-index:1;pointer-events:none;background-image:url('/img/burger-pattern.png');background-size:200px 200px;background-repeat:repeat;opacity:0.08;mix-blend-mode:multiply;"
             >
             </div>
             <!-- Spinner -->
@@ -215,6 +216,9 @@
     const imageContainer = document.getElementById(
         "extras-product-image-container"
     ) as HTMLDivElement;
+    const imagePattern = document.getElementById(
+        "extras-image-pattern"
+    ) as HTMLDivElement;
     const productImage = document.getElementById(
         "extras-product-image"
     ) as HTMLImageElement;
@@ -358,6 +362,19 @@
         // Image
         const directUrl = getDriveDirectLink(product!.imagen || "");
         if (directUrl) {
+            // Apply conditional style based on category
+            const isGuarnicion = product!.categoria?.toUpperCase() === "GUARNICIONES";
+            
+            if (isGuarnicion) {
+                imageContainer.style.background = "#F5F0E8";
+                imagePattern.style.display = "block";
+                productImage.style.objectFit = "contain"; // Better for "sticker" look
+            } else {
+                imageContainer.style.background = "#1a1a1a";
+                imagePattern.style.display = "none";
+                productImage.style.objectFit = "cover";
+            }
+
             imageContainer.style.display = "block";
             imageLoader.style.display = "flex";
             productImage.style.opacity = "0";
