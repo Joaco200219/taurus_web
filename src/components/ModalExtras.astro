@@ -356,13 +356,9 @@
             imageLoader.style.display = "flex";
             productImage.style.opacity = "0";
             productImage.alt = product!.nombre;
-            // Optimize image on-the-fly using Astro's image service (Vercel Cache)
-            // w=480 is double the 240px height for retina screens
-            const optimizedUrl = `/_image?url=${encodeURIComponent(directUrl)}&w=480&q=80&f=webp`;
-            
             productImage.src = "";
             requestAnimationFrame(() => {
-                productImage.src = optimizedUrl;
+                productImage.src = directUrl;
             });
             productImage.onload = () => {
                 imageLoader.style.display = "none";
