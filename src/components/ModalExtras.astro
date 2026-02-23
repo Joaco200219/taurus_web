@@ -226,14 +226,8 @@
     const imageContainer = document.getElementById(
         "extras-product-image-container"
     ) as HTMLDivElement;
-    const imagePattern = document.getElementById(
-        "extras-image-pattern"
-    ) as HTMLDivElement;
     const productImage = document.getElementById(
         "extras-product-image"
-    ) as HTMLImageElement;
-    const productImageBlurred = document.getElementById(
-        "extras-product-image-blurred"
     ) as HTMLImageElement;
     const imageLoader = document.getElementById(
         "extras-image-loader"
@@ -375,38 +369,17 @@
         // Image
         const directUrl = getDriveDirectLink(product!.imagen || "");
         if (directUrl) {
-            // Apply conditional style based on category
-            const isGuarnicion = product!.categoria?.toUpperCase() === "GUARNICIONES";
-            
-            if (isGuarnicion) {
-                imageContainer.style.background = "#F5F0E8";
-                imagePattern.style.display = "none"; // Uber eats style doesn't usually use pattern, but we can toggle
-                productImage.style.objectFit = "contain";
-                productImageBlurred.style.display = "block";
-                productImage.style.position = "relative";
-                productImage.style.zIndex = "2";
-            } else {
-                imageContainer.style.background = "#1a1a1a";
-                imagePattern.style.display = "none";
-                productImage.style.objectFit = "cover";
-                productImageBlurred.style.display = "none";
-            }
-
             imageContainer.style.display = "block";
             imageLoader.style.display = "flex";
             productImage.style.opacity = "0";
-            productImageBlurred.style.opacity = "0";
             productImage.alt = product!.nombre;
             productImage.src = "";
-            productImageBlurred.src = "";
             requestAnimationFrame(() => {
                 productImage.src = directUrl;
-                if (isGuarnicion) productImageBlurred.src = directUrl;
             });
             productImage.onload = () => {
                 imageLoader.style.display = "none";
                 productImage.style.opacity = "1";
-                if (isGuarnicion) productImageBlurred.style.opacity = "1";
             };
             productImage.onerror = () => {
                 imageContainer.style.display = "none";
