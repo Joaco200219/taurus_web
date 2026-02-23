@@ -39,9 +39,13 @@ export function getDriveDirectLink(url) {
 
     if (isDirect) return trimmed;
 
-    // Optional: if it still doesn't have a fileId and doesn't look like a direct link, 
-    // we return null to avoid broken images, or the trimmed URL if you prefer a "best effort".
-    return fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w480` : null;
+    /**
+     * OPTIMIZACIÓN DE GOOGLE DRIVE:
+     * Usamos el endpoint de googleusercontent que permite redimensionar y comprimir.
+     * =w800: Ancho de 800px (suficiente para retina y modals).
+     * El servidor de Google genera un WebP comprimido automáticamente.
+     */
+    return fileId ? `https://lh3.googleusercontent.com/d/${fileId}=w800` : null;
 }
 
 /**
