@@ -23,7 +23,17 @@
             class="relative flex-shrink-0"
             style="display: none; width: 100%; height: 240px; background: #1a1a1a;"
         >
-            <!-- Burger pattern background overlay (shown only for Guarniciones) -->
+            <!-- Background Layer: Mirrored Blurred Image (Uber Eats style) -->
+            <img
+                id="extras-product-image-blurred"
+                src=""
+                alt=""
+                aria-hidden="true"
+                class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700"
+                style="filter: blur(20px) brightness(0.85) saturate(1.2); opacity: 0; z-index: 0;"
+            />
+
+            <!-- Burger pattern background overlay (optional/conditional) -->
             <div
                 id="extras-image-pattern"
                 aria-hidden="true"
@@ -222,6 +232,9 @@
     const productImage = document.getElementById(
         "extras-product-image"
     ) as HTMLImageElement;
+    const productImageBlurred = document.getElementById(
+        "extras-product-image-blurred"
+    ) as HTMLImageElement;
     const imageLoader = document.getElementById(
         "extras-image-loader"
     ) as HTMLDivElement;
@@ -367,25 +380,33 @@
             
             if (isGuarnicion) {
                 imageContainer.style.background = "#F5F0E8";
-                imagePattern.style.display = "block";
-                productImage.style.objectFit = "contain"; // Better for "sticker" look
+                imagePattern.style.display = "none"; // Uber eats style doesn't usually use pattern, but we can toggle
+                productImage.style.objectFit = "contain";
+                productImageBlurred.style.display = "block";
+                productImage.style.position = "relative";
+                productImage.style.zIndex = "2";
             } else {
                 imageContainer.style.background = "#1a1a1a";
                 imagePattern.style.display = "none";
                 productImage.style.objectFit = "cover";
+                productImageBlurred.style.display = "none";
             }
 
             imageContainer.style.display = "block";
             imageLoader.style.display = "flex";
             productImage.style.opacity = "0";
+            productImageBlurred.style.opacity = "0";
             productImage.alt = product!.nombre;
             productImage.src = "";
+            productImageBlurred.src = "";
             requestAnimationFrame(() => {
                 productImage.src = directUrl;
+                if (isGuarnicion) productImageBlurred.src = directUrl;
             });
             productImage.onload = () => {
                 imageLoader.style.display = "none";
                 productImage.style.opacity = "1";
+                if (isGuarnicion) productImageBlurred.style.opacity = "1";
             };
             productImage.onerror = () => {
                 imageContainer.style.display = "none";
