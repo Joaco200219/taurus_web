@@ -31,15 +31,17 @@ export function getDriveDirectLink(url) {
         if (m3) fileId = m3[1];
     }
 
-    // Already direct (lh3.googleusercontent.com)
-    if (!fileId && trimmed.startsWith('https://lh3.googleusercontent.com')) {
-        return trimmed;
-    }
+    // If it's already a direct link to an image (ends with png, jpg, etc) 
+    // or comes from common CDNs like Postimages, return it as is.
+    const isDirect = trimmed.match(/\.(jpg|jpeg|png|webp|avif|gif|svg)([?#].*)?$/i) ||
+        trimmed.includes('postimg.cc') ||
+        trimmed.startsWith('https://lh3.googleusercontent.com');
 
-    if (!fileId) return null;
+    if (isDirect) return trimmed;
 
-    // w480 ≈ retina 240px — suficiente para el modal (sm:max-w-md = 448px)
-    return `https://drive.google.com/thumbnail?id=${fileId}&sz=w480`;
+    // Optional: if it still doesn't have a fileId and doesn't look like a direct link, 
+    // we return null to avoid broken images, or the trimmed URL if you prefer a "best effort".
+    return fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w480` : null;
 }
 
 /**

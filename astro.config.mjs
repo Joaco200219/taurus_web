@@ -9,6 +9,11 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
   image: {
-    domains: ['drive.google.com'],
+    remotePatterns: [
+      { protocol: 'https', hostname: 'drive.google.com' },
+      { protocol: 'https', hostname: 'i.postimg.cc' },
+      { protocol: 'https', hostname: 'postimg.cc' },
+      { protocol: 'https', hostname: 'lh3.googleusercontent.com' }
+    ],
   }
 });
