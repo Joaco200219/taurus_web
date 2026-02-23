@@ -13,63 +13,41 @@ const extrasData = await getExtras();
 <Layout>
   <Header />
 
-  <!-- ===== HERO — AMOR A PRIMERA MORDIDA ===== -->
+  <!-- ===== HERO — FULL-WIDTH IMAGE BANNER ===== -->
   <div
-    class="relative overflow-hidden"
+    class="hero-banner relative overflow-hidden"
     style="background: #0D0D0D; border-bottom: 3px solid #E8681A;"
   >
-    <!-- Grain texture overlay (dark version) -->
+    <!-- Hero image -->
+    <img
+      src="/img/hero-burger.jpg"
+      alt="Branco Burgers — hamburguesa artesanal"
+      class="hero-img"
+    />
+
+    <!-- Dark gradient overlay (bottom) -->
+    <div class="hero-overlay"></div>
+
+    <!-- Grain texture overlay -->
     <div
       class="absolute inset-0 pointer-events-none"
       style={`background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E"); background-size:300px 300px; mix-blend-mode: overlay;`}
     >
     </div>
 
-    <!-- Orange decorative stripe top -->
-    <div class="w-full h-1.5" style="background: #E8681A;"></div>
-
-    <div class="relative z-10 px-5 pt-4 pb-5">
-      <!-- Hero: EL RITUAL DEL FINDE -->
-      <div class="leading-none tracking-tight">
-        <div
-          style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 10vw, 3.2rem); color: #FFFFFF; line-height: 0.9; display: block;"
-        >
-          EL RITUAL
-        </div>
-        <div
-          style="display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; line-height: 1; margin-top: 4px;"
-        >
-          <span
-            style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.2rem, 6vw, 2rem); color: #E8681A; background: #0D0D0D; border: 2.5px solid #E8681A; padding: 0 8px 2px; display: inline-block;"
-          >
-            DEL FINDE
-          </span>
-        </div>
-        <div
-          style="font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.8rem, 14vw, 4rem); color: #FFFFFF; line-height: 0.92; -webkit-text-stroke: 2px #E8681A; display: block; margin-top: 2px;"
-        >
-          🕯️
-        </div>
-      </div>
-
-      <!-- Subtext -->
-      <div class="flex items-center gap-3 mt-3">
-        <div class="h-px flex-1" style="background: rgba(232,104,26,0.4);">
-        </div>
-        <p
-          style="font-family: 'Bebas Neue', sans-serif; color: #F5F0E8; font-size: 0.85rem; letter-spacing: 0.2em; white-space: nowrap;"
-        >
-          ELEGÍ • PEDÍ • DISFRUTÁ
-        </p>
-        <div class="h-px flex-1" style="background: rgba(232,104,26,0.4);">
-        </div>
+    <!-- Tagline over the image -->
+    <div class="hero-tagline">
+      <div class="hero-tagline-inner">
+        <div class="hero-line"></div>
+        <p class="hero-text">ELEGÍ &bull; PEDÍ &bull; DISFRUTÁ</p>
+        <div class="hero-line"></div>
       </div>
     </div>
 
     <!-- Orange bottom stripe -->
     <div
       class="w-full h-1"
-      style="background: linear-gradient(90deg, #E8681A, #B84E10, #E8681A);"
+      style="background: linear-gradient(90deg, #E8681A, #B84E10, #E8681A); position: relative; z-index: 3;"
     >
     </div>
   </div>
@@ -122,6 +100,80 @@ const extrasData = await getExtras();
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* ===== HERO BANNER ===== */
+  .hero-banner {
+    position: relative;
+    width: 100%;
+    height: 280px;
+  }
+
+  .hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 35%;
+    display: block;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(13, 13, 13, 0.15) 0%,
+      rgba(13, 13, 13, 0.3) 40%,
+      rgba(13, 13, 13, 0.85) 80%,
+      rgba(13, 13, 13, 0.95) 100%
+    );
+    z-index: 1;
+  }
+
+  .hero-tagline {
+    position: absolute;
+    bottom: 16px;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    padding: 0 20px;
+  }
+
+  .hero-tagline-inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hero-line {
+    flex: 1;
+    height: 1px;
+    background: rgba(232, 104, 26, 0.5);
+  }
+
+  .hero-text {
+    font-family: "Bebas Neue", sans-serif;
+    color: #f5f0e8;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    white-space: nowrap;
+    margin: 0;
+  }
+
+  @media (min-width: 640px) {
+    .hero-banner {
+      height: 360px;
+    }
+    .hero-text {
+      font-size: 1.1rem;
+      letter-spacing: 0.25em;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero-banner {
+      height: 420px;
+    }
+  }
 </style>
 
 <!-- Inject extras data into the global scope for the ModalExtras component -->
@@ -157,7 +209,11 @@ const extrasData = await getExtras();
       el.style.boxShadow = s.shadow;
 
       if (el.dataset.navPill === id) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        el.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "center",
+        });
       }
     });
   }
