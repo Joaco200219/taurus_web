@@ -66,7 +66,7 @@ const extrasData = await getExtras();
             style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.05em;"
             data-nav-pill={cat.id}
           >
-            {cat.emoji} {cat.category.split(" ").slice(1).join(" ")}
+            {cat.category}
           </a>
         ))
       }
@@ -81,7 +81,7 @@ const extrasData = await getExtras();
           id={category.id}
           category={category.category}
           emoji={category.emoji}
-          categoryKey={category.category.split(" ").slice(1).join(" ")}
+          categoryKey={category.category}
           products={category.products}
         />
       ))

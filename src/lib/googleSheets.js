@@ -13,7 +13,7 @@ const EXTRAS_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRUjYQ
 // Incluye "hamburguesas mas papas" como una keyword completa
 const EXTRAS_KEYWORDS = ['hamburguesa', 'combo', 'lomo', 'hamburguesas mas papas'];
 
-// Keys deben coincidir EXACTAMENTE con la columna 'categoria' del Google Sheet (respeta mayúsculas)
+// Fallback de emojis para categorías conocidas (se usa solo si el Sheet NO incluye emoji)
 const CATEGORY_MAP = {
     'Promos del dia': { id: 'promos', emoji: '🔥', label: '🔥 Promos del Día' },
     'Combos': { id: 'combos', emoji: '🎁', label: '🎁 Combos' },
@@ -23,6 +23,45 @@ const CATEGORY_MAP = {
     'Guarniciones': { id: 'guarniciones', emoji: '🍟', label: '🍟 Guarniciones' },
     'Bebidas': { id: 'bebidas', emoji: '🥤', label: '🥤 Bebidas' },
 };
+
+// Regex para detectar emojis al inicio de un string
+const EMOJI_REGEX = /^(\p{Emoji_Presentation}|\p{Emoji}\uFE0F)/u;
+
+/**
+ * Analiza un string de categoría y extrae emoji + nombre.
+ * Si el string ya trae emoji (ej: "🔥 Promos"), lo usa directamente.
+ * Si no, busca en CATEGORY_MAP o usa un emoji por defecto.
+ * @param {string} catKey - El valor crudo de la columna 'categoria'
+ * @returns {{ id: string, emoji: string, label: string }}
+ */
+function resolveCategory(catKey) {
+    // 1. Si hay un match exacto en CATEGORY_MAP y el Sheet NO trae emoji, usar el mapa
+    const hasEmoji = EMOJI_REGEX.test(catKey);
+
+    if (hasEmoji) {
+        // Separar emoji del nombre
+        const match = catKey.match(/^(.+?)\s+(.*)/);
+        const emoji = match ? match[1] : catKey;
+        const name = match ? match[2] : catKey;
+        return {
+            id: name.toLowerCase().replace(/\s+/g, '-'),
+            emoji,
+            label: catKey // Usar tal cual viene del Sheet
+        };
+    }
+
+    // 2. Buscar en CATEGORY_MAP como fallback
+    if (CATEGORY_MAP[catKey]) {
+        return CATEGORY_MAP[catKey];
+    }
+
+    // 3. Categoría totalmente nueva sin emoji ni mapa — emoji por defecto
+    return {
+        id: catKey.toLowerCase().replace(/\s+/g, '-'),
+        emoji: '🍽️',
+        label: `🍽️ ${catKey}`
+    };
+}
 
 export async function getMenuData() {
     // Guard: if no Sheet URL is configured, fall back to local menu.json
@@ -53,7 +92,8 @@ export async function getMenuData() {
                         return disp === 'TRUE';
                     });
 
-                    // 2. Group by Category
+                    // 2. Group by Category — preservando orden de aparición en el Sheet
+                    const categoryOrder = []; // Mantiene el orden de primera aparición
                     const groupedData = {};
 
                     activeRows.forEach(row => {
@@ -64,18 +104,15 @@ export async function getMenuData() {
                         const catKey = cleanRow.categoria || 'Otros';
 
                         if (!groupedData[catKey]) {
-                            const mapData = CATEGORY_MAP[catKey] || {
-                                id: catKey.toLowerCase().replace(/\s+/g, '-'),
-                                emoji: '🍽️',
-                                label: catKey
-                            };
+                            const resolved = resolveCategory(catKey);
 
                             groupedData[catKey] = {
-                                id: mapData.id,
-                                category: mapData.label,
-                                emoji: mapData.emoji,
+                                id: resolved.id,
+                                category: resolved.label,
+                                emoji: resolved.emoji,
                                 products: []
                             };
+                            categoryOrder.push(catKey); // Registrar orden de aparición
                         }
 
                         // 3. Map CSV columns to Product Object
@@ -90,16 +127,8 @@ export async function getMenuData() {
                         });
                     });
 
-                    // Sort categories by CATEGORY_MAP order, then append unmapped ones
-                    const sortedCategories = Object.keys(CATEGORY_MAP)
-                        .filter(key => groupedData[key])
-                        .map(key => groupedData[key]);
-
-                    Object.keys(groupedData).forEach(key => {
-                        if (!CATEGORY_MAP[key]) {
-                            sortedCategories.push(groupedData[key]);
-                        }
-                    });
+                    // Orden final = orden de primera aparición en el Sheet
+                    const sortedCategories = categoryOrder.map(key => groupedData[key]);
 
                     resolve(sortedCategories);
                 },
