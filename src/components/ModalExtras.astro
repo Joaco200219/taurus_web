@@ -109,13 +109,27 @@
 
             <!-- Extras checkboxes -->
             <div id="extras-header" class="mb-2 mt-4" style="display: none;">
-                <span class="text-sm font-bold" style="color: #0D0D0D;">Extras:</span>
+                <span class="text-sm font-bold" style="color: #0D0D0D;"
+                    >Extras:</span
+                >
             </div>
             <div id="extras-checkbox-list" class="space-y-2 relative z-10">
             </div>
 
             <!-- Hidden (never shown) empty placeholder — kept for JS compat -->
             <div id="extras-empty-msg" style="display: none;"></div>
+
+            <!-- Drink selection (radio buttons, combos only) -->
+            <div
+                id="bebida-section"
+                class="mt-4 relative z-10"
+                style="display: none;"
+            >
+                <span class="text-sm font-bold" style="color: #0D0D0D;"
+                    >🥤 Elegí tu bebida:</span
+                >
+                <div id="bebida-radio-list" class="space-y-2 mt-2"></div>
+            </div>
 
             <!-- Aclaración del producto -->
             <div class="mt-4 space-y-1.5 relative z-10 pb-2">
@@ -253,12 +267,14 @@
         id: string;
         nombre: string;
         precio: number;
+        tipo: string;
         categorias: string[];
     }> = [];
     let allExtras: Array<{
         id: string;
         nombre: string;
         precio: number;
+        tipo: string;
         categorias: string[];
     }> = [];
 
@@ -285,7 +301,8 @@
     }
 
     function getSelectedExtras(): Array<{ nombre: string; precio: number }> {
-        return Array.from(
+        // Regular extras (checkboxes)
+        const extras = Array.from(
             checkboxList.querySelectorAll<HTMLInputElement>(
                 'input[type="checkbox"]:checked'
             )
@@ -293,6 +310,19 @@
             nombre: cb.dataset.extraNombre || "",
             precio: Number(cb.dataset.extraPrecio || 0),
         }));
+
+        // Drink (radio button, single selection)
+        const drinkRadio = document.querySelector<HTMLInputElement>(
+            'input[name="bebida-combo"]:checked'
+        );
+        if (drinkRadio) {
+            extras.push({
+                nombre: drinkRadio.dataset.extraNombre || "",
+                precio: Number(drinkRadio.dataset.extraPrecio || 0),
+            });
+        }
+
+        return extras;
     }
 
     function updateSubtotal() {
@@ -305,50 +335,137 @@
 
     // ─── Render extras checkboxes ─────────────────────────────────
     function renderExtras() {
-        if (availableExtras.length === 0) {
+        // Filter out drinks — only regular extras here
+        const regularExtras = availableExtras.filter(
+            (e) => e.tipo !== "bebida"
+        );
+
+        if (regularExtras.length === 0) {
             checkboxList.innerHTML = "";
             emptyMsg.style.display = "none";
             extrasHeader.style.display = "none";
+        } else {
+            emptyMsg.style.display = "none";
+            extrasHeader.style.display = "block";
+            checkboxList.innerHTML = regularExtras
+                .map(
+                    (extra) => `
+            <label class="flex items-center gap-3 cursor-pointer p-3 transition-all duration-150"
+                   style="background:#FFFFFF;border:2px solid #0D0D0D;box-shadow:2px 2px 0px #E8681A;">
+                <input type="checkbox" class="extras-checkbox w-5 h-5 cursor-pointer flex-shrink-0"
+                       data-extra-nombre="${extra.nombre}" data-extra-precio="${
+                        extra.precio
+                    }"
+                       style="accent-color:#E8681A;" />
+                <span class="flex-1 text-sm font-semibold" style="color:#0D0D0D;">${
+                    extra.nombre
+                }</span>
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:1rem;color:#E8681A;">+${formatPrice(
+                    extra.precio
+                )}</span>
+            </label>`
+                )
+                .join("");
+
+            checkboxList
+                .querySelectorAll<HTMLInputElement>(".extras-checkbox")
+                .forEach((cb) => {
+                    cb.addEventListener("change", () => {
+                        updateSubtotal();
+                        const label = cb.closest("label") as HTMLElement;
+                        if (label) {
+                            if (cb.checked) {
+                                label.style.background = "#FFF3E8";
+                                label.style.borderColor = "#E8681A";
+                                label.style.boxShadow = "3px 3px 0px #0D0D0D";
+                            } else {
+                                label.style.background = "#FFFFFF";
+                                label.style.borderColor = "#0D0D0D";
+                                label.style.boxShadow = "2px 2px 0px #E8681A";
+                            }
+                        }
+                    });
+                });
+        }
+
+        // Render drinks section (radio buttons)
+        renderDrinks();
+    }
+
+    // ─── Render drinks (radio buttons, single selection) ──────────
+    function renderDrinks() {
+        const bebidaSection = document.getElementById(
+            "bebida-section"
+        ) as HTMLDivElement;
+        const bebidaList = document.getElementById(
+            "bebida-radio-list"
+        ) as HTMLDivElement;
+        if (!bebidaSection || !bebidaList) return;
+
+        const drinks = availableExtras.filter((e) => e.tipo === "bebida");
+
+        if (drinks.length === 0) {
+            bebidaSection.style.display = "none";
+            bebidaList.innerHTML = "";
             return;
         }
-        emptyMsg.style.display = "none";
-        extrasHeader.style.display = "block";
-        checkboxList.innerHTML = availableExtras
+
+        bebidaSection.style.display = "block";
+        bebidaList.innerHTML = drinks
             .map(
-                (extra) => `
-        <label class="flex items-center gap-3 cursor-pointer p-3 transition-all duration-150"
-               style="background:#FFFFFF;border:2px solid #0D0D0D;box-shadow:2px 2px 0px #E8681A;">
-            <input type="checkbox" class="extras-checkbox w-5 h-5 cursor-pointer flex-shrink-0"
-                   data-extra-nombre="${extra.nombre}" data-extra-precio="${
-                    extra.precio
+                (drink, idx) => `
+            <label class="flex items-center gap-3 cursor-pointer p-3 transition-all duration-150 bebida-label"
+                   style="background:#FFFFFF;border:2px solid #0D0D0D;box-shadow:2px 2px 0px #E8681A;">
+                <input type="radio" name="bebida-combo" class="bebida-radio w-5 h-5 cursor-pointer flex-shrink-0"
+                       data-extra-nombre="${drink.nombre}" data-extra-precio="${
+                    drink.precio
                 }"
-                   style="accent-color:#E8681A;" />
-            <span class="flex-1 text-sm font-semibold" style="color:#0D0D0D;">${
-                extra.nombre
-            }</span>
-            <span style="font-family:'Bebas Neue',sans-serif;font-size:1rem;color:#E8681A;">+${formatPrice(
-                extra.precio
-            )}</span>
-        </label>`
+                       style="accent-color:#E8681A;" ${
+                           idx === 0 ? "checked" : ""
+                       } />
+                <span class="flex-1 text-sm font-semibold" style="color:#0D0D0D;">${
+                    drink.nombre
+                }</span>
+                ${
+                    drink.precio > 0
+                        ? `<span style="font-family:'Bebas Neue',sans-serif;font-size:1rem;color:#E8681A;">+${formatPrice(
+                              drink.precio
+                          )}</span>`
+                        : ""
+                }
+            </label>`
             )
             .join("");
 
-        checkboxList
-            .querySelectorAll<HTMLInputElement>(".extras-checkbox")
-            .forEach((cb) => {
-                cb.addEventListener("change", () => {
+        // Highlight the initially checked one
+        const firstLabel = bebidaList.querySelector(
+            ".bebida-label"
+        ) as HTMLElement;
+        if (firstLabel) {
+            firstLabel.style.background = "#FFF3E8";
+            firstLabel.style.borderColor = "#E8681A";
+            firstLabel.style.boxShadow = "3px 3px 0px #0D0D0D";
+        }
+
+        bebidaList
+            .querySelectorAll<HTMLInputElement>(".bebida-radio")
+            .forEach((radio) => {
+                radio.addEventListener("change", () => {
                     updateSubtotal();
-                    const label = cb.closest("label") as HTMLElement;
+                    // Reset all labels
+                    bebidaList
+                        .querySelectorAll<HTMLElement>(".bebida-label")
+                        .forEach((lbl) => {
+                            lbl.style.background = "#FFFFFF";
+                            lbl.style.borderColor = "#0D0D0D";
+                            lbl.style.boxShadow = "2px 2px 0px #E8681A";
+                        });
+                    // Highlight selected
+                    const label = radio.closest("label") as HTMLElement;
                     if (label) {
-                        if (cb.checked) {
-                            label.style.background = "#FFF3E8";
-                            label.style.borderColor = "#E8681A";
-                            label.style.boxShadow = "3px 3px 0px #0D0D0D";
-                        } else {
-                            label.style.background = "#FFFFFF";
-                            label.style.borderColor = "#0D0D0D";
-                            label.style.boxShadow = "2px 2px 0px #E8681A";
-                        }
+                        label.style.background = "#FFF3E8";
+                        label.style.borderColor = "#E8681A";
+                        label.style.boxShadow = "3px 3px 0px #0D0D0D";
                     }
                 });
             });

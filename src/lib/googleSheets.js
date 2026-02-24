@@ -143,6 +143,7 @@ export async function getExtras() {
                             id: cleanRow.id || '',
                             nombre: cleanRow.nombre || '',
                             precio: parseInt(cleanRow.precio, 10) || 0,
+                            tipo: (cleanRow.tipo || 'extra').trim().toLowerCase(),
                             categorias: (cleanRow.categoria_aplica || '')
                                 .split(',')
                                 .map(c => c.trim().toLowerCase())

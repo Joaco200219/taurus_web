@@ -716,9 +716,13 @@ const WHATSAPP_NUMBER = "543765044920";
             <span class="text-[11px]" style="color:#6B6660;font-weight:500;">${
               e.nombre
             }</span>
-            <span class="text-[10px]" style="color:#E8681A;font-weight:600;">(${formatPrice(
-              e.precio
-            )})</span>
+            ${
+              e.precio > 0
+                ? `<span class="text-[10px]" style="color:#E8681A;font-weight:600;">(${formatPrice(
+                    e.precio
+                  )})</span>`
+                : ""
+            }
           </div>
         `
                 )
@@ -1091,7 +1095,12 @@ const WHATSAPP_NUMBER = "543765044920";
         )})`;
         if (i.extras && i.extras.length > 0) {
           const extrasLines = i.extras
-            .map((e) => `    ➕ Extra: ${e.nombre} (${formatPrice(e.precio)})`)
+            .map(
+              (e) =>
+                `    ➕ ${e.nombre}${
+                  e.precio > 0 ? ` (${formatPrice(e.precio)})` : ""
+                }`
+            )
             .join("\n");
           line += "\n" + extrasLines;
         }
