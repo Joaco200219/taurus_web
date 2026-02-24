@@ -387,9 +387,6 @@ const WHATSAPP_NUMBER = "543765085128";
   const FALLBACK_TARIFA_POR_KM = 500; // ARS por km
   const FALLBACK_MIN_ENVIO = 1500; // ARS mínimo de envío
 
-  // Radio máximo de entrega (km en ruta)
-  const MAX_KM_DELIVERY = 15;
-
   // ─────────────────────────────────────────────
   // STATE
   // ─────────────────────────────────────────────
@@ -399,7 +396,7 @@ const WHATSAPP_NUMBER = "543765085128";
   let currentShipping = 0; // ARS — calculado dinámicamente
   let shippingCalcDone = false; // true cuando el usuario calculó el envío
   let calculatedKm = null; // km resultante del último cálculo
-  let tarifaCache = null; // { tarifaPorKm, minEnvio } — cacheado en memoria
+  let tarifaCache = null; // Array<{ km, price }> — cacheado en memoria
 
   // Coordenadas del local (se geocodifican una vez, al cargar la página)
   let originCoords = null; // { lat, lon }
@@ -461,18 +458,12 @@ const WHATSAPP_NUMBER = "543765085128";
   // SHIPPING — CONFIG FETCH (Google Sheets CSV)
   // ─────────────────────────────────────────────
 
-  async function fetchTarifa() {
+  async function fetchTarifasTable() {
     if (tarifaCache) return tarifaCache;
 
     if (!CONFIG_SHEET_CSV_URL || CONFIG_SHEET_CSV_URL.trim() === "") {
-      console.warn(
-        "[shipping] CONFIG_SHEET_CSV_URL no configurada. Usando valores de fallback."
-      );
-      tarifaCache = {
-        tarifaPorKm: FALLBACK_TARIFA_POR_KM,
-        minEnvio: FALLBACK_MIN_ENVIO,
-      };
-      return tarifaCache;
+      console.warn("[shipping] CONFIG_SHEET_CSV_URL no configurada.");
+      return [];
     }
 
     try {
@@ -480,35 +471,25 @@ const WHATSAPP_NUMBER = "543765085128";
       const text = await res.text();
       const rows = text.trim().split("\n").slice(1); // skip header
 
-      let tarifaPorKm = FALLBACK_TARIFA_POR_KM;
-      let minEnvio = FALLBACK_MIN_ENVIO;
-
+      const table = [];
       rows.forEach((row) => {
-        // Handle both comma and semicolon (depends on Google Sheet locale)
         const delimiter = row.includes(";") ? ";" : ",";
-        const parts = row
-          .split(delimiter)
-          .map((s) => s.trim().replace(/^"|"$/g, ""));
+        const parts = row.split(delimiter).map(s => s.trim().replace(/^"|"$/g, ""));
 
         if (parts.length >= 2) {
-          const clave = parts[0];
-          const valor = parts[1];
-          if (clave === "tarifa_por_km")
-            tarifaPorKm = parseFloat(valor) || FALLBACK_TARIFA_POR_KM;
-          if (clave === "min_envio")
-            minEnvio = parseFloat(valor) || FALLBACK_MIN_ENVIO;
+          const km = parseFloat(parts[0].replace(",", "."));
+          const price = parseFloat(parts[1].replace(".", "").replace(",", "."));
+          if (!isNaN(km) && !isNaN(price)) {
+            table.push({ km, price });
+          }
         }
       });
 
-      tarifaCache = { tarifaPorKm, minEnvio };
+      tarifaCache = table.sort((a, b) => a.km - b.km);
       return tarifaCache;
     } catch (err) {
-      console.warn("[shipping] Error al leer config del Sheet:", err);
-      tarifaCache = {
-        tarifaPorKm: FALLBACK_TARIFA_POR_KM,
-        minEnvio: FALLBACK_MIN_ENVIO,
-      };
-      return tarifaCache;
+      console.warn("[shipping] Error al leer tabla de tarifas:", err);
+      return [];
     }
   }
 
@@ -627,10 +608,15 @@ const WHATSAPP_NUMBER = "543765085128";
       // 3. Get driving distance
       const km = await getRoutingDistanceKm(originCoords, destCoords);
 
-      // 4. Check radius limit
-      if (km > MAX_KM_DELIVERY) {
+      // 5. Fetch table and find price tier
+      const table = await fetchTarifasTable();
+      if (table.length === 0) throw new Error("Tabla de tarifas vacía");
+
+      const tier = table.find((t) => km <= t.km);
+
+      if (!tier) {
         setShippingResultUI("error", {
-          msg: `😔 Tu dirección queda a ${km} km del local. Por ahora hacemos envíos hasta ${MAX_KM_DELIVERY} km. ¡Podés pasar a retirar tu pedido!`,
+          msg: `😔 No tenemos entrega disponible para esa distancia (${km} km).`,
         });
         shippingCalcDone = false;
         currentShipping = 0;
@@ -639,14 +625,9 @@ const WHATSAPP_NUMBER = "543765085128";
         return;
       }
 
-      // 5. Fetch tarifa
-      const { tarifaPorKm, minEnvio } = await fetchTarifa();
+      const price = tier.price;
 
-      // 6. Calculate price
-      const rawPrice = km * tarifaPorKm;
-      const price = Math.ceil(Math.max(rawPrice, minEnvio) / 50) * 50; // round up to nearest 50
-
-      // 7. Update state
+      // 6. Update state
       currentShipping = price;
       shippingCalcDone = true;
       calculatedKm = km;
