@@ -1,5 +1,5 @@
 ---
-import ProductCard from './ProductCard.astro';
+import ProductCard from "./ProductCard.astro";
 
 export interface Props {
   id: string;
@@ -18,13 +18,9 @@ export interface Props {
 }
 
 const { id, category, categoryKey, products } = Astro.props;
-
-// Strip emoji from category for the big display title
-const categoryName = category.split(' ').slice(1).join(' ');
 ---
 
 <section id={id} class="mb-10" style="scroll-margin-top: 140px;">
-
   <!-- Category header — brutalista retro -->
   <div class="px-4 mb-4">
     <div
@@ -47,16 +43,18 @@ const categoryName = category.split(' ').slice(1).join(' ');
 
   <!-- Product list -->
   <div class="flex flex-col gap-3 px-4">
-    {products.map((product) => (
-      <ProductCard
-        id={product.id}
-        nombre={product.nombre}
-        descripcion={product.descripcion}
-        precio={product.precio}
-        imagen={product.imagen}
-        badge={product.badge}
-        categoria={product.categoria || categoryKey}
-      />
-    ))}
+    {
+      products.map((product) => (
+        <ProductCard
+          id={product.id}
+          nombre={product.nombre}
+          descripcion={product.descripcion}
+          precio={product.precio}
+          imagen={product.imagen}
+          badge={product.badge}
+          categoria={product.categoria || categoryKey}
+        />
+      ))
+    }
   </div>
 </section>
