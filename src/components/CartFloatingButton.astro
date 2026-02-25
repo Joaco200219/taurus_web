@@ -1,7 +1,7 @@
 ---
 // CartFloatingButton.astro
-// TODO: Reemplazar con el número de WhatsApp de Branco Burgers (sin + ni espacios, ej: 5491112345678)
-const WHATSAPP_NUMBER = "543765085128";
+// TODO: Reemplazar con el número de WhatsApp del cliente (sin + ni espacios, ej: 5491112345678)
+const WHATSAPP_NUMBER = "NUM-TELEFONO";
 ---
 
 <div id="cart-component-root" data-whatsapp={WHATSAPP_NUMBER}>
@@ -226,7 +226,7 @@ const WHATSAPP_NUMBER = "543765085128";
             >
               <span
                 style="font-size:0.75rem; color:#6B6660; font-weight:600; flex:1;"
-                >🔴 Branco Burgers &nbsp;·&nbsp; 📍 Tu ubicación (arrastrá)</span
+                >🔴 Mi Negocio &nbsp;·&nbsp; 📍 Tu ubicación (arrastrá)</span
               >
             </div>
           </div>
@@ -365,8 +365,8 @@ const WHATSAPP_NUMBER = "543765085128";
   // SHIPPING CONFIGURATION
   // ─────────────────────────────────────────────
 
-  // Dirección del local (origen fijo)
-  const ORIGIN_ADDRESS = "Queirel 5623, Posadas, Misiones, Argentina";
+  // TODO: Reemplazar con la dirección real del local
+  const ORIGIN_ADDRESS = "";
 
   // ── GOOGLE SHEET UNIFICADO ──────────────────────────────────────────────
   // El dueño maneja UN solo Google Sheet con DOS pestañas:
@@ -380,8 +380,8 @@ const WHATSAPP_NUMBER = "543765085128";
   //   2. Archivo → Compartir → Publicar en la web → Esta hoja → CSV → Publicar
   //   3. Copiar esa URL y pegarla abajo
   // TODO: reemplazar '' con la URL CSV de la pestaña Config
-  const CONFIG_SHEET_CSV_URL =
-    "https://docs.google.com/spreadsheets/d/e/2PACX-1vRUjYQ79c41cWdRQw_Ihm4UGnrzuxBIq9CIOQkVCIYsKku595csG9qypXFaaSpYABlRB2lqZ2hMxWjq/pub?gid=1210040946&output=csv";
+  // TODO: Reemplazar con la URL CSV de la pestaña Config del cliente
+  const CONFIG_SHEET_CSV_URL = "";
 
   // Valores de fallback si el Sheet no está configurado o falla
   const FALLBACK_TARIFA_POR_KM = 500; // ARS por km
@@ -474,7 +474,9 @@ const WHATSAPP_NUMBER = "543765085128";
       const table = [];
       rows.forEach((row) => {
         const delimiter = row.includes(";") ? ";" : ",";
-        const parts = row.split(delimiter).map(s => s.trim().replace(/^"|"$/g, ""));
+        const parts = row
+          .split(delimiter)
+          .map((s) => s.trim().replace(/^"|"$/g, ""));
 
         if (parts.length >= 2) {
           const km = parseFloat(parts[0].replace(",", "."));
@@ -503,7 +505,7 @@ const WHATSAPP_NUMBER = "543765085128";
     const res = await fetch(url, {
       headers: {
         "Accept-Language": "es",
-        "User-Agent": "BrancoDeliveryApp/1.0",
+        "User-Agent": "BackboneMenuApp/1.0",
       },
     });
     const data = await res.json();
@@ -599,9 +601,8 @@ const WHATSAPP_NUMBER = "543765085128";
         destCoords = pendingDestCoords;
         pendingDestCoords = null; // consume
       } else {
-        const fullAddress = /posadas|misiones/i.test(address)
-          ? address
-          : `${address}, Posadas, Misiones, Argentina`;
+        // TODO: Reemplazar con la ciudad/localidad del cliente
+        const fullAddress = address;
         destCoords = await geocodeAddress(fullAddress);
       }
 
@@ -639,7 +640,7 @@ const WHATSAPP_NUMBER = "543765085128";
       shippingCalcDone = false;
       currentShipping = 0;
       setShippingResultUI("error", {
-        msg: "No pudimos calcular la distancia. Probá con una dirección más detallada (ej: Av. San Martín 1234, Posadas).",
+        msg: "No pudimos calcular la distancia. Probá con una dirección más detallada.",
       });
       updateModalTotals();
     } finally {
@@ -915,8 +916,8 @@ const WHATSAPP_NUMBER = "543765085128";
       try {
         originCoords = await geocodeAddress(ORIGIN_ADDRESS);
       } catch {
-        originCoords = { lat: -27.3671, lon: -55.8975 };
-      } // Posadas fallback
+        originCoords = { lat: -34.6037, lon: -58.3816 };
+      } // TODO: Reemplazar con las coords reales del local
     }
 
     const map = L.map("leaflet-map").setView(
@@ -939,7 +940,7 @@ const WHATSAPP_NUMBER = "543765085128";
     L.marker([originCoords.lat, originCoords.lon], { icon: redIcon })
       .addTo(map)
       .bindPopup(
-        '<b style="font-family:sans-serif">📍 Branco Burgers</b><br><small>Queirel 5623</small>'
+        '<b style="font-family:sans-serif">📍 Mi Negocio</b><br><small>Dirección del local</small>'
       );
 
     // Draggable blue marker for client — starts at center of visible map
@@ -986,7 +987,7 @@ const WHATSAPP_NUMBER = "543765085128";
       const res = await fetch(url, {
         headers: {
           "Accept-Language": "es",
-          "User-Agent": "BrancoDeliveryApp/1.0",
+          "User-Agent": "BackboneMenuApp/1.0",
         },
       });
       const data = await res.json();
@@ -1133,7 +1134,7 @@ const WHATSAPP_NUMBER = "543765085128";
           )}\n🛵 *Envío:* ${formatPrice(shipping)}`
         : "";
 
-    return `¡Hola Branco Burgers! 🍔\n\n${entregaLine}\n💳 *Pago:* ${pagoLabel}${cashLine}\n\n📋 *Detalle del pedido:*\n${lines}${shippingLine}\n\n*Total: ${formatPrice(
+    return `¡Hola! 🍔\n\n${entregaLine}\n💳 *Pago:* ${pagoLabel}${cashLine}\n\n📋 *Detalle del pedido:*\n${lines}${shippingLine}\n\n*Total: ${formatPrice(
       total
     )}*\n\n¿Podés confirmarme disponibilidad? ¡Gracias!`;
   }

@@ -1,68 +1,21 @@
 [
   {
-    "id": "burgers-clasicas",
-    "category": "🍔 Burgers Clásicas",
-    "emoji": "🍔",
+    "id": "principales",
+    "category": "🍽️ Principales",
+    "emoji": "🍽️",
     "products": [
       {
-        "id": "single",
-        "nombre": "Single Branco",
-        "descripcion": "Pan brioche, carne smash 120g, queso cheddar, lechuga, tomate, cebolla y salsa Branco.",
+        "id": "producto-1",
+        "nombre": "Producto Ejemplo 1",
+        "descripcion": "Descripción del producto principal. Editar según el menú del cliente.",
         "precio": 0,
         "imagen": null,
         "badge": null
       },
       {
-        "id": "doble",
-        "nombre": "Doble Branco",
-        "descripcion": "Pan brioche, 2 carnes smash 120g c/u, doble queso cheddar, lechuga, tomate, cebolla y salsa Branco.",
-        "precio": 0,
-        "imagen": null,
-        "badge": "Doble"
-      },
-      {
-        "id": "triple",
-        "nombre": "Triple Branco",
-        "descripcion": "Pan brioche, 3 carnes smash 120g c/u, triple queso cheddar, lechuga, tomate, cebolla caramelizada y salsa Branco.",
-        "precio": 0,
-        "imagen": null,
-        "badge": "Triple"
-      }
-    ]
-  },
-  {
-    "id": "burgers-especiales",
-    "category": "🔥 Burgers Especiales",
-    "emoji": "🔥",
-    "products": [
-      {
-        "id": "amor-primera-mordida",
-        "nombre": "Amor a Primera Mordida",
-        "descripcion": "Pan brioche tostado, doble carne smash, doble cheddar, salsa especial de la casa, pepinillos y cebolla crocante.",
-        "precio": 0,
-        "imagen": null,
-        "badge": "Especial"
-      },
-      {
-        "id": "branco-bbq",
-        "nombre": "Branco BBQ",
-        "descripcion": "Pan brioche, doble carne smash, cheddar, bacon crocante, aros de cebolla, salsa BBQ casera.",
-        "precio": 0,
-        "imagen": null,
-        "badge": "Especial"
-      },
-      {
-        "id": "cheese-lover",
-        "nombre": "Cheese Lover",
-        "descripcion": "Pan brioche, doble carne smash, triple cheddar derretido, salsa cheese, pepinillos y mostaza.",
-        "precio": 0,
-        "imagen": null,
-        "badge": "Especial"
-      },
-      {
-        "id": "branco-crispy",
-        "nombre": "Branco Crispy",
-        "descripcion": "Pan brioche, pollo crocante rebozado, queso cheddar, lechuga, tomate y mayonesa de ajo.",
+        "id": "producto-2",
+        "nombre": "Producto Ejemplo 2",
+        "descripcion": "Descripción del segundo producto. Editar según el menú del cliente.",
         "precio": 0,
         "imagen": null,
         "badge": "Nuevo"
@@ -75,33 +28,9 @@
     "emoji": "🍟",
     "products": [
       {
-        "id": "papas-fritas",
-        "nombre": "Papas Fritas",
-        "descripcion": "Papas fritas clásicas. Crocantes por fuera, suaves por dentro.",
-        "precio": 0,
-        "imagen": null,
-        "badge": null
-      },
-      {
-        "id": "papas-rusticas",
-        "nombre": "Papas Rústicas",
-        "descripcion": "Papas con piel, condimentadas con especias de la casa.",
-        "precio": 0,
-        "imagen": null,
-        "badge": null
-      },
-      {
-        "id": "papas-cheese",
-        "nombre": "Papas con Cheese",
-        "descripcion": "Papas fritas bañadas en salsa cheese caliente.",
-        "precio": 0,
-        "imagen": null,
-        "badge": "Especial"
-      },
-      {
-        "id": "aros-cebolla",
-        "nombre": "Aros de Cebolla",
-        "descripcion": "Aros de cebolla rebozados y fritos hasta el punto perfecto.",
+        "id": "acomp-1",
+        "nombre": "Acompañamiento Ejemplo",
+        "descripcion": "Descripción del acompañamiento. Editar según el menú del cliente.",
         "precio": 0,
         "imagen": null,
         "badge": null
@@ -114,36 +43,12 @@
     "emoji": "🥤",
     "products": [
       {
-        "id": "coca-cola",
-        "nombre": "Coca-Cola",
-        "descripcion": "Lata 354ml.",
+        "id": "bebida-1",
+        "nombre": "Bebida Ejemplo",
+        "descripcion": "Descripción de la bebida. Editar según el menú del cliente.",
         "precio": 0,
         "imagen": null,
         "badge": null
-      },
-      {
-        "id": "sprite",
-        "nombre": "Sprite",
-        "descripcion": "Lata 354ml.",
-        "precio": 0,
-        "imagen": null,
-        "badge": null
-      },
-      {
-        "id": "agua",
-        "nombre": "Agua Mineral",
-        "descripcion": "500ml, con o sin gas.",
-        "precio": 0,
-        "imagen": null,
-        "badge": null
-      },
-      {
-        "id": "jugo-naranja",
-        "nombre": "Jugo de Naranja Natural",
-        "descripcion": "Exprimido al momento. 400ml.",
-        "precio": 0,
-        "imagen": null,
-        "badge": "Nuevo"
       }
     ]
   }

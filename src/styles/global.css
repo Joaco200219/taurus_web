@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  /* ===== Branco Burgers — Retro Disruptivo ===== */
+  /* ===== Backbone — Plantilla Base ===== */
 
   /* Display font — Bebas Neue para títulos */
   --font-family-display: 'Bebas Neue', 'Inter', system-ui, sans-serif;

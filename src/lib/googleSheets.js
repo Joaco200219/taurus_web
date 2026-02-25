@@ -2,12 +2,12 @@ import Papa from 'papaparse';
 
 // TODO: Reemplazar con la URL del Google Sheet del nuevo cliente
 // Pasos: Sheet > Archivo > Compartir > Publicar en la web > CSV > Copiar enlace
-const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRUjYQ79c41cWdRQw_Ihm4UGnrzuxBIq9CIOQkVCIYsKku595csG9qypXFaaSpYABlRB2lqZ2hMxWjq/pub?output=csv';
+const GOOGLE_SHEET_URL = '';
 
 // TODO: Reemplazar con la URL del Google Sheet de Extras (pestaña "Extras")
 // Columnas esperadas: id, nombre, precio, categoria_aplica
 // categoria_aplica es un string separado por comas, ej: "hamburguesas,lomos,combos"
-const EXTRAS_SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRUjYQ79c41cWdRQw_Ihm4UGnrzuxBIq9CIOQkVCIYsKku595csG9qypXFaaSpYABlRB2lqZ2hMxWjq/pub?gid=103651600&output=csv';
+const EXTRAS_SHEET_URL = '';
 
 // Palabras clave para determinar si un producto admite extras (case-insensitive)
 // Incluye "hamburguesas mas papas" como una keyword completa

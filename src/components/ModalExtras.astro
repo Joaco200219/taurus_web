@@ -474,7 +474,7 @@
     // ─── Open ─────────────────────────────────────────────────────
     function openExtrasModal(product: typeof currentProduct & {}) {
         currentProduct = product;
-        allExtras = (window as any).__BRANCO_EXTRAS__ || [];
+        allExtras = (window as any).__MENU_EXTRAS__ || [];
         availableExtras = getExtrasForCategory(allExtras, product!.categoria);
 
         // Populate text

@@ -1,7 +1,7 @@
 {
-    "name": "Branco Burgers — Menú Digital",
-    "short_name": "Branco",
-    "description": "El menú digital de Branco Burgers. Las mejores smash burgers. Pedí por WhatsApp.",
+    "name": "Mi Negocio — Menú Digital",
+    "short_name": "Mi Negocio",
+    "description": "Menú digital con pedidos por WhatsApp.",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#0D0D0D",

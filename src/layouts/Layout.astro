@@ -1,5 +1,5 @@
 ---
-import '../styles/global.css';
+import "../styles/global.css";
 
 export interface Props {
   title?: string;
@@ -7,22 +7,28 @@ export interface Props {
 }
 
 const {
-  title = 'Branco Burgers — Menú Digital',
-  description = 'El menú digital de Branco Burgers. Las mejores smash burgers. Pedí por WhatsApp.',
+  title = "Mi Negocio — Menú Digital",
+  description = "Menú digital con pedidos por WhatsApp.",
 } = Astro.props;
 ---
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#E8681A" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Branco Burgers" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Mi Negocio" />
 
     <!-- Open Graph -->
     <meta property="og:title" content={title} />
@@ -50,7 +56,8 @@ const {
     <div
       aria-hidden="true"
       style="position:fixed;inset:0;z-index:0;pointer-events:none;background-image:url('/img/burger-pattern.png');background-size:420px 420px;background-repeat:repeat;opacity:0.10;mix-blend-mode:multiply;"
-    ></div>
+    >
+    </div>
     <!-- All content sits above the pattern -->
     <div style="position:relative;z-index:1;">
       <slot />
