@@ -2,34 +2,33 @@
 description: cómo hacer el onboarding de un nuevo cliente rebranding la plantilla
 ---
 
-Este flujo automatiza la transición de la plantilla a un cliente específico.
+Este flujo automatiza la transición de la plantilla a un cliente específico utilizando el **Backbone Master Prompt** y la **Skill de Onboarding**.
 
 1. **Recolección de Información**
-   - Revisa el `Master Prompt` provisto por el usuario.
-   - Si falta información, solicita: Nombre del Cliente, Colores, URLs de Google Sheet y Horarios.
+   - Consulta el archivo `.agent/instructions.md` para entender las reglas del proyecto.
+   - Si no tienes datos del cliente, usa la **Skill of Onboarding** para investigar su marca (Instagram, Web).
+   - Datos mínimos: Nombre, Colores, URL de Google Sheet, WhatsApp y Horarios.
 
 2. **Actualización de Estilos**
    // turbo
-   - Actualiza `--color-brand-orange`, `--color-bg` y `--color-text` en `src/styles/global.css`.
-   - Actualiza las fuentes en `src/layouts/Layout.astro` y las familias en `global.css`.
+   - Actualiza el bloque `@theme` en `src/styles/global.css` (colores y fuentes).
+   - Configura las fuentes externas en `src/layouts/Layout.astro`.
 
 3. **Integración de Datos**
    // turbo
-   - Reemplaza las URLs en `src/lib/googleSheets.js`.
-   - Actualiza el `CATEGORY_MAP` para que coincida con las categorías y emojis del nuevo cliente.
-   - Actualiza `EXTRAS_KEYWORDS` si el nuevo menú usa términos diferentes.
+   - Reemplaza `GOOGLE_SHEET_URL` y `EXTRAS_SHEET_URL` en `src/lib/googleSheets.js`.
+   - Ajusta `CATEGORY_MAP` y `EXTRAS_KEYWORDS` al lenguaje del cliente.
 
 4. **Branding de Componentes**
    // turbo
-   - Actualiza el nombre del cliente y el slogan en `src/components/Header.astro`.
-   - Actualiza la lógica de horarios en la sección `<script>` de `Header.astro`.
-   - Actualiza el número de WhatsApp en el proceso de checkout (ver `CartFloatingButton.astro`).
+   - Personaliza nombre, logo y horarios en `src/components/Header.astro`.
+   - Configura el número de WhatsApp en `CartFloatingButton.astro`.
 
-5. **SEO y Assets**
+5. **Assets y SEO**
    // turbo
    - Actualiza `title` y `description` en `src/layouts/Layout.astro`.
-   - Recuerda al usuario subir `logo.png` y `burger-pattern.png` a `/public`.
+   - Genera o sube `logo.png` y assets visuales a `/public`.
 
-6. **Saneamiento**
+6. **Limpieza Final**
    // turbo
-   - Realiza una búsqueda global de "Branco" y reemplázalo por el nombre del nuevo cliente en textos que no sean código.
+   - Ejecuta un reemplazo global de "Branco" (u otro cliente previo) por el nombre del nuevo cliente en los textos visibles.
