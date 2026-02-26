@@ -1,23 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  /* ===== Backbone — Plantilla Base ===== */
+  /* ===== Taurus Burgers — Dark Street Food Theme ===== */
 
-  /* Display font — Bebas Neue para títulos */
-  --font-family-display: 'Bebas Neue', 'Inter', system-ui, sans-serif;
+  /* Display font — Anton para títulos impactantes */
+  --font-family-display: 'Anton', 'Bebas Neue', 'Inter', system-ui, sans-serif;
   --font-family-sans: 'Inter', system-ui, -apple-system, sans-serif;
 
-  /* Paleta Retro Diner */
-  --color-brand-orange: #E8681A;
-  --color-brand-orange-light: #FF8C42;
-  --color-brand-orange-dark: #B84E10;
+  /* Paleta Taurus Burgers */
+  --color-brand-red: #D81120;
+  --color-brand-yellow: #D97706;
 
-  --color-bg: #F5F0E8;
-  --color-surface: #FFFEFB;
-  --color-card: #FFFFFF;
-  --color-border: #0D0D0D;
-  --color-text: #0D0D0D;
-  --color-muted: #6B6660;
+  --color-bg: #0A0A0A;
+  --color-surface: #111111;
+  --color-card: #1A1A1A;
+  --color-border: #333333;
+  --color-text: #FFFFFF;
+  --color-muted: #CCCCCC;
 }
 
 /* ===== BASE ===== */
@@ -31,22 +30,23 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Cream/Paper background with noise grain texture */
+  /* Subway tile background — azulejos industriales oscuros */
   body {
-    background-color: #F5F0E8;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
-    background-size: 300px 300px;
-    color: #0D0D0D;
+    background-color: #0A0A0A;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='%230A0A0A'/%3E%3Crect x='1' y='1' width='57' height='27' fill='%230D0D0D' rx='0'/%3E%3Crect x='31' y='31' width='28' height='27' fill='%230D0D0D' rx='0'/%3E%3Crect x='1' y='31' width='27' height='27' fill='%230D0D0D' rx='0'/%3E%3Crect x='0' y='0' width='60' height='60' fill='none' stroke='%231E1E1E' stroke-width='1'/%3E%3Cline x1='30' y1='30' x2='60' y2='30' stroke='%231E1E1E' stroke-width='1'/%3E%3Cline x1='30' y1='30' x2='30' y2='60' stroke='%231E1E1E' stroke-width='1'/%3E%3Cline x1='0' y1='30' x2='30' y2='30' stroke='%231E1E1E' stroke-width='1'/%3E%3C/svg%3E");
+    background-size: 60px 60px;
+    color: #FFFFFF;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     min-height: 100dvh;
     overscroll-behavior: none;
   }
 
-  /* Display headings use Bebas Neue */
+  /* Display headings use Anton */
   h1,
   h2,
   h3 {
-    font-family: 'Bebas Neue', system-ui, sans-serif;
+    font-family: 'Anton', 'Bebas Neue', system-ui, sans-serif;
+    letter-spacing: 0.02em;
   }
 
   /* Scrollbar */
@@ -55,18 +55,18 @@
   }
 
   ::-webkit-scrollbar-track {
-    background: #F5F0E8;
+    background: #0A0A0A;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #E8681A;
+    background: #D81120;
     border-radius: 0px;
   }
 
   /* Select options */
   select option {
-    background: #FFFFFF;
-    color: #0D0D0D;
+    background: #1A1A1A;
+    color: #FFFFFF;
   }
 }
 
@@ -74,85 +74,94 @@
 @layer utilities {
 
   .theme-bg {
-    background-color: #F5F0E8;
+    background-color: #0A0A0A;
   }
 
   .theme-surface {
-    background-color: #FFFEFB;
-    border-color: #0D0D0D;
+    background-color: #111111;
+    border-color: #333333;
   }
 
   .theme-card {
-    background-color: #FFFFFF;
-    border-color: #0D0D0D;
+    background-color: #1A1A1A;
+    border-color: #333333;
   }
 
   .theme-text {
-    color: #0D0D0D;
+    color: #FFFFFF;
   }
 
   .theme-muted {
-    color: #6B6660;
+    color: #CCCCCC;
   }
 
-  /* Header: cream bg, thick black bottom border + orange shadow */
+  /* Header: dark bg, red bottom shadow */
   .theme-header {
-    background-color: #F5F0E8;
-    border-bottom: 3px solid #0D0D0D;
-    box-shadow: 0 3px 0px #E8681A;
+    background-color: #0A0A0A;
+    border-bottom: 2px solid #333333;
+    box-shadow: 0 3px 0px #D81120;
   }
 
-  /* Category nav: cream bg, black border */
+  /* Category nav */
   .theme-nav {
-    background-color: rgba(245, 240, 232, 0.97);
-    border-bottom: 2px solid #0D0D0D;
+    background-color: rgba(10, 10, 10, 0.97);
+    border-bottom: 1px solid #333333;
   }
 
-  /* Inactive nav pill — cream pill with black border */
+  /* Inactive nav pill */
   .theme-pill-inactive {
-    background-color: #F5F0E8;
-    color: #6B6660;
-    border: 2px solid #0D0D0D;
+    background-color: #111111;
+    color: #CCCCCC;
+    border: 1px solid #333333;
   }
 
-  /* Inputs — white with hard black border */
+  /* Inputs */
   .theme-input {
-    background-color: #FFFFFF;
-    border-color: #0D0D0D;
-    color: #0D0D0D;
+    background-color: #111111;
+    border-color: #333333;
+    color: #FFFFFF;
+  }
+
+  .theme-input:focus {
+    border-color: #D81120;
+    outline: none;
   }
 
   /* Modal */
   .theme-modal {
-    background-color: #F5F0E8;
-    border-color: #0D0D0D;
+    background-color: #111111;
+    border-color: #333333;
   }
 
   .theme-modal-section {
-    background-color: #FFFFFF;
-    border-color: #0D0D0D;
+    background-color: #1A1A1A;
+    border-color: #333333;
   }
 
   .theme-modal-footer {
-    background-color: #F5F0E8;
-    border-top: 2px solid #0D0D0D;
+    background-color: #0A0A0A;
+    border-top: 1px solid #333333;
   }
 
   .theme-close-btn {
-    background-color: #0D0D0D;
-    color: #F5F0E8;
+    background-color: #333333;
+    color: #FFFFFF;
+  }
+
+  .theme-close-btn:hover {
+    background-color: #D81120;
   }
 
   .theme-divider {
-    border-color: #0D0D0D;
+    border-color: #333333;
   }
 
-  /* Brutalista sticker shadow */
+  /* Brutalista sticker shadow - adapted for dark mode */
   .sticker-shadow {
-    box-shadow: 4px 4px 0px #E8681A;
+    box-shadow: 4px 4px 0px #D81120;
   }
 
   .sticker-shadow-black {
-    box-shadow: 4px 4px 0px #0D0D0D;
+    box-shadow: 4px 4px 0px #000000;
   }
 }

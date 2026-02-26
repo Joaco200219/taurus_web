@@ -15,35 +15,35 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
   >
     <div
       id="checkout-modal"
-      class="relative w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl overflow-hidden flex flex-col"
-      style="background: #F5F0E8; border: 2px solid #0D0D0D; box-shadow: 6px 6px 0px #E8681A; max-height: 92dvh;"
+      class="relative w-full sm:max-w-md rounded-t-xl sm:rounded-xl overflow-hidden flex flex-col"
+      style="background: #111111; border: 1px solid #333333; box-shadow: 6px 6px 0px #D81120; max-height: 92dvh;"
     >
-      <!-- Burger pattern — same as body, clipped by modal's overflow:hidden -->
+      <!-- Burger pattern — screen blend for dark bg -->
       <div
         aria-hidden="true"
-        style="position:absolute;inset:0;z-index:0;pointer-events:none;background-image:url('/img/burger-pattern.png');background-size:320px 320px;background-repeat:repeat;opacity:0.08;mix-blend-mode:multiply;"
+        style="position:absolute;inset:0;z-index:0;pointer-events:none;background-image:url('/img/burger-pattern.png');background-size:300px 300px;background-repeat:repeat;opacity:0.03;mix-blend-mode:screen;"
       >
       </div>
       <!-- Modal header -->
       <div
         class="flex items-center justify-between px-5 py-4 flex-shrink-0"
-        style="border-bottom: 2px solid #0D0D0D;"
+        style="border-bottom: 1px solid #333;"
       >
         <div>
           <h2
             id="modal-title"
-            style="font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: #E8681A; letter-spacing: 0.03em;"
+            style="font-family: 'Anton', sans-serif; font-size: 1.6rem; color: #FFB800; letter-spacing: 0.03em;"
           >
             FINALIZAR PEDIDO 🛒
           </h2>
-          <p class="text-xs mt-0.5" style="color: #6B6660; font-weight: 600;">
+          <p class="text-xs mt-0.5" style="color: #CCCCCC; font-weight: 600;">
             Completá los datos para tu pedido
           </p>
         </div>
         <button
           id="modal-close-btn"
-          class="w-9 h-9 rounded-full flex items-center justify-center text-lg transition-all active:scale-90"
-          style="background: #0D0D0D; color: #F5F0E8; border: 1.5px solid #0D0D0D;"
+          class="w-9 h-9 rounded-sm flex items-center justify-center text-lg transition-all active:scale-90"
+          style="background: #333; color: #FFFFFF; border: 1px solid #555;"
           aria-label="Cerrar modal">✕</button
         >
       </div>
@@ -52,18 +52,18 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
         <!-- Order summary -->
         <div
           class="p-4"
-          style="background: #FFFFFF; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #E8681A;"
+          style="background: #1A1A1A; border: 1px solid #333; box-shadow: 3px 3px 0px #D81120;"
         >
           <div class="flex items-center justify-between mb-3">
             <p
-              style="font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; color: #0D0D0D; letter-spacing: 0.06em;"
+              style="font-family: 'Anton', sans-serif; font-size: 0.95rem; color: #FFFFFF; letter-spacing: 0.06em;"
             >
               TU PEDIDO
             </p>
             <button
               id="clear-cart-btn"
-              class="text-xs font-bold px-2 py-1 rounded-lg transition-all active:scale-90"
-              style="background: #F5F0E8; color: #E8681A; border: 2px solid #0D0D0D;"
+              class="text-xs font-bold px-2 py-1 transition-all active:scale-90"
+              style="background: #333; color: #CCCCCC; border: 1px solid #555;"
             >
               🗑 Vaciar pedido
             </button>
@@ -71,15 +71,15 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
           <ul id="modal-items-list" class="space-y-2 mb-3"></ul>
           <div
             class="flex items-center justify-between pt-3"
-            style="border-top: 1.5px solid #0D0D0D;"
+            style="border-top: 1px solid #333;"
           >
-            <span class="text-sm font-bold" style="color: #6B6660;"
+            <span class="text-sm font-bold" style="color: #CCCCCC;"
               >Subtotal</span
             >
             <span
               id="modal-subtotal"
               class="text-base font-bold"
-              style="color: #0D0D0D;"></span>
+              style="color: #FFFFFF;"></span>
           </div>
           <!-- Shipping cost row (only visible on delivery) -->
           <div
@@ -89,25 +89,25 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
           >
             <span
               class="text-sm font-bold"
-              style="color: #E8681A; font-weight: 800;">🛵 Envío</span
+              style="color: #D81120; font-weight: 800;">🛵 Envío</span
             >
             <span
               id="modal-shipping-cost"
               class="text-base font-bold"
-              style="color: #E8681A;"></span>
+              style="color: #D81120;"></span>
           </div>
           <!-- Grand total -->
           <div
             class="flex items-center justify-between pt-2 mt-1"
-            style="border-top: 2px solid #0D0D0D;"
+            style="border-top: 1px solid #333;"
           >
             <span
-              style="font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: #0D0D0D;"
+              style="font-family: 'Anton', sans-serif; font-size: 1.1rem; color: #CCCCCC;"
               >TOTAL</span
             >
             <span
               id="modal-total"
-              style="font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: #E8681A;"
+              style="font-family: 'Anton', sans-serif; font-size: 1.6rem; color: #FFB800;"
             ></span>
           </div>
         </div>
@@ -117,16 +117,16 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
           <label
             for="input-nombre"
             class="text-sm font-bold flex items-center gap-1"
-            style="color: #0D0D0D;"
+            style="color: #FFFFFF;"
           >
-            👤 Tu nombre <span style="color:#E8681A;">*</span>
+            👤 Tu nombre <span style="color:#D81120;">*</span>
           </label>
           <input
             id="input-nombre"
             type="text"
             placeholder="Ej: Juan García"
-            class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
-            style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
+            class="w-full px-4 py-3 text-sm outline-none transition-all"
+            style="background: #1A1A1A; border: 1px solid #444; color: #FFFFFF; border-radius: 4px;"
             required
           />
         </div>
@@ -134,26 +134,26 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
         <!-- Delivery type -->
         <div>
           <p
-            style="font-family: 'Bebas Neue', sans-serif; font-size: 1rem; color: #0D0D0D; letter-spacing: 0.05em; margin-bottom: 10px;"
+            style="font-family: 'Anton', sans-serif; font-size: 1rem; color: #FFFFFF; letter-spacing: 0.05em; margin-bottom: 10px;"
           >
             TIPO DE ENTREGA
           </p>
           <div class="grid grid-cols-2 gap-2">
             <button
               id="toggle-delivery"
-              class="delivery-toggle py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-95"
+              class="delivery-toggle py-3 px-4 font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-95"
               data-type="delivery"
-              style="background: #E8681A; color: #0D0D0D; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #0D0D0D; font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 0.04em;"
+              style="background: #D81120; color: #FFFFFF; border: 2px solid #0A0A0A; box-shadow: 3px 3px 0px #0A0A0A; font-family: 'Anton', sans-serif; font-size: 0.95rem; letter-spacing: 0.04em; border-radius: 4px;"
             >
               🛵 DELIVERY
             </button>
             <button
               id="toggle-retiro"
-              class="delivery-toggle py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-95"
+              class="delivery-toggle py-3 px-4 font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-95"
               data-type="retiro"
-              style="background: #F5F0E8; color: #6B6660; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #0D0D0D; font-family: 'Bebas Neue', sans-serif; font-size: 0.95rem; letter-spacing: 0.04em;"
+              style="background: #1A1A1A; color: #CCCCCC; border: 1px solid #333; box-shadow: 3px 3px 0px #0A0A0A; font-family: 'Anton', sans-serif; font-size: 0.95rem; letter-spacing: 0.04em; border-radius: 4px;"
             >
-              🏪 RETIRO LOCAL
+              🏦 RETIRO LOCAL
             </button>
           </div>
         </div>
@@ -165,7 +165,7 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
             <label
               for="input-direccion"
               class="text-sm font-bold"
-              style="color: #0D0D0D;"
+              style="color: #CCCCCC;"
             >
               🏠 Dirección completa
             </label>
@@ -173,22 +173,22 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
               id="input-direccion"
               type="text"
               placeholder="Ej: Av. Colón 1234, Córdoba"
-              class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
-              style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
+              class="w-full px-4 py-3 text-sm outline-none transition-all"
+              style="background: #1A1A1A; border: 1px solid #444; color: #FFFFFF; border-radius: 4px;"
               autocomplete="off"
             />
             <div class="flex gap-2">
               <button
                 id="calc-envio-btn"
-                class="flex-1 py-3 px-4 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-95"
-                style="background: #0D0D0D; color: #F5F0E8; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #E8681A; font-family: 'Bebas Neue', sans-serif; font-size: 0.9rem; letter-spacing: 0.04em;"
+                class="flex-1 py-3 px-4 font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 active:scale-95"
+                style="background: #1A1A1A; color: #FFFFFF; border: 1px solid #444; box-shadow: 3px 3px 0px #D81120; font-family: 'Anton', sans-serif; font-size: 0.9rem; letter-spacing: 0.04em; border-radius: 4px;"
               >
                 📍 Calcular envío
               </button>
               <button
                 id="toggle-map-btn"
-                class="py-3 px-3 rounded-xl font-bold text-sm transition-all duration-200 flex items-center justify-center active:scale-95"
-                style="background: #F5F0E8; color: #0D0D0D; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #E8681A; font-size: 1.1rem;"
+                class="py-3 px-3 font-bold text-sm transition-all duration-200 flex items-center justify-center active:scale-95"
+                style="background: #1A1A1A; color: #FFFFFF; border: 1px solid #444; box-shadow: 3px 3px 0px #D81120; font-size: 1.1rem; border-radius: 4px;"
                 title="Elegir en el mapa"
                 aria-label="Abrir mapa"
               >
@@ -200,19 +200,19 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
           <!-- Map container (lazy-loaded Leaflet) -->
           <div
             id="map-container"
-            style="display:none; border: 2px solid #0D0D0D; border-radius: 12px; overflow: hidden; box-shadow: 3px 3px 0px #E8681A;"
+            style="display:none; border: 1px solid #333; border-radius: 4px; overflow: hidden; box-shadow: 3px 3px 0px #D81120;"
           >
             <div
-              style="background:#0D0D0D; padding: 8px 12px; display:flex; align-items:center; justify-content:between; gap:8px;"
+              style="background:#0A0A0A; padding: 8px 12px; display:flex; align-items:center; justify-content:between; gap:8px;"
             >
               <p
-                style="font-family:'Bebas Neue',sans-serif; font-size:0.85rem; color:#F5F0E8; letter-spacing:0.04em; flex:1;"
+                style="font-family:'Anton',sans-serif; font-size:0.85rem; color:#FFFFFF; letter-spacing:0.04em; flex:1;"
               >
                 🗺️ ARRASTRÁ EL PIN AZUL A TU DIRECCIÓN
               </p>
               <button
                 id="close-map-btn"
-                style="background:transparent; color:#E8681A; font-size:1rem; font-weight:900; border:none; cursor:pointer; padding:0 4px;"
+                style="background:transparent; color:#D81120; font-size:1rem; font-weight:900; border:none; cursor:pointer; padding:0 4px;"
                 >✕</button
               >
             </div>
@@ -222,11 +222,11 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
             >
             </div>
             <div
-              style="padding:8px 12px; background:#F5F0E8; border-top:1.5px solid #0D0D0D; display:flex; align-items:center; gap:8px;"
+              style="padding:8px 12px; background:#1A1A1A; border-top:1px solid #333; display:flex; align-items:center; gap:8px;"
             >
               <span
-                style="font-size:0.75rem; color:#6B6660; font-weight:600; flex:1;"
-                >🔴 Mi Negocio &nbsp;·&nbsp; 📍 Tu ubicación (arrastrá)</span
+                style="font-size:0.75rem; color:#CCCCCC; font-weight:600; flex:1;"
+                >🔴 Taurus Burgers &nbsp;·&nbsp; 📍 Tu ubicación (arrastrá)</span
               >
             </div>
           </div>
@@ -243,15 +243,15 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
             <label
               for="select-pago"
               class="text-sm font-bold"
-              style="color: #0D0D0D;"
+              style="color: #CCCCCC;"
             >
               💳 Método de Pago
             </label>
             <div class="relative">
               <select
                 id="select-pago"
-                class="w-full px-4 py-3 rounded-xl text-sm outline-none appearance-none cursor-pointer transition-all"
-                style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
+                class="w-full px-4 py-3 text-sm outline-none appearance-none cursor-pointer transition-all"
+                style="background: #1A1A1A; border: 1px solid #444; color: #FFFFFF; border-radius: 4px;"
               >
                 <option value="efectivo">💵 Efectivo</option>
                 <option value="mercadopago">📱 Mercado Pago (Alias/CVU)</option>
@@ -259,7 +259,7 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
               </select>
               <div
                 class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none"
-                style="color: #E8681A;"
+                style="color: #FFB800;"
               >
                 ▼
               </div>
@@ -271,7 +271,7 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
             <label
               for="input-pago-con"
               class="text-sm font-bold"
-              style="color: #0D0D0D;"
+              style="color: #CCCCCC;"
             >
               💸 ¿Con cuánto pagás?
             </label>
@@ -280,10 +280,10 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
               type="number"
               inputmode="numeric"
               placeholder="Ej: 5000"
-              class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
-              style="background: #FFFFFF; border: 2px solid #0D0D0D; color: #0D0D0D;"
+              class="w-full px-4 py-3 text-sm outline-none transition-all"
+              style="background: #1A1A1A; border: 1px solid #444; color: #FFFFFF; border-radius: 4px;"
             />
-            <p class="text-[10px] italic" style="color: #6B6660;">
+            <p class="text-[10px] italic" style="color: #CCCCCC;">
               Ingresá el monto para que el repartidor lleve vuelto.
             </p>
           </div>
@@ -293,12 +293,12 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
       <!-- Footer: confirm button -->
       <div
         class="px-5 py-4 flex-shrink-0"
-        style="border-top: 2px solid #0D0D0D; background: #F5F0E8;"
+        style="border-top: 1px solid #333; background: #0A0A0A;"
       >
         <button
           id="confirm-whatsapp-btn"
-          class="w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-3 transition-all duration-200 active:scale-95"
-          style="background: #25D366; color: #0D0D0D; border: 2.5px solid #0D0D0D; box-shadow: 4px 4px 0px #0D0D0D; font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.04em;"
+          class="w-full py-4 font-black text-base flex items-center justify-center gap-3 transition-all duration-200 active:scale-95"
+          style="background: #25D366; color: #0A0A0A; border: 2px solid #0A0A0A; box-shadow: 4px 4px 0px #0A0A0A; font-family: 'Anton', sans-serif; font-size: 1.1rem; letter-spacing: 0.04em; border-radius: 4px;"
         >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
             <path
@@ -319,8 +319,8 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
   >
     <button
       id="cart-btn"
-      class="flex items-center gap-3 px-5 py-3.5 rounded-2xl font-black text-sm shadow-2xl transition-all duration-300 active:scale-95 select-none"
-      style="background: #E8681A; color: #0D0D0D; border: 2.5px solid #0D0D0D; box-shadow: 5px 5px 0px #0D0D0D;"
+      class="flex items-center gap-3 px-5 py-3.5 font-black text-sm shadow-2xl transition-all duration-300 active:scale-95 select-none"
+      style="background: #FFB800; color: #0A0A0A; border: 2.5px solid #0A0A0A; box-shadow: 5px 5px 0px #D81120; border-radius: 4px;"
       aria-label="Ver carrito y finalizar pedido"
     >
       <div class="relative">
@@ -343,7 +343,7 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
         <span
           id="cart-count-badge"
           class="absolute -top-2 -right-2 w-5 h-5 rounded-full flex items-center justify-center text-xs font-black"
-          style="background: #0D0D0D; color: #E8681A; border: 1.5px solid #0D0D0D;"
+          style="background: #D81120; color: #FFFFFF; border: 1.5px solid #0A0A0A;"
           >0</span
         >
       </div>
@@ -727,23 +727,23 @@ const WHATSAPP_NUMBER = "NUM-TELEFONO";
           <div class="flex items-center gap-1 flex-shrink-0">
             <button class="cart-qty-btn w-6 h-6 flex items-center justify-center font-black text-sm leading-none transition-all active:scale-90"
               data-action="dec" data-key="${item.cartKey}"
-              style="background:#F5F0E8;color:#0D0D0D;border:1.5px solid #0D0D0D;box-shadow:2px 2px 0px #E8681A;">−</button>
-            <span class="text-xs font-black w-5 text-center" style="color:#0D0D0D;">${
+              style="background:#1A1A1A;color:#CCCCCC;border:1px solid #444;box-shadow:2px 2px 0px #D81120;">−</button>
+            <span class="text-xs font-black w-5 text-center" style="color:#FFFFFF;">${
               item.cantidad
             }</span>
             <button class="cart-qty-btn w-6 h-6 flex items-center justify-center font-black text-sm leading-none transition-all active:scale-90"
               data-action="inc" data-key="${item.cartKey}"
-              style="background:#E8681A;color:#0D0D0D;border:1.5px solid #0D0D0D;box-shadow:2px 2px 0px #0D0D0D;">+</button>
+              style="background:#FFB800;color:#0A0A0A;border:1px solid #0A0A0A;box-shadow:2px 2px 0px #0A0A0A;">+</button>
           </div>
-          <span class="text-sm flex-1 truncate" style="color:#0D0D0D;font-weight:600;">${
+          <span class="text-sm flex-1 truncate" style="color:#FFFFFF;font-weight:600;">${
             item.nombre
           }</span>
-          <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:#E8681A;flex-shrink:0;">${formatPrice(
+          <span style="font-family:'Anton',sans-serif;font-size:1.05rem;color:#FFB800;flex-shrink:0;">${formatPrice(
             item.subtotalItem
           )}</span>
           <button class="cart-remove-btn w-6 h-6 flex items-center justify-center flex-shrink-0 transition-all active:scale-90"
             data-key="${item.cartKey}"
-            style="background:#F5F0E8;color:#0D0D0D;border:1.5px solid #0D0D0D;font-size:11px;">✕</button>
+            style="background:#333;color:#CCCCCC;border:1px solid #444;font-size:11px;">✕</button>
         </div>
         ${extrasHtml}
         ${aclaracionHtml}

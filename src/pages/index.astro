@@ -13,29 +13,25 @@ const extrasData = await getExtras();
 <Layout>
   <Header />
 
-  <!-- ===== HERO — FULL-WIDTH IMAGE BANNER ===== -->
+  <!-- ===== HERO — STADIUM ENTRANCE BANNER ===== -->
   <div
     class="hero-banner relative overflow-hidden"
-    style="background: #0D0D0D; border-bottom: 3px solid #E8681A;"
+    style="background: #0A0A0A;"
   >
-    <!-- Hero image -->
-    <img
-      src="/img/hero-burger.jpg"
-      alt="Menú digital — imagen principal"
-      class="hero-img"
-    />
+    <!-- Hero image: cabecera.png como banner full-width -->
+    <img src="/cabecera.png" alt="Taurus Burgers — Menú" class="hero-img" />
 
-    <!-- Dark gradient overlay (bottom) -->
+    <!-- Dark overlay -->
     <div class="hero-overlay"></div>
 
-    <!-- Grain texture overlay -->
+    <!-- Grain texture -->
     <div
       class="absolute inset-0 pointer-events-none"
-      style={`background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E"); background-size:300px 300px; mix-blend-mode: overlay;`}
+      style={`background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.15'/%3E%3C/svg%3E"); background-size:300px 300px; mix-blend-mode: overlay;`}
     >
     </div>
 
-    <!-- Tagline over the image -->
+    <!-- Tagline: Scoreboard style -->
     <div class="hero-tagline">
       <div class="hero-tagline-inner">
         <div class="hero-line"></div>
@@ -44,26 +40,26 @@ const extrasData = await getExtras();
       </div>
     </div>
 
-    <!-- Orange bottom stripe -->
+    <!-- Red bottom stripe (field line) -->
     <div
-      class="w-full h-1"
-      style="background: linear-gradient(90deg, #E8681A, #B84E10, #E8681A); position: relative; z-index: 3;"
+      class="w-full"
+      style="height: 4px; background: linear-gradient(90deg, #D81120, #FF2233, #D81120); position: relative; z-index: 3;"
     >
     </div>
   </div>
 
-  <!-- ===== CATEGORY NAVIGATION PILLS ===== -->
+  <!-- ===== CATEGORY NAVIGATION — STADIUM TABS ===== -->
   <nav
-    class="theme-nav sticky top-[80px] z-40 py-2.5 overflow-x-auto no-scrollbar"
-    style="backdrop-filter: blur(12px); background: rgba(245, 240, 232, 0.85); border-bottom: 2px solid #0D0D0D;"
+    class="sticky z-40 overflow-x-auto no-scrollbar"
+    style="top: 75px; background: #0A0A0A; border-bottom: 2px solid #D81120; backdrop-filter: blur(12px);"
   >
-    <div class="flex gap-2 px-4 w-max min-w-full">
+    <div class="flex min-w-full px-2">
       {
         menuData.map((cat) => (
           <a
             href={`#${cat.id}`}
-            class="flex-shrink-0 px-3.5 py-1.5 text-xs font-bold transition-all duration-200 whitespace-nowrap theme-pill-inactive"
-            style="font-family: 'Bebas Neue', sans-serif; font-size: 0.85rem; letter-spacing: 0.05em;"
+            class="nav-tab flex-shrink-0 px-4 py-2.5 text-center whitespace-nowrap transition-all duration-200 relative"
+            style="font-family: 'Anton', sans-serif; font-size: 0.85rem; letter-spacing: 0.08em; color: #A3A3A3; border-bottom: 3px solid transparent; margin-bottom: -2px;"
             data-nav-pill={cat.id}
           >
             {cat.category}
@@ -74,7 +70,7 @@ const extrasData = await getExtras();
   </nav>
 
   <!-- ===== MENU ===== -->
-  <main class="pb-32 max-w-4xl mx-auto pt-3">
+  <main class="pb-32 max-w-4xl mx-auto pt-4">
     {
       menuData.map((category) => (
         <CategorySection
@@ -105,7 +101,7 @@ const extrasData = await getExtras();
   .hero-banner {
     position: relative;
     width: 100%;
-    height: 280px;
+    height: 220px;
   }
 
   .hero-img {
@@ -121,10 +117,10 @@ const extrasData = await getExtras();
     inset: 0;
     background: linear-gradient(
       to bottom,
-      rgba(13, 13, 13, 0.15) 0%,
-      rgba(13, 13, 13, 0.3) 40%,
-      rgba(13, 13, 13, 0.85) 80%,
-      rgba(13, 13, 13, 0.95) 100%
+      rgba(10, 10, 10, 0.1) 0%,
+      rgba(10, 10, 10, 0.3) 40%,
+      rgba(10, 10, 10, 0.85) 80%,
+      rgba(10, 10, 10, 0.97) 100%
     );
     z-index: 1;
   }
@@ -146,69 +142,77 @@ const extrasData = await getExtras();
 
   .hero-line {
     flex: 1;
-    height: 1px;
-    background: rgba(232, 104, 26, 0.5);
+    height: 2px;
+    background: rgba(255, 255, 255, 0.3);
   }
 
   .hero-text {
-    font-family: "Bebas Neue", sans-serif;
-    color: #f5f0e8;
-    font-size: 0.9rem;
-    letter-spacing: 0.2em;
+    font-family: "Anton", sans-serif;
+    color: #ffffff;
+    font-size: 0.85rem;
+    letter-spacing: 0.25em;
     white-space: nowrap;
     margin: 0;
   }
 
   @media (min-width: 640px) {
     .hero-banner {
-      height: 360px;
+      height: 300px;
     }
     .hero-text {
-      font-size: 1.1rem;
-      letter-spacing: 0.25em;
+      font-size: 1rem;
+      letter-spacing: 0.3em;
     }
   }
 
   @media (min-width: 1024px) {
     .hero-banner {
-      height: 420px;
+      height: 360px;
     }
+  }
+
+  /* ===== NAV TABS ===== */
+  .nav-tab {
+    color: #a3a3a3;
+    border-bottom: 3px solid transparent;
+  }
+  .nav-tab.is-active {
+    color: #ffffff !important;
+    border-bottom-color: #d81120 !important;
   }
 </style>
 
-<!-- Inject extras data into the global scope for the ModalExtras component -->
+<!-- Inject extras data -->
 <script define:vars={{ extrasData }}>
   window.__MENU_EXTRAS__ = extrasData;
 </script>
 
 <script>
   const sections = document.querySelectorAll("section[id]");
-  const pills = document.querySelectorAll("[data-nav-pill]");
+  const tabs = document.querySelectorAll("[data-nav-pill]");
 
-  // Active pill: orange bg, black text, black border
+  // Active tab style — red underline, white text
   const activeStyle = {
-    bg: "#E8681A",
-    color: "#0D0D0D",
-    border: "2px solid #0D0D0D",
-    shadow: "2px 2px 0px #0D0D0D",
+    color: "#FFFFFF",
+    borderBottomColor: "#D81120",
+    background: "transparent",
   };
   const inactiveStyle = {
-    bg: "#F5F0E8",
-    color: "#6B6660",
-    border: "2px solid #0D0D0D",
-    shadow: "none",
+    color: "#A3A3A3",
+    borderBottomColor: "transparent",
+    background: "transparent",
   };
 
-  function setActivePill(id: string) {
-    pills.forEach((pill) => {
-      const el = pill as HTMLElement;
-      const s = el.dataset.navPill === id ? activeStyle : inactiveStyle;
-      el.style.background = s.bg;
+  function setActiveTab(id: string) {
+    tabs.forEach((tab) => {
+      const el = tab as HTMLElement;
+      const isActive = el.dataset.navPill === id;
+      const s = isActive ? activeStyle : inactiveStyle;
       el.style.color = s.color;
-      el.style.border = s.border;
-      el.style.boxShadow = s.shadow;
+      el.style.borderBottomColor = s.borderBottomColor;
+      el.style.background = s.background;
 
-      if (el.dataset.navPill === id) {
+      if (isActive) {
         el.scrollIntoView({
           behavior: "smooth",
           block: "nearest",
@@ -218,18 +222,17 @@ const extrasData = await getExtras();
     });
   }
 
-  if (pills.length > 0) {
-    const first = pills[0] as HTMLElement;
-    first.style.background = "#E8681A";
-    first.style.color = "#0D0D0D";
-    first.style.border = "2px solid #0D0D0D";
-    first.style.boxShadow = "2px 2px 0px #0D0D0D";
+  // Set first tab active by default
+  if (tabs.length > 0) {
+    const first = tabs[0] as HTMLElement;
+    first.style.color = "#FFFFFF";
+    first.style.borderBottomColor = "#D81120";
   }
 
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) setActivePill(entry.target.id);
+        if (entry.isIntersecting) setActiveTab(entry.target.id);
       });
     },
     { rootMargin: "-20% 0px -60% 0px" }

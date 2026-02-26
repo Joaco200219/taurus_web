@@ -20,21 +20,27 @@ export interface Props {
 const { id, category, categoryKey, products } = Astro.props;
 ---
 
-<section id={id} class="mb-10" style="scroll-margin-top: 140px;">
-  <!-- Category header — brutalista retro -->
-  <div class="px-4 mb-4">
+<section id={id} class="mb-8" style="scroll-margin-top: 130px;">
+  <!-- Category header — scoreboard / stadium style -->
+  <div class="flex items-center gap-0 px-4 mb-3">
+    <!-- Red left accent bar -->
     <div
-      class="flex items-center justify-between px-4 py-2"
-      style="background: #0D0D0D; border: 2px solid #0D0D0D; box-shadow: 3px 3px 0px #E8681A;"
+      style="width: 5px; height: 100%; min-height: 36px; background: #D81120; flex-shrink: 0;"
+    >
+    </div>
+    <!-- Title block -->
+    <div
+      class="flex-1 flex items-center justify-between px-3 py-2"
+      style="background: #1A1A1A;"
     >
       <h2
-        style="font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; color: #F5F0E8; line-height: 1; letter-spacing: 0.04em;"
+        style="font-family: 'Anton', sans-serif; font-size: 1.45rem; color: #FFFFFF; line-height: 1; letter-spacing: 0.06em; text-transform: uppercase; margin: 0;"
       >
         {category}
       </h2>
-      <!-- Count badge -->
+      <!-- Count badge — scoreboard number -->
       <span
-        style="font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; background: #E8681A; color: #0D0D0D; padding: 0 8px; line-height: 1.6;"
+        style="font-family: 'Anton', sans-serif; font-size: 1rem; background: #D81120; color: #FFFFFF; padding: 2px 10px; letter-spacing: 0.04em; line-height: 1.5;"
       >
         {products.length}
       </span>
@@ -42,7 +48,7 @@ const { id, category, categoryKey, products } = Astro.props;
   </div>
 
   <!-- Product list -->
-  <div class="flex flex-col gap-3 px-4">
+  <div class="flex flex-col gap-[2px] px-4">
     {
       products.map((product) => (
         <ProductCard
