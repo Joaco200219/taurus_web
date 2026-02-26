@@ -15,7 +15,29 @@
 
   <div class="max-w-4xl mx-auto px-4 py-2.5">
     <div class="flex items-center justify-between gap-3">
-      <!-- LEFT: Open/Closed Badge -->
+      <!-- LEFT: Logo image -->
+      <div class="flex-shrink-0 flex items-center" style="min-width: 4rem;">
+        <img
+          src="/logo.png"
+          alt="Taurus Burgers"
+          style="height: 2.8rem; width: auto; object-fit: contain;"
+        />
+      </div>
+
+      <!-- CENTER: Text logo - marca del estadio -->
+      <div class="flex flex-col items-center flex-1">
+        <span
+          style="font-family: 'Anton', sans-serif; color: #FFFFFF; font-size: clamp(1.5rem, 6.5vw, 2.2rem); line-height: 1; letter-spacing: 0.04em; text-transform: uppercase;"
+        >
+          <span style="color: #D81120;">TAURUS</span> BURGERS
+        </span>
+        <span
+          style="font-family: 'Inter', sans-serif; color: #888888; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; margin-top: 1px;"
+          >STREET FOOD</span
+        >
+      </div>
+
+      <!-- RIGHT: Open/Closed Badge -->
       <div
         id="hours-badge"
         class="flex-shrink-0 flex items-center gap-1.5 px-2.5 py-1"
@@ -27,18 +49,6 @@
           style="background: #4CAF50;"></span>
         <span id="hours-label">ABIERTO</span>
       </div>
-
-      <!-- CENTER: Text logo - marca del estadio -->
-      <div class="flex flex-col items-center flex-1">
-        <span
-          style="font-family: 'Anton', sans-serif; color: #FFFFFF; font-size: clamp(1.5rem, 6.5vw, 2.2rem); line-height: 1; letter-spacing: 0.04em; text-transform: uppercase;"
-        >
-          <span style="color: #D81120;">TAURUS</span> BURGERS
-        </span>
-      </div>
-
-      <!-- RIGHT: Spacer (matching left for centering) -->
-      <div style="min-width: 5rem;"></div>
     </div>
   </div>
 
